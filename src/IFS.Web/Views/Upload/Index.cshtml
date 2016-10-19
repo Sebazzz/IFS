@@ -1,0 +1,59 @@
+﻿@model UploadModel
+
+@{
+    ViewBag.Title = "Upload selector";
+}
+
+<div id="upload-root">
+    <form asp-action="Frame"
+          asp-antiforgery="true"
+          target="uploadFrame"
+          enctype="multipart/form-data" method="post">
+        <input asp-for="FileIdentifier" type="hidden" />
+
+        <p>
+            <label asp-for="File" class="control-label">
+                Your file
+            </label>
+
+            <input type="file" asp-for="File" class="form-control" />
+        </p>
+
+        <p>
+            <button class="btn btn-submit">Upload</button>
+        </p>
+    </form>
+</div>
+
+<iframe name="uploadFrame" style="display:none"></iframe>
+
+<div class="hidden" id="upload-done">
+    <div class="alert alert-info">
+        <strong>Done!</strong> Redirecting you to the results...
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        (function (global) {
+            var $uploadRoot = $('#upload-root'),
+                trackerUrl = '@Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier })';
+
+            $uploadRoot.find('form').submit(function() {
+                $uploadRoot.load(trackerUrl);
+            });
+
+            global.uploadCoordinator = {
+                validationError: function(text) {
+                    alert(text);
+                    document.location.reload(true);
+                },
+                complete: function (targetUrl) {
+                    $uploadRoot.html($('#upload-done').html());
+
+                    document.location.href = targetUrl;
+                }
+            };
+        })(window);
+    </script>
+}

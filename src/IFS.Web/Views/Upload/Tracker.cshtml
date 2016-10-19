@@ -1,0 +1,68 @@
+﻿@model UploadFileInProgressModel
+
+<div id="uploadTracker">
+    <h2>
+        Upload in progress...
+        
+        @if (Model.FileName != null) {
+            <small>Uploading file @Model.FileName</small>
+        }
+    </h2>
+
+    <p>
+        Initializing progress...
+    </p>
+
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 100%;">
+            <span class="sr-only">60% Complete</span>
+        </div>
+    </div>
+</div>
+
+@{
+    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { trackerId = Model.FileIdentifier.ToString() });
+}
+
+<script>
+    (function () {
+        var $tracker = $('#uploadTracker'),
+            $progress = $tracker.find('.progress'),
+            $textBlock = $tracker.find('p');
+
+        function updateProgress(incoming) {
+            if (incoming.total === 0) {
+                return;
+            }
+
+            var percent = incoming.percent,
+                currentkb = Math.round(incoming.current / 1024),
+                totalkb = Math.round(incoming.total / 1024);
+
+            $progress
+                .removeClass('progress-bar-striped')
+                .css('width', percent + '%')
+                .find('.sr-only').text(percent + '%');
+
+            $textBlock
+                .text('Uploading ' + currentkb + '/' + totalkb + ' KB (' +  percent + '%)');
+        }
+
+        function triggerAjax() {
+            $.getJSON('@uploadApi', {})
+                .success(data => {
+                    updateProgress(data);
+
+                    window.setTimeout(triggerAjax, 250);
+                })
+                .fail(() => {
+                    $textBlock.text('Error updating progres...');
+
+                    window.setTimeout(triggerAjax, 1000);
+                });
+        }
+
+        triggerAjax();
+    })();
+
+</script>

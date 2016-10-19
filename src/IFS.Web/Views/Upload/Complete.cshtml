@@ -1,0 +1,26 @@
+﻿@model IFS.Web.Core.Upload.UploadedFile
+@{
+    ViewBag.Title = $"Upload complete: {Model.Metadata.OriginalFileName}";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="alert alert-success">
+    The upload of your file has completed: <code>@Model.Metadata.OriginalFileName</code>.
+</div>
+
+@{
+    string downloadLink = this.Url.RouteUrl("DownloadFile", new {id = Model.Id}, this.Context.Request.Scheme);
+}
+
+<p>
+    Download link to share: <input type="text" value="@downloadLink" class="form-control" readonly="readonly"/>
+</p>
+
+<p>
+    Test link: <a href="@downloadLink">@downloadLink</a>
+</p>
+
+<p>
+    <a asp-action="Index" class="btn btn-primary">Upload another file</a>
+</p>

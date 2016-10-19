@@ -1,0 +1,25 @@
+﻿@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+
+@{
+    Layout = "_Frame";
+
+    ModelStateDictionary modelState = ViewData.ModelState;
+
+    var validationErrors =
+        from key in modelState.Keys
+        let item = modelState[key]
+        from error in item.Errors
+        select $"{item}: {error.ErrorMessage}";
+
+    string validationError = String.Join(Environment.NewLine, validationErrors);
+}
+
+<script>
+    (function (doc) {
+        var coordinator = doc.uploadCoordinator,
+            validationError = '@JavaScriptEncoder.Default.Encode(validationError)';
+
+        coordinator.validationError(validationError);
+    })(window.parent);
+</script>
