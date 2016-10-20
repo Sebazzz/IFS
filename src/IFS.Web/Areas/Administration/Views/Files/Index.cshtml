@@ -24,7 +24,9 @@
     @foreach (var file in sortedFiles) {
         <tr>
             <td><code>@file.Id</code></td>
-            <td>@file.Metadata.OriginalFileName</td>
+            <td>
+                <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
+            </td>
             <td>
                 @file.Metadata.UploadedOn.Humanize()
             </td>
