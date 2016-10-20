@@ -1,0 +1,37 @@
+﻿@using Humanizer
+@model FilesOverviewModel
+
+@{
+    ViewBag.Title = "Uploaded file overview";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@{
+    var sortedFiles = Model.Files.OrderBy(x => x.Metadata.OriginalFileName);
+}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>File name</th>
+        <th>Uploaded on</th>
+        <th>Expires</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var file in sortedFiles) {
+        <tr>
+            <td><code>@file.Id</code></td>
+            <td>@file.Metadata.OriginalFileName</td>
+            <td>
+                @file.Metadata.UploadedOn.Humanize()
+            </td>
+            <td>
+                @file.Metadata.Expiration.Humanize()
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

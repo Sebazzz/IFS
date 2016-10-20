@@ -44,11 +44,17 @@ namespace IFS.Web {
 
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
 
-            services.AddAuthorization(opt => 
-                opt.AddPolicy(KnownPolicies.Upload, 
+            services.AddAuthorization(opt => {
+                opt.AddPolicy(KnownPolicies.Upload,
                     b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.PassphraseScheme)
                           .RequireAuthenticatedUser()
-                          .RequireUserName(KnownPolicies.Upload)));
+                          .RequireUserName(KnownPolicies.Upload));
+
+                opt.AddPolicy(KnownPolicies.Administration,
+                    b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.AdministrationScheme)
+                          .RequireAuthenticatedUser()
+                          .RequireUserName(this.Configuration.GetSection("Authentication").GetSection("Administration").GetValue<string>("UserName")));
+            });
 
             // Hangfire
             services.AddHangfire(config => {
@@ -60,6 +66,7 @@ namespace IFS.Web {
 
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
+            services.AddScoped<IAdministrationAuthenticationProvider, AuthenticationProvider>();
 
             // ... Configuration
             services.AddOptions();
@@ -90,8 +97,17 @@ namespace IFS.Web {
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions {
                 AuthenticationScheme = KnownAuthenticationScheme.PassphraseScheme,
-                LoginPath = new PathString("/Authenticate/Login"),
-                AccessDeniedPath = new PathString("/Error/AccessDenied"),
+                LoginPath = new PathString("/authenticate/login"),
+                AccessDeniedPath = new PathString("/error/accessDenied"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                ReturnUrlParameter = "returnUrl"
+            });
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions {
+                AuthenticationScheme = KnownAuthenticationScheme.AdministrationScheme,
+                LoginPath = new PathString("/administration/authenticate/login"),
+                AccessDeniedPath = new PathString("/error/accessdenied"),
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 ReturnUrlParameter = "returnUrl"
@@ -99,7 +115,7 @@ namespace IFS.Web {
 
             // Hangfire
             app.UseHangfireDashboard(options: new DashboardOptions {
-                AppPath = "/Administration/"
+                AppPath = "/administration/"
             });
 
             app.UseHangfireServer();
@@ -107,6 +123,11 @@ namespace IFS.Web {
             // MVC and API
             app.UseMvc(
                 routes => {
+                    routes.MapAreaRoute(
+                        name: "areaRoute",
+                        areaName: "Administration",
+                        template: "administration/{controller=Home}/{action=Index}/{id?}");
+
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");

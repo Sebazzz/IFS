@@ -91,6 +91,7 @@ namespace IFS.Web.Core.Upload {
         private async Task StoreMetadataAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken) {
             StoredMetadata metadata = new StoredMetadata {
                 Expiration = expiration,
+                UploadedOn = DateTime.UtcNow,
                 OriginalFileName = Path.GetFileName(file.FileName)
             };
 

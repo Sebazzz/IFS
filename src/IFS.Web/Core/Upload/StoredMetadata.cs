@@ -5,6 +5,7 @@
 
     public class StoredMetadata {
         public DateTime Expiration { get; set; }
+        public DateTime UploadedOn { get; set; }
         public string OriginalFileName { get; set; }
 
         public string Serialize() {
