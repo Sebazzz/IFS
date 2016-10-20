@@ -11,6 +11,8 @@ namespace IFS.Web.Models {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using Core;
+
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -22,6 +24,7 @@ namespace IFS.Web.Models {
         public FileIdentifier FileIdentifier { get; set; }
 
         [Required(ErrorMessage = "Please select a file to upload")]
+        [FileSizeValidation]
         public IFormFile File { get; set; }
 
         public DateTime Expiration { get; set; }

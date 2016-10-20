@@ -10,7 +10,7 @@
         from key in modelState.Keys
         let item = modelState[key]
         from error in item.Errors
-        select $"{item}: {error.ErrorMessage}";
+        select error.ErrorMessage;
 
     string validationError = String.Join(Environment.NewLine, validationErrors);
 }
