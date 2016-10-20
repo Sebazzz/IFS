@@ -14,8 +14,8 @@
     </p>
 
     <div class="progress">
-        <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 100%;">
-            <span class="sr-only">60% Complete</span>
+        <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 100%;">
+            <span class="sr-only">0% Complete</span>
         </div>
     </div>
 </div>
@@ -28,7 +28,8 @@
     (function () {
         var $tracker = $('#uploadTracker'),
             $progress = $tracker.find('.progress'),
-            $textBlock = $tracker.find('p');
+            $textBlock = $tracker.find('p'),
+            firstTime = true;
 
         function updateProgress(incoming) {
             if (incoming.total === 0) {
@@ -51,12 +52,24 @@
         function triggerAjax() {
             $.getJSON('@uploadApi', {})
                 .success(data => {
+                    if (firstTime) {
+                        $progress.stop();
+
+                        firstTime = false;
+                    }
+
                     updateProgress(data);
 
                     window.setTimeout(triggerAjax, 250);
                 })
                 .fail(() => {
-                    $textBlock.text('Error updating progres...');
+                    if (firstTime) {
+                        $textBlock.text('Waiting for progress information...');
+
+                        $progress.animate({ width: '0%' }, 100);
+                    } else {
+                        $textBlock.text('Error updating progress...');
+                    }
 
                     window.setTimeout(triggerAjax, 1000);
                 });

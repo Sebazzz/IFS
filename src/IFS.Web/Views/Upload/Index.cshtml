@@ -5,6 +5,12 @@
 }
 
 <div id="upload-root">
+    <h2>@ViewBag.Title</h2>
+
+    <p>
+        Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.
+    </p>
+
     <form asp-action="Frame"
           asp-antiforgery="true"
           target="uploadFrame"
@@ -18,12 +24,12 @@
 
             <input type="file" asp-for="File" class="form-control" />
         </p>
-        
+
         <p>
             <label asp-for="Expiration" class="control-label">
                 Expiration
             </label>
-            
+
             <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
         </p>
 
