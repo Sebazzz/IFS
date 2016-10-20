@@ -110,7 +110,15 @@ namespace IFS.Web.Controllers {
                 return this.NotFound("Cannot find upload with id: " + trackerId);
             }
 
-            return this.Ok(current);
+            UploadProgressModel model = new UploadProgressModel {
+                Current = current.Current,
+                Total = current.Total,
+                FileName = current.FileName,
+                Percent = (int) Math.Round(((double) current.Current / current.Total) * 100),
+                Performance = current.Current.Bytes().Per(DateTime.UtcNow - current.StartTime).Humanize("#.##")
+            };
+
+            return this.Ok(model);
         }
 
         [HttpGet]

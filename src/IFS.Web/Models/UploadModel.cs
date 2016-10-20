@@ -28,11 +28,23 @@ namespace IFS.Web.Models {
         public IFormFile File { get; set; }
 
         public DateTime Expiration { get; set; }
+
     }
 
     public class UploadFileInProgressModel {
         public string FileName { get; set; }
 
         public FileIdentifier FileIdentifier { get; set; }
+    }
+
+    public class UploadProgressModel {
+        public long Current { get; set; }
+        public long Total { get; set; }
+
+        public string FileName { get; set; }
+
+        public string Performance { get; set; }
+
+        public int Percent { get; set; }
     }
 }

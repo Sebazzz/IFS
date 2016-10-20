@@ -1,4 +1,6 @@
-﻿@model NewUploadModel
+﻿@using Humanizer
+@model NewUploadModel
+@inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
 
 @{
     ViewBag.Title = "Upload selector";
@@ -10,6 +12,10 @@
     <p>
         Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.
     </p>
+    
+    <div class="alert alert-info">
+        <strong>Maximum file size: </strong> @FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")
+    </div>
 
     <form asp-action="Frame"
           asp-antiforgery="true"
@@ -34,7 +40,7 @@
         </p>
 
         <p>
-            <button class="btn btn-submit">
+            <button class="btn btn-primary">
                 <span class="glyphicon glyphicon-upload"></span> Upload
             </button>
         </p>

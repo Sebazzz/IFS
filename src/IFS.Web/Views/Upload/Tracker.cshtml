@@ -9,7 +9,7 @@
         }
     </h2>
 
-    <p>
+    <p id="uploadProgress">
         Initializing progress...
     </p>
 
@@ -18,6 +18,8 @@
             <span class="sr-only">0% Complete</span>
         </div>
     </div>
+    
+    <span class="pull-right" id="uploadPerformance"></span>
 </div>
 
 @{
@@ -27,8 +29,9 @@
 <script>
     (function () {
         var $tracker = $('#uploadTracker'),
-            $progress = $tracker.find('.progress'),
-            $textBlock = $tracker.find('p'),
+            $progress = $tracker.find('.progress .progress-bar'),
+            $textBlock = $tracker.find('#uploadProgress'),
+            $performance = $tracker.find('#uploadPerformance'),
             firstTime = true;
 
         function updateProgress(incoming) {
@@ -41,12 +44,13 @@
                 totalkb = Math.round(incoming.total / 1024);
 
             $progress
-                .removeClass('progress-bar-striped')
                 .css('width', percent + '%')
                 .find('.sr-only').text(percent + '%');
 
             $textBlock
-                .text('Uploading ' + currentkb + '/' + totalkb + ' KB (' +  percent + '%)');
+                .text('Uploading ' + currentkb + '/' + totalkb + ' KB (' + percent + '%)');
+
+            $performance.text(incoming.performance);
         }
 
         function triggerAjax() {

@@ -7,6 +7,6 @@
 
         public string FileName { get; set; }
 
-        public int Percent => (int) Math.Round(((double) this.Current / this.Total) * 100);
+        public DateTime StartTime { get; set; } = DateTime.UtcNow;
     }
 }
