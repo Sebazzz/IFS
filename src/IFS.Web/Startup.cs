@@ -6,12 +6,13 @@
 // ******************************************************************************
 
 namespace IFS.Web {
+    using System;
+
     using Core;
     using Core.Authentication;
     using Core.Upload;
 
     using Hangfire;
-    using Hangfire.AspNetCore;
     using Hangfire.Dashboard;
     using Hangfire.MemoryStorage;
 
@@ -21,6 +22,7 @@ namespace IFS.Web {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     public sealed class Startup {
         public Startup(IHostingEnvironment env) {
@@ -92,7 +94,7 @@ namespace IFS.Web {
             } else {
                 app.UseExceptionHandler("/Error/Error");
             }
-
+            
             app.UseStaticFiles();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions {
@@ -114,9 +116,14 @@ namespace IFS.Web {
             });
 
             // Hangfire
-            app.UseHangfireDashboard(options: new DashboardOptions {
-                AppPath = "/administration/"
-            });
+            app.UseHangfireDashboard(
+                pathMatch: "/administration/jobs", 
+                options: new DashboardOptions {
+                    AppPath = "/administration/",
+                    Authorization = new[] {
+                        new AdministratorDashboardFilter(app.ApplicationServices)
+                    }
+                });
 
             app.UseHangfireServer();
 
@@ -135,6 +142,30 @@ namespace IFS.Web {
 
             // Configure hangfire jobs (not sure where to do this else)
             RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(x => x.Execute(JobCancellationToken.Null), Cron.MinuteInterval(30));
+        }
+
+        private sealed class AdministratorDashboardFilter : IDashboardAuthorizationFilter {
+            private readonly IServiceProvider _serviceProvider;
+
+            public AdministratorDashboardFilter(IServiceProvider serviceProvider) {
+                this._serviceProvider = serviceProvider;
+            }
+
+            public bool Authorize(DashboardContext context) {
+                var auth = this._serviceProvider.GetRequiredService<IOptions<Core.Authentication.AuthenticationOptions>>().Value?.Administration;
+
+                if (auth == null) {
+                    return false;
+                }
+
+                var ctx = this._serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+
+                if (ctx == null) {
+                    return false;
+                }
+
+                return ctx.User.Identity.Name == auth.UserName;
+            }
         }
     }
 }
