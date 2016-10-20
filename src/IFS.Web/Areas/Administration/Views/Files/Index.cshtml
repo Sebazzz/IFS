@@ -18,6 +18,7 @@
         <th>File name</th>
         <th>Uploaded on</th>
         <th>Expires</th>
+        <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
@@ -33,7 +34,18 @@
             <td>
                 @file.Metadata.Expiration.Humanize()
             </td>
+            <td>
+                <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
+                    <button class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </form>
+            </td>
         </tr>
     }
     </tbody>
 </table>
+
+<p>
+    @Html.Partial("_LogOffButton")
+</p>

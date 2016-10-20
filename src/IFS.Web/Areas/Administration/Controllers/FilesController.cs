@@ -17,6 +17,8 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
     using Models;
 
+    using Web.Models;
+
     [Authorize(KnownPolicies.Administration)]
     [Area(nameof(Administration))]
     public sealed class FilesController : Controller {
@@ -35,6 +37,14 @@ namespace IFS.Web.Areas.Administration.Controllers {
             };
 
             return this.View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(FileIdentifier id) {
+            this._uploadedFileRepository.Delete(id);
+
+            return this.RedirectToAction("Index");
         }
     }
 }

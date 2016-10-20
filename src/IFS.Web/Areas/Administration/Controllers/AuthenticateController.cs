@@ -40,6 +40,14 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public IActionResult Logoff() {
+            this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.AdministrationScheme);
+
+            return this.RedirectToAction("Index", "Home", new {area = ""});
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model) {
             if (model == null) {
                 return this.View();
