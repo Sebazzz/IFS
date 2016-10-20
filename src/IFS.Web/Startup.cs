@@ -10,6 +10,11 @@ namespace IFS.Web {
     using Core.Authentication;
     using Core.Upload;
 
+    using Hangfire;
+    using Hangfire.AspNetCore;
+    using Hangfire.Dashboard;
+    using Hangfire.MemoryStorage;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -44,6 +49,14 @@ namespace IFS.Web {
                     b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.PassphraseScheme)
                           .RequireAuthenticatedUser()
                           .RequireUserName(KnownPolicies.Upload)));
+
+            // Hangfire
+            services.AddHangfire(config => {
+                config.UseColouredConsoleLogProvider();
+                config.UseMemoryStorage();
+            });
+
+            services.AddTransient<ExpiredFileRemovalJob>();
 
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
@@ -84,12 +97,23 @@ namespace IFS.Web {
                 ReturnUrlParameter = "returnUrl"
             });
 
+            // Hangfire
+            app.UseHangfireDashboard(options: new DashboardOptions {
+                AppPath = "/Administration/"
+            });
+
+            app.UseHangfireServer();
+
+            // MVC and API
             app.UseMvc(
                 routes => {
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
                 });
+
+            // Configure hangfire jobs (not sure where to do this else)
+            RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(x => x.Execute(JobCancellationToken.Null), Cron.MinuteInterval(30));
         }
     }
 }

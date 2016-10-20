@@ -1,4 +1,4 @@
-﻿@model UploadModel
+﻿@model NewUploadModel
 
 @{
     ViewBag.Title = "Upload selector";
@@ -18,9 +18,19 @@
 
             <input type="file" asp-for="File" class="form-control" />
         </p>
+        
+        <p>
+            <label asp-for="Expiration" class="control-label">
+                Expiration
+            </label>
+            
+            <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
+        </p>
 
         <p>
-            <button class="btn btn-submit">Upload</button>
+            <button class="btn btn-submit">
+                <span class="glyphicon glyphicon-upload"></span> Upload
+            </button>
         </p>
     </form>
 </div>

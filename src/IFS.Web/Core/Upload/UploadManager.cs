@@ -33,11 +33,11 @@ namespace IFS.Web.Core.Upload {
             this._uploadsByFileIdentifier = new ConcurrentDictionary<FileIdentifier, UploadProgress>();
         }
 
-        public async Task StoreAsync(FileIdentifier id, IFormFile file, CancellationToken cancellationToken) {
+        public async Task StoreAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken) {
             this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1}", file.FileName, id);
 
             try {
-                await this.StoreMetadataAsync(id, file, cancellationToken);
+                await this.StoreMetadataAsync(id, file, expiration, cancellationToken);
                 await this.StoreDataAsync(id, file, cancellationToken);
             }
             catch (OperationCanceledException ex) {
@@ -88,9 +88,9 @@ namespace IFS.Web.Core.Upload {
             }
         }
 
-        private async Task StoreMetadataAsync(FileIdentifier id, IFormFile file, CancellationToken cancellationToken) {
+        private async Task StoreMetadataAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken) {
             StoredMetadata metadata = new StoredMetadata {
-                Expiration = DateTime.UtcNow.AddDays(7),
+                Expiration = expiration,
                 OriginalFileName = Path.GetFileName(file.FileName)
             };
 

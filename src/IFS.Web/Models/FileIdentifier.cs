@@ -10,6 +10,8 @@ namespace IFS.Web.Models {
     using System.Runtime.InteropServices;
     using System.Threading;
 
+    using Hangfire.Annotations;
+
     /// <summary>
     /// Represents the identifier of an uploaded file
     /// </summary>
@@ -38,6 +40,18 @@ namespace IFS.Web.Models {
                     throw new ArgumentException($"Unexpected character '{ch}' in input", nameof(stringRepresentation));
                 }
             }
+        }
+
+        public static bool IsValid([NotNull] string str) {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+
+            foreach (char ch in str) {
+                if (Array.IndexOf(Chars, ch) == -1) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

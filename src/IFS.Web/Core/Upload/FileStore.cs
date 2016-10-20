@@ -6,6 +6,8 @@
 // ******************************************************************************
 
 namespace IFS.Web.Core.Upload {
+    using System.Collections.Generic;
+
     using Microsoft.Extensions.FileProviders;
 
     using Models;
@@ -26,5 +28,9 @@ namespace IFS.Web.Core.Upload {
         }
 
         public IFileInfo GetMetadataFile(FileIdentifier id) => this.GetFile($"{id}.metadata");
+
+        public IEnumerable<IFileInfo> GetFiles() {
+            return this._fileProvider.GetDirectoryContents("");
+        }
     }
 }

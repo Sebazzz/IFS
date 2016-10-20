@@ -6,6 +6,7 @@
 // ******************************************************************************
 
 namespace IFS.Web.Core.Upload {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -15,6 +16,6 @@ namespace IFS.Web.Core.Upload {
 
     public interface IUploadManager {
         UploadProgress GetProgress(FileIdentifier id);
-        Task StoreAsync(FileIdentifier id, IFormFile file, CancellationToken cancellationToken);
+        Task StoreAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken);
     }
 }

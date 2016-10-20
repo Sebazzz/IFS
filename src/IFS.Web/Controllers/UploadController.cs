@@ -6,13 +6,18 @@
 // ******************************************************************************
 
 namespace IFS.Web.Controllers {
+    using System;
+    using System.Globalization;
     using System.Threading.Tasks;
 
     using Core;
     using Core.Upload;
 
+    using Humanizer;
+
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.Extensions.Logging;
 
     using Models;
@@ -30,8 +35,34 @@ namespace IFS.Web.Controllers {
         }
 
         public IActionResult Index() {
-            UploadModel uploadModel = new UploadModel {
-                FileIdentifier = FileIdentifier.CreateNew()
+            Func<TimeSpan, SelectListItem> createItem = 
+                timespan => new SelectListItem {
+                    Value = (DateTime.UtcNow + timespan).ToString("O"),
+                    Text = timespan.Humanize()
+                };
+
+            Func<int, SelectListItem> createMonthItem =
+                month => new SelectListItem {
+                    Value = CultureInfo.CurrentCulture.Calendar.AddMonths(DateTime.UtcNow, month).ToString("O"),
+                    Text = $"{month} months"
+                };
+
+            NewUploadModel uploadModel = new NewUploadModel {
+                FileIdentifier = FileIdentifier.CreateNew(),
+                Expiration = DateTime.UtcNow.AddDays(7),
+                AvailableExpiration = new[] {
+                    createItem(TimeSpan.FromHours(1)),
+                    createItem(TimeSpan.FromHours(4)),
+                    createItem(TimeSpan.FromHours(8)),
+                    createItem(TimeSpan.FromDays(1)),
+                    createItem(TimeSpan.FromDays(2)),
+                    createItem(TimeSpan.FromDays(7)),
+                    createMonthItem(1),
+                    createMonthItem(2),
+                    createMonthItem(3),
+                    createMonthItem(6),
+                    createItem(TimeSpan.FromDays(CultureInfo.CurrentCulture.Calendar.GetDaysInYear(DateTime.UtcNow.Year))),
+                }
             };
 
             return this.View(uploadModel);
@@ -59,7 +90,7 @@ namespace IFS.Web.Controllers {
                 return this.View("FrameError", model);
             }
 
-            await this._uploadManager.StoreAsync(model.FileIdentifier, model.File, this.HttpContext.RequestAborted);
+            await this._uploadManager.StoreAsync(model.FileIdentifier, model.File, model.Expiration, this.HttpContext.RequestAborted);
 
             return this.View("FrameComplete", model);
         }

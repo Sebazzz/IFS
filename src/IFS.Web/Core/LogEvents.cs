@@ -10,6 +10,7 @@ namespace IFS.Web.Core {
 
     public static class LogEvents {
         public static readonly EventId NewUpload = new EventId(0001, nameof(NewUpload));
+        public static readonly EventId UploadExpired = new EventId(0002, nameof(UploadExpired));
 
         public static readonly EventId UploadFailed = new EventId(1000, nameof(UploadFailed));
         public static readonly EventId UploadCancelled = new EventId(2000, nameof(UploadFailed));
