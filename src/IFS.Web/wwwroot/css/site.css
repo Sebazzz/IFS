@@ -36,3 +36,20 @@ textarea {
     display: none
   }
 }
+
+.upload-control {
+    position: relative;
+    overflow: hidden;
+
+    max-width: 250px;
+}
+
+.upload-control input[type=file] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    opacity: 0;
+}

@@ -27,7 +27,11 @@
                 Your file
             </label>
 
-            <input type="file" asp-for="File" class="form-control" />
+            <div class="upload-control form-control btn btn-primary">
+                <span>Select file</span>
+
+                <input type="file" asp-for="File" />
+            </div>
         </p>
 
         <p>
