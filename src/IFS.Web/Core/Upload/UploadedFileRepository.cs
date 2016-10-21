@@ -51,7 +51,7 @@ namespace IFS.Web.Core.Upload {
             try {
                 string json;
                 using (StreamReader sw = new StreamReader(metadataFile.CreateReadStream())) {
-                    json = await sw.ReadToEndAsync();
+                    json = await sw.ReadToEndAsync().ConfigureAwait(false);
                 }
 
                 metadata = StoredMetadata.Deserialize(json);

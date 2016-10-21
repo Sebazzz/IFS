@@ -37,8 +37,8 @@ namespace IFS.Web.Core.Upload {
             this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1}", file.FileName, id);
 
             try {
-                await this.StoreMetadataAsync(id, file, expiration, cancellationToken);
-                await this.StoreDataAsync(id, file, cancellationToken);
+                await this.StoreMetadataAsync(id, file, expiration, cancellationToken).ConfigureAwait(false);
+                await this.StoreDataAsync(id, file, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException ex) {
                 this._logger.LogWarning(LogEvents.UploadCancelled, ex, "Upload failed due to cancellation");
@@ -77,10 +77,10 @@ namespace IFS.Web.Core.Upload {
                 using (Stream inputStream = file.OpenReadStream()) {
                     int read;
                     byte[] buffer = new byte[4096];
-                    while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) != 0) {
+                    while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0) {
                         progress.Current += read;
 
-                        await outputStream.WriteAsync(buffer, 0, read, cancellationToken);
+                        await outputStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -95,9 +95,9 @@ namespace IFS.Web.Core.Upload {
 
             using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(id))) {
                 using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
-                    await sw.WriteAsync(metadata.Serialize());
+                    await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
 
-                    await fileStream.FlushAsync(cancellationToken);
+                    await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
                 }
             }
         }
