@@ -21,11 +21,11 @@ namespace IFS.Web.Core.Upload {
     public class UploadManager : IUploadManager {
         private readonly ConcurrentDictionary<FileIdentifier, UploadProgress> _uploadsByFileIdentifier;
 
-        private readonly FileStore _fileStore;
+        private readonly IFileStore _fileStore;
         private readonly FileWriter _fileWriter;
         private readonly ILogger<UploadManager> _logger;
 
-        public UploadManager(FileStore fileStore, FileWriter fileWriter, ILogger<UploadManager> logger) {
+        public UploadManager(IFileStore fileStore, FileWriter fileWriter, ILogger<UploadManager> logger) {
             this._fileStore = fileStore;
             this._fileWriter = fileWriter;
             this._logger = logger;

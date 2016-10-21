@@ -80,7 +80,9 @@ namespace IFS.Web {
             services.AddSingleton<FileWriter>();
             services.AddSingleton<FileStore>();
             services.AddSingleton<IUploadedFileRepository, UploadedFileRepository>();
+
             services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();
+            services.AddSingleton<IFileStore, FileStore>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

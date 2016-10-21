@@ -12,7 +12,13 @@ namespace IFS.Web.Core.Upload {
 
     using Models;
 
-    public sealed class FileStore {
+    public interface IFileStore {
+        IFileInfo GetDataFile(FileIdentifier id);
+        IFileInfo GetMetadataFile(FileIdentifier id);
+        IEnumerable<IFileInfo> GetFiles();
+    }
+
+    public sealed class FileStore : IFileStore {
         private readonly IFileProvider _fileProvider;
 
         public FileStore(IFileStoreFileProviderFactory fileProviderFactory) {

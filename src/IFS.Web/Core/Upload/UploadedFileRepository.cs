@@ -25,11 +25,11 @@ namespace IFS.Web.Core.Upload {
     }
 
     public sealed class UploadedFileRepository : IUploadedFileRepository {
-        private readonly FileStore _fileStore;
+        private readonly IFileStore _fileStore;
         private readonly FileWriter _fileWriter;
         private readonly ILogger<UploadedFileRepository> _logger;
 
-        public UploadedFileRepository(FileStore fileStore, FileWriter fileWriter, ILogger<UploadedFileRepository> logger) {
+        public UploadedFileRepository(IFileStore fileStore, FileWriter fileWriter, ILogger<UploadedFileRepository> logger) {
             this._fileStore = fileStore;
             this._logger = logger;
             this._fileWriter = fileWriter;
