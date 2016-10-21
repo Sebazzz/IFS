@@ -21,7 +21,7 @@
           target="uploadFrame"
           enctype="multipart/form-data" method="post">
         <input asp-for="FileIdentifier" type="hidden" />
-
+        
         <p>
             <label asp-for="File" class="control-label">
                 Your file
@@ -32,6 +32,8 @@
 
                 <input type="file" asp-for="File" />
             </div>
+            
+            <span asp-validation-for="File" class="text-danger">*</span>
         </p>
 
         <p>
@@ -75,13 +77,26 @@
 </div>
 
 @section scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    </environment>
+
     <script>
         (function (global) {
             var $uploadRoot = $('#upload-root'),
                 errorIntervalTimerHandle = 0,
                 trackerUrl = '@Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier })';
 
-            $uploadRoot.find('form').submit(function() {
+            $uploadRoot.find('form').submit(function () {
+                if (!$(this).valid()) {
+                    return;
+                }
+
                 $uploadRoot.load(trackerUrl);
 
                 // If the iframe loads, and we weren't called back within a certain time, 
