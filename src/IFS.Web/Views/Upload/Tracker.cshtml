@@ -53,7 +53,15 @@
             $performance.text(incoming.performance);
         }
 
+        function isTrackerRemoved() {
+            return $tracker.closest('body').length > 0;
+        }
+
         function triggerAjax() {
+            if (isTrackerRemoved()) {
+                return;
+            }
+
             $.getJSON('@uploadApi', {})
                 .success(data => {
                     if (firstTime) {
