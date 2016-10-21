@@ -18,6 +18,11 @@ namespace IFS.Web.Core.Upload {
 
     using Models;
 
+    public interface IUploadManager {
+        UploadProgress GetProgress(FileIdentifier id);
+        Task StoreAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken);
+    }
+
     public class UploadManager : IUploadManager {
         private readonly ConcurrentDictionary<FileIdentifier, UploadProgress> _uploadsByFileIdentifier;
 
