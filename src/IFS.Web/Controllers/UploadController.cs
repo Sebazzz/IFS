@@ -25,13 +25,11 @@ namespace IFS.Web.Controllers {
     [Authorize(KnownPolicies.Upload, ActiveAuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     public sealed class UploadController : Controller {
         private readonly IUploadManager _uploadManager;
-        private readonly IUploadedFileRepository _uploadedFileRepository;
         private readonly ILogger<UploadController> _logger;
 
-        public UploadController(IUploadManager uploadManager, IUploadedFileRepository uploadedFileRepository, ILogger<UploadController> logger) {
+        public UploadController(IUploadManager uploadManager, ILogger<UploadController> logger) {
             this._uploadManager = uploadManager;
             this._logger = logger;
-            this._uploadedFileRepository = uploadedFileRepository;
         }
 
         public IActionResult Index() {
@@ -69,12 +67,12 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> Complete(FileIdentifier id) {
+        public async Task<IActionResult> Complete(FileIdentifier id, [FromServices] IUploadedFileRepository uploadedFileRepository) {
             if (!this.ModelState.IsValid) {
                 return this.BadRequest();
             }
 
-            UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
+            UploadedFile uploadedFile = await uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file '{0}'", id);
                 return this.NotFound("We lost it!");
