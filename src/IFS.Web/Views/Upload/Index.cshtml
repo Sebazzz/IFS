@@ -47,7 +47,7 @@
     </form>
 </div>
 
-<iframe name="uploadFrame" style="display:none"></iframe>
+<iframe name="uploadFrame" id="uploadFrame" style="display:none"></iframe>
 
 <div class="hidden" id="upload-done">
     <div class="alert alert-info">
@@ -55,27 +55,67 @@
     </div>
 </div>
 
+<div class="hidden" id="upload-error">
+    <h2>Upload failed</h2>
+
+    <div class="alert alert-danger">
+        <strong>Oops...</strong> It appears something has gone terribly wrong with the upload
+    </div>
+
+    <p>
+        Please check whether the file you're trying to upload isn't too large.
+    </p>
+
+    <p>
+        <button class="btn btn-primary reload-button" type="button">Try again</button>
+    </p>
+</div>
+
 @section scripts {
     <script>
         (function (global) {
             var $uploadRoot = $('#upload-root'),
+                errorIntervalTimerHandle = 0,
                 trackerUrl = '@Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier })';
 
             $uploadRoot.find('form').submit(function() {
                 $uploadRoot.load(trackerUrl);
+
+                // If the iframe loads, and we weren't called back within a certain time, 
+                // we can assume there is some kind of server error.
+                $('#uploadFrame').on('load', function () {
+                    console.info('Upload frame has loaded...');
+
+                    errorIntervalTimerHandle = window.setTimeout(global.uploadCoordinator.assumeServerUploadError, 2000);
+                });
+            });
+
+            $(document).on('load', '.reload-button', function(ev) {
+                ev.preventDefault();
+
+                document.location.reload(true);
             });
 
             global.uploadCoordinator = {
                 validationError: function(text) {
                     alert(text);
+
                     document.location.reload(true);
                 },
+
+                assumeServerUploadError: function() {
+                    $uploadRoot.html($('#upload-error').html());
+                },
                 complete: function (targetUrl) {
+                    clearTimeout(errorIntervalTimerHandle);
+
                     $uploadRoot.html($('#upload-done').html());
 
                     document.location.href = targetUrl;
                 }
             };
+
+           
         })(window);
     </script>
 }
