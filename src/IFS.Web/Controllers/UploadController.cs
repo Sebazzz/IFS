@@ -84,6 +84,7 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpPost]
+        [AllowLargeFile(Order = -1)]
         public async Task<IActionResult> Frame([FromForm] UploadModel model) {
             if (!this.ModelState.IsValid) {
                 return this.View("FrameError", model);
