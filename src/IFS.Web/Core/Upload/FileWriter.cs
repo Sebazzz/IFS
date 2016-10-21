@@ -4,7 +4,13 @@
 
     using Microsoft.Extensions.FileProviders;
 
-    public class FileWriter {
+    public interface IFileWriter {
+        Stream OpenWriteStream(IFileInfo fileInfo);
+        void Delete(IFileInfo fileInfo);
+    }
+
+
+    public sealed class FileWriter : IFileWriter {
         public Stream OpenWriteStream(IFileInfo fileInfo) {
             string physicalPath = GetPhysicalPath(fileInfo);
 
