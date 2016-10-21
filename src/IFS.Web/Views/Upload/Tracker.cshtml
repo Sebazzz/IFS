@@ -54,7 +54,7 @@
         }
 
         function isTrackerRemoved() {
-            return $tracker.closest('body').length > 0;
+            return $tracker.closest('body').length === 0;
         }
 
         function triggerAjax() {

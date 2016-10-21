@@ -84,7 +84,6 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Frame([FromForm] UploadModel model) {
             if (!this.ModelState.IsValid) {
                 return this.View("FrameError", model);
