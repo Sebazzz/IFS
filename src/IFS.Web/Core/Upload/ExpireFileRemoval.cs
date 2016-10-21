@@ -29,6 +29,8 @@ namespace IFS.Web.Core.Upload {
                 IList<UploadedFile> uploadedFiles = await this._uploadedFileRepository.GetFiles().ConfigureAwait(false);
 
                 foreach (UploadedFile uploadedFile in uploadedFiles) {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     this.ProcessSingleFile(uploadedFile);
                 }
             }
