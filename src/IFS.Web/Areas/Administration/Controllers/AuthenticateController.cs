@@ -32,7 +32,9 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         public IActionResult Login(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
-                return this.RedirectToAction("Index", "Upload");
+                this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
+
+                return this.RedirectToAction("Index");
             }
 
             return this.View();
