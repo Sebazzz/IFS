@@ -80,8 +80,6 @@ namespace IFS.Web.Core.Upload {
                     while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) != 0) {
                         progress.Current += read;
 
-                        await Task.Delay(100, cancellationToken);
-
                         await outputStream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
                     }
                 }
