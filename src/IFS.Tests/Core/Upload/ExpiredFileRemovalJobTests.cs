@@ -27,7 +27,7 @@ namespace IFS.Tests.Core.Upload {
     [TestFixture]
     public sealed class ExpiredFileRemovalJobTests {
         [Test]
-        [Ignore]
+        [Ignore("Possible bug in NSubstitute")]
         public async Task ExpiredFileRemovalJob_RemovesObsoleteFiles() {
             // Given
             List<UploadedFile> files = new List<UploadedFile>();
