@@ -65,7 +65,6 @@ namespace IFS.Web {
             });
 
             services.AddTransient<ExpiredFileRemovalJob>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
@@ -160,7 +159,7 @@ namespace IFS.Web {
                     return false;
                 }
 
-                var ctx = this._serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+                var ctx = (context as AspNetCoreDashboardContext)?.HttpContext;
 
                 if (ctx == null) {
                     return false;
