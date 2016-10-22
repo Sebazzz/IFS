@@ -65,6 +65,7 @@ namespace IFS.Web {
             });
 
             services.AddTransient<ExpiredFileRemovalJob>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
