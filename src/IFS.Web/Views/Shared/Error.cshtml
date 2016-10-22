@@ -3,12 +3,29 @@
 }
 
 <h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<h2 class="text-danger">That didn't work out.</h2>
 
-<h3>Development Mode</h3>
 <p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+    Please try again later.
 </p>
+
 <p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
+    <a href="#" id="reload-button" class="btn btn-default">Retry</a>
+    <a href="#" id="back-button" class="btn btn-primary">Go back</a>
 </p>
+
+@section scripts {
+    <script>
+        $(document).on('click', '#reload-button', ev => {
+            ev.preventDefault();
+
+            document.location.reload(true);
+        });
+
+        $(document).on('click', '#back-button', ev => {
+            ev.preventDefault();
+
+            history.back();
+        });
+    </script>
+}
