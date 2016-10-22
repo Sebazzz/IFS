@@ -114,6 +114,15 @@
                 document.location.reload(true);
             });
 
+            $('.upload-control input[type=file]').change(function() {
+                $(this).parent().next('[data-valmsg-for]')
+                       .removeClass('text-danger')
+                       .text('')
+                       .addClass('text-success')
+                       .addClass('glyphicon')
+                       .addClass('glyphicon-ok');
+            });
+
             global.uploadCoordinator = {
                 validationError: function(text) {
                     alert(text);
