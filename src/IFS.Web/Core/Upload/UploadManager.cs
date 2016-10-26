@@ -39,11 +39,13 @@ namespace IFS.Web.Core.Upload {
         }
 
         public async Task StoreAsync(FileIdentifier id, IFormFile file, DateTime expiration, CancellationToken cancellationToken) {
-            this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1}", file.FileName, id);
+            this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1} [{2:s}]", file.FileName, id, DateTime.UtcNow);
 
             try {
                 await this.StoreMetadataAsync(id, file, expiration, cancellationToken).ConfigureAwait(false);
                 await this.StoreDataAsync(id, file, cancellationToken).ConfigureAwait(false);
+
+                this._logger.LogInformation(LogEvents.NewUpload, "Completed: New upload of file {0} to id {1} [{2:s}]", file.FileName, id, DateTime.UtcNow);
             }
             catch (OperationCanceledException ex) {
                 this._logger.LogWarning(LogEvents.UploadCancelled, ex, "Upload failed due to cancellation");
