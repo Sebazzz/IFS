@@ -1,11 +1,11 @@
-﻿@model UploadModel
+﻿@model FileIdentifier
 @{
     Layout = "_Frame";
 }
 
 <script>
     (function (doc) {
-        var targetUrl = '@Url.Action("Complete", new { id = Model.FileIdentifier })';
+        var targetUrl = '@Url.Action("Complete", new { id = Model })';
 
         doc.uploadCoordinator.complete(targetUrl);
     })(window.parent);

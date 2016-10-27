@@ -11,6 +11,7 @@ namespace IFS.Web {
     using Core;
     using Core.Authentication;
     using Core.Upload;
+    using Core.Upload.Http;
 
     using Hangfire;
     using Hangfire.Dashboard;
@@ -41,7 +42,8 @@ namespace IFS.Web {
         public void ConfigureServices(IServiceCollection services) {
             // Add framework services.
             services.AddRouting(routing => {
-                    routing.LowercaseUrls = true;
+                routing.LowercaseUrls = true;
+
             });
 
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
@@ -76,12 +78,15 @@ namespace IFS.Web {
             services.Configure<FileStoreOptions>(this.Configuration.GetSection("FileStore"));
 
             // ... Upload
+            services.AddSingleton<IUploadProgressManager, UploadProgressManager>();
             services.AddSingleton<IUploadManager, UploadManager>();
             services.AddSingleton<IFileWriter, FileWriter>();
             services.AddSingleton<IFileStore, FileStore>();
             services.AddSingleton<IUploadedFileRepository, UploadedFileRepository>();
 
             services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();
+
+            services.AddUploadHandler();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -131,6 +136,9 @@ namespace IFS.Web {
             // MVC and API
             app.UseMvc(
                 routes => {
+                    // Async uploads - need to map this here as MVC won't generate routes to other IRouter
+                    routes.MapUploadHandler("upload/handler/{fileidentifier}");
+
                     routes.MapAreaRoute(
                         name: "areaRoute",
                         areaName: "Administration",

@@ -39,6 +39,12 @@
                 return;
             }
 
+            if (incoming.total < 0) {
+                $textBlock.text('Uploading ...');
+                $performance.text('(unable to determine speed)');
+                return;
+            }
+
             var percent = incoming.percent,
                 currentkb = Math.round(incoming.current / 1024),
                 totalkb = Math.round(incoming.total / 1024);

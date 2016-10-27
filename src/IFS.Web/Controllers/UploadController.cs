@@ -24,11 +24,11 @@ namespace IFS.Web.Controllers {
 
     [Authorize(KnownPolicies.Upload, ActiveAuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     public sealed class UploadController : Controller {
-        private readonly IUploadManager _uploadManager;
+        private readonly IUploadProgressManager _uploadProgressManager;
         private readonly ILogger<UploadController> _logger;
 
-        public UploadController(IUploadManager uploadManager, ILogger<UploadController> logger) {
-            this._uploadManager = uploadManager;
+        public UploadController(IUploadProgressManager uploadProgressManager, ILogger<UploadController> logger) {
+            this._uploadProgressManager = uploadProgressManager;
             this._logger = logger;
         }
 
@@ -82,15 +82,18 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpPost]
-        [AllowLargeFile(Order = -1)]
-        public async Task<IActionResult> Frame([FromForm] UploadModel model) {
+        public IActionResult Frame(FileIdentifier id, UploadErrorsModel model) {
+            if (model?.Errors != null) {
+                foreach (string modelError in model.Errors) {
+                    this.ModelState.AddModelError(modelError, modelError);
+                }
+            }
+
             if (!this.ModelState.IsValid) {
                 return this.View("FrameError", model);
             }
 
-            await this._uploadManager.StoreAsync(model.FileIdentifier, model.File, model.Expiration, this.HttpContext.RequestAborted);
-
-            return this.View("FrameComplete", model);
+            return this.View("FrameComplete", id);
         }
 
         [HttpGet]
@@ -101,7 +104,7 @@ namespace IFS.Web.Controllers {
                 return this.BadRequest();
             }
 
-            UploadProgress current = this._uploadManager.GetProgress(trackerId);
+            UploadProgress current = this._uploadProgressManager.GetProgress(trackerId);
             if (current == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find upload by id {0}", trackerId);
 
@@ -125,7 +128,7 @@ namespace IFS.Web.Controllers {
         public IActionResult Tracker(FileIdentifier trackerId) {
             UploadFileInProgressModel model = new UploadFileInProgressModel {
                 FileIdentifier = trackerId,
-                FileName = this._uploadManager.GetProgress(trackerId)?.FileName
+                FileName = this._uploadProgressManager.GetProgress(trackerId)?.FileName
             };
 
             return this.PartialView(model);

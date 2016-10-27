@@ -17,10 +17,13 @@
         <strong>Maximum file size: </strong> @FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")
     </div>
 
-    <form asp-action="Frame"
+    <form asp-route="AsyncUploadHandler"
+          asp-route-fileidentifier="@Model.FileIdentifier"
+          asp-antiforgery="false"
           target="uploadFrame"
           enctype="multipart/form-data" method="post">
         <input asp-for="FileIdentifier" type="hidden" />
+        <input asp-for="SuggestedFileSize" type="hidden" />
         
         <p>
             <label asp-for="File" class="control-label">
@@ -121,6 +124,14 @@
                        .addClass('text-success')
                        .addClass('glyphicon')
                        .addClass('glyphicon-ok');
+
+                var fileInput = this;
+                var files = fileInput.files;
+                var firstFile = (files || [])[0];
+
+                if (firstFile && firstFile.size) {
+                    $('input[name="@Html.NameFor(x => x.SuggestedFileSize)"]').val(firstFile.size);
+                }
             });
 
             global.uploadCoordinator = {

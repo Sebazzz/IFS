@@ -29,6 +29,8 @@ namespace IFS.Web.Models {
 
         public DateTime Expiration { get; set; }
 
+        public long SuggestedFileSize { get; set; }
+
     }
 
     public class UploadFileInProgressModel {
