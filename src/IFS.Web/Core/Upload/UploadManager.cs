@@ -17,8 +17,6 @@ namespace IFS.Web.Core.Upload {
 
     using Humanizer;
 
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Http.Internal;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
     using Microsoft.Net.Http.Headers;
@@ -87,8 +85,6 @@ namespace IFS.Web.Core.Upload {
 
                     if (metadataFactory.IsComplete() && metadata == null) {
                         metadata = metadataFactory.Build();
-
-                        await this.StoreMetadataAsync(id, metadata, cancellationToken);
                     }
 
                     section = await reader.ReadNextSectionAsync(cancellationToken);
@@ -97,6 +93,8 @@ namespace IFS.Web.Core.Upload {
                 if (metadata == null) {
                     throw new InvalidOperationException("Metadata is incomplete - file is not uploaded or expiration missing");
                 }
+
+                await this.StoreMetadataAsync(id, metadata, cancellationToken);
 
                 this._logger.LogInformation(LogEvents.NewUpload, "Completed: New upload of file {0} to id {1} [{2:s}]", metadata.OriginalFileName, id, DateTime.UtcNow);
             }
@@ -140,7 +138,7 @@ namespace IFS.Web.Core.Upload {
                         string dateTimeRaw = await sr.ReadToEndAsync();
 
                         // MVC we send date as roundtrip
-                        metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture));
+                        metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind | DateTimeStyles.AssumeUniversal));
                     }
                     return;
 
@@ -218,6 +216,11 @@ namespace IFS.Web.Core.Upload {
         }
 
         private async Task StoreMetadataAsync(FileIdentifier id, StoredMetadata metadata, CancellationToken cancellationToken) {
+            // Correct the timestamp with the upload time
+            TimeSpan diff = DateTime.UtcNow - this.GetProgressObject(id).StartTime;
+            metadata.Expiration += diff;
+
+            // Write away
             using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(id))) {
                 using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
                     await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
