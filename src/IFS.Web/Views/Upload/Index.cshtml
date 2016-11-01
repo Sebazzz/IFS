@@ -1,5 +1,9 @@
-﻿@using Humanizer
-@model NewUploadModel
+﻿@using System
+@using System.Threading.Tasks
+@using Humanizer
+@using IFS.Web.Core.Upload
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model UploadModel
 @inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
 
 @{
@@ -26,9 +30,19 @@
         <input asp-for="SuggestedFileSize" type="hidden" />
         
         <p>
-            <label asp-for="File" class="control-label">
-                Your file
-            </label>
+            <label asp-for="ExpirationMode" class="control-label"></label>
+            
+            @foreach (ExpirationMode value in Enum.GetValues(typeof(ExpirationMode))) {
+                <div class="radio">
+                    <label>
+                        <input type="radio" asp-for="ExpirationMode" value="@value"> @value.Humanize()
+                    </label>
+                </div>
+            }
+        </p>
+        
+        <p>
+            <label asp-for="File" class="control-label"></label>
 
             <div class="upload-control form-control btn btn-primary">
                 <span>Select file</span>
@@ -40,9 +54,7 @@
         </p>
 
         <p>
-            <label asp-for="Expiration" class="control-label">
-                Expiration
-            </label>
+            <label asp-for="Expiration" class="control-label"></label>
 
             <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
         </p>

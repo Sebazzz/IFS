@@ -7,29 +7,31 @@
 
 namespace IFS.Web.Models {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using Core;
+    using Core.Upload;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
-
-    public class NewUploadModel : UploadModel {
-        public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
-    }
 
     public class UploadModel {
         public FileIdentifier FileIdentifier { get; set; }
 
         [Required(ErrorMessage = "Please select a file to upload")]
         [FileSizeValidation]
+        [Display(Name = "Your file")]
         public IFormFile File { get; set; }
-
+        
+        [Display]
         public DateTime Expiration { get; set; }
 
+        [Display(Name = "When will the file expire?")]
+        public ExpirationMode ExpirationMode { get; set; }
+
         public long SuggestedFileSize { get; set; }
+        public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
 
     }
 

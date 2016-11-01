@@ -132,35 +132,41 @@ namespace IFS.Web.Core.Upload {
         private async Task ProcessFormSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, ContentDispositionHeaderValue contentDisposition) {
             string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
 
-            switch (cleanName) {
-                case nameof(UploadModel.Expiration):
-                    using (StreamReader sr = new StreamReader(section.Body)) {
-                        string dateTimeRaw = await sr.ReadToEndAsync();
+            Func<Task<string>> readString = async () => {
+                using (StreamReader sr = new StreamReader(section.Body)) {
+                    return await sr.ReadToEndAsync();
+                }
+            };
 
-                        // MVC we send date as roundtrip
-                        metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind | DateTimeStyles.AssumeUniversal));
-                    }
+            switch (cleanName) {
+                case nameof(UploadModel.ExpirationMode):
+                    string expirationModeRaw = await readString();
+
+                    metadataFactory.SetExpirationMode((ExpirationMode) Enum.Parse(typeof(ExpirationMode), expirationModeRaw));
+                    break;
+
+                case nameof(UploadModel.Expiration):
+                    string dateTimeRaw = await readString();
+
+                    // MVC we send date as roundtrip
+                    metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind | DateTimeStyles.AssumeUniversal));
                     return;
 
                 case nameof(UploadModel.FileIdentifier):
-                    using (StreamReader sr = new StreamReader(section.Body)) {
-                        string rawId = await sr.ReadToEndAsync();
-                        FileIdentifier formId = FileIdentifier.FromString(rawId);
+                    string rawId = await readString();
+                    FileIdentifier formId = FileIdentifier.FromString(rawId);
 
-                        if (formId != id) {
-                            throw new InvalidOperationException($"ID mismatch: '{formId}' (received) != '{id}' (expected)");
-                        }
+                    if (formId != id) {
+                        throw new InvalidOperationException($"ID mismatch: '{formId}' (received) != '{id}' (expected)");
                     }
                     return;
 
                 // Browsers don't actually send the file size in the request, but we can derive it from the Content-Length.
                 // However, that is not very accurate and if we use some javascript to send a more accurate file size, we use that.
                 case nameof(UploadModel.SuggestedFileSize):
-                    using (StreamReader sr = new StreamReader(section.Body)) {
-                        long size;
-                        if (Int64.TryParse(await sr.ReadToEndAsync(), out size) && size > 0) {
-                            this.GetProgressObject(id).Total = size;
-                        }
+                    long size;
+                    if (Int64.TryParse(await readString(), out size) && size > 0) {
+                        this.GetProgressObject(id).Total = size;
                     }
                     return;
 
@@ -264,6 +270,10 @@ namespace IFS.Web.Core.Upload {
                 this._metadata.UploadedOn = DateTime.UtcNow;
 
                 return this._metadata;
+            }
+
+            public void SetExpirationMode(ExpirationMode mode) {
+                this._metadata.ExpirationMode = mode;
             }
         }
     }

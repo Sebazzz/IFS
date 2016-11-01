@@ -45,7 +45,7 @@ namespace IFS.Web.Controllers {
                     Text = $"{month} months"
                 };
 
-            NewUploadModel uploadModel = new NewUploadModel {
+            UploadModel uploadModel = new UploadModel {
                 FileIdentifier = FileIdentifier.CreateNew(),
                 Expiration = DateTime.UtcNow.AddDays(7),
                 AvailableExpiration = new[] {

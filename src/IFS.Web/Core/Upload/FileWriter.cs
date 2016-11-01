@@ -14,7 +14,7 @@
         public Stream OpenWriteStream(IFileInfo fileInfo) {
             string physicalPath = GetPhysicalPath(fileInfo);
 
-            return new FileStream(physicalPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
+            return new FileStream(physicalPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
         }
 
         private static string GetPhysicalPath(IFileInfo fileInfo) {

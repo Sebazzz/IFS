@@ -82,6 +82,7 @@ namespace IFS.Web {
             services.AddSingleton<IUploadManager, UploadManager>();
             services.AddSingleton<IFileWriter, FileWriter>();
             services.AddSingleton<IFileStore, FileStore>();
+            services.AddSingleton<IFileAccessLogger, FileAccessLogger>();
             services.AddSingleton<IUploadedFileRepository, UploadedFileRepository>();
 
             services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();

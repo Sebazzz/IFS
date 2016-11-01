@@ -11,6 +11,7 @@ namespace IFS.Web.Controllers {
     using Core;
     using Core.Upload;
 
+    using Microsoft.AspNetCore.Http.Features;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -18,10 +19,12 @@ namespace IFS.Web.Controllers {
 
     public sealed class DownloadController : Controller {
         private readonly IUploadedFileRepository _uploadedFileRepository;
+        private readonly IFileAccessLogger _fileAccessLogger;
         private readonly ILogger<DownloadController> _logger;
 
-        public DownloadController(IUploadedFileRepository uploadedFileRepository, ILogger<DownloadController> logger) {
+        public DownloadController(IUploadedFileRepository uploadedFileRepository, IFileAccessLogger fileAccessLogger, ILogger<DownloadController> logger) {
             this._logger = logger;
+            this._fileAccessLogger = fileAccessLogger;
             this._uploadedFileRepository = uploadedFileRepository;
         }
 
@@ -40,6 +43,8 @@ namespace IFS.Web.Controllers {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
                 return this.NotFound("We lost it!");
             }
+
+            await this._fileAccessLogger.LogFileAccessAsync(uploadedFile, this.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString() ?? "Unknown");
 
             return this.File(uploadedFile.GetStream(), "application/octet-stream", uploadedFile.Metadata.OriginalFileName);
         }

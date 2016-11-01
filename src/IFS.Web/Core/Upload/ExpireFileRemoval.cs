@@ -37,6 +37,13 @@ namespace IFS.Web.Core.Upload {
         }
 
         private void ProcessSingleFile(UploadedFile uploadedFile) {
+            bool needToCheckExpiration = uploadedFile.Metadata.ExpirationMode == ExpirationMode.AfterUpload ||
+                                         uploadedFile.Metadata.ExpirationMode == ExpirationMode.FirstDownload && uploadedFile.Metadata.Access.LogEntries.Count > 0;
+
+            if (!needToCheckExpiration) {
+                return;
+            }
+
             if (DateTime.UtcNow > uploadedFile.Metadata.Expiration) {
                 this._logger.LogInformation(LogEvents.UploadExpired, "Removing expired uploaded file {0}", uploadedFile.Id);
 
