@@ -27,7 +27,7 @@ namespace IFS.Web.Models {
         [Display]
         public DateTime Expiration { get; set; }
 
-        [Display(Name = "When will the file expire?")]
+        [Display(Name = "When will the file expiration start counting?")]
         public ExpirationMode ExpirationMode { get; set; }
 
         public long SuggestedFileSize { get; set; }
