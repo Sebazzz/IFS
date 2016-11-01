@@ -149,7 +149,7 @@ namespace IFS.Web.Core.Upload {
                     string dateTimeRaw = await readString();
 
                     // MVC we send date as roundtrip
-                    metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind | DateTimeStyles.AssumeUniversal));
+                    metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind));
                     return;
 
                 case nameof(UploadModel.FileIdentifier):
