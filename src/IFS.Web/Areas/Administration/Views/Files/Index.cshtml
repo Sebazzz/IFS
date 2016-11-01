@@ -16,23 +16,29 @@
     <tr>
         <th>ID</th>
         <th>File name</th>
-        <th>Uploaded on</th>
+        <th>Last downloaded on</th>
+        <th>Uploaded</th>
         <th>Expires</th>
         <th>&nbsp;</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var file in sortedFiles) {
+        var lastAccess = file.Metadata.Access.LogEntries.OrderByDescending(x => x.Timestamp).FirstOrDefault()?.Timestamp.Humanize() ?? "Never";
+
         <tr>
             <td><code>@file.Id</code></td>
             <td>
                 <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
             </td>
             <td>
+                <a asp-action="Log" asp-route-id="@file.Id">@lastAccess</a>
+            </td>
+            <td>
                 @file.Metadata.UploadedOn.Humanize()
             </td>
             <td>
-                @file.Metadata.Expiration.Humanize()
+                @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
             </td>
             <td>
                 <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">

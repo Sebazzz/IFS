@@ -39,6 +39,16 @@ namespace IFS.Web.Areas.Administration.Controllers {
             return this.View(model);
         }
 
+        public async Task<IActionResult> Log(FileIdentifier id) {
+            UploadedFile file = await this._uploadedFileRepository.GetFile(id);
+
+            if (file == null) {
+                return this.NotFound();
+            }
+
+            return this.View(file);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(FileIdentifier id) {

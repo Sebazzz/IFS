@@ -1,0 +1,37 @@
+﻿@using System.Linq
+@using Humanizer
+@model IFS.Web.Core.Upload.UploadedFile
+
+@{
+    ViewBag.Title = $"Access log of {Model.Metadata.OriginalFileName}";
+
+    var accessLog = Model.Metadata.Access;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (accessLog.LogEntries.Count > 0) {
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>IP address</th>
+            <th>Timestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var access in accessLog.LogEntries.OrderBy(x => x.Timestamp)) {
+            <tr>
+                <td>@(access.IpAddress ?? "Unknown")</td>
+                <Td>@access.Timestamp.ToString("s") (@access.Timestamp.Humanize())</Td>
+            </tr>
+        }
+        </tbody>
+    </table>
+} else {
+    <div class="alert alert-info">
+        <strong>Sorry...</strong> this file has never been downloaded yet!
+    </div>
+}
+<p>
+    <a asp-action="Index" class="btn btn-default">Back to overview</a>
+</p>
