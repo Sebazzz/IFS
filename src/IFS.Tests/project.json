@@ -2,26 +2,17 @@
     "version": "1.0.0-*",
 
     "dependencies": {
-        "Microsoft.NETCore.App": {
-            "version": "1.0.1",
-            "type": "platform"
-        },
-
         "NUnit": "3.5.0",
         "NSubstitute": "2.0.0-rc",
+        "Microsoft.NETCore.App": "1.1.0",
         "IFS.Web": "*",
-
         "dotnet-test-nunit": "3.4.0-beta-2"
     },
 
     "testRunner": "nunit",
 
-    "tools": {
-        "Microsoft.DotNet.Watcher.Tools": "1.0.0-preview2-final"
-    },
-
     "frameworks": {
-        "netcoreapp1.0": {
+        "netcoreapp1.1": {
             "imports": [
                 "dotnet5.6",
                 "portable-net45+win8"
