@@ -61,16 +61,24 @@ namespace IFS.Web.Core.Upload {
         private readonly IFileStore _fileStore;
         private readonly IFileWriter _fileWriter;
         private readonly IUploadProgressManager _uploadProgressManager;
+        private readonly IUploadFileLock _uploadFileLock;
         private readonly ILogger<UploadManager> _logger;
 
-        public UploadManager(IFileStore fileStore, IFileWriter fileWriter, IUploadProgressManager uploadProgressManager, ILogger<UploadManager> logger) {
+        public UploadManager(IFileStore fileStore, IFileWriter fileWriter, IUploadProgressManager uploadProgressManager, IUploadFileLock uploadFileLock, ILogger<UploadManager> logger) {
             this._fileStore = fileStore;
             this._fileWriter = fileWriter;
             this._logger = logger;
+            this._uploadFileLock = uploadFileLock;
             this._uploadProgressManager = uploadProgressManager;
         }
 
         public async Task StoreAsync(FileIdentifier id,  MultipartReader reader, CancellationToken cancellationToken) {
+            using (this._uploadFileLock.Acquire(id, cancellationToken)) {
+                await this.StoreAsyncCore(id, reader, cancellationToken);
+            }
+        }
+
+        private async Task StoreAsyncCore(FileIdentifier id, MultipartReader reader, CancellationToken cancellationToken) {
             // We need to manually read each part of the request. The browser may do as it likes and send whichever part first, 
             // which means we have to build up the metadata incrementally and can only write it later
 
@@ -109,7 +117,8 @@ namespace IFS.Web.Core.Upload {
                 this.TryCleanup(id);
 
                 throw new UploadFailedException("File size exceeded of " + reader.BodyLengthLimit.GetValueOrDefault().Bytes().Megabytes);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 this._logger.LogError(LogEvents.UploadFailed, ex, "Upload failed due to exception");
 
                 this.TryCleanup(id);

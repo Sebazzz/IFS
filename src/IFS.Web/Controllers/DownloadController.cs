@@ -10,6 +10,7 @@ namespace IFS.Web.Controllers {
 
     using Core;
     using Core.Upload;
+    using Core.Upload.Http;
 
     using Microsoft.AspNetCore.Http.Features;
     using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,7 @@ namespace IFS.Web.Controllers {
         }
 
         [Route("download/file/{id}", Name = "DownloadFile")]
+        [FileLock]
         public async Task<IActionResult> DownloadFile(FileIdentifier id) {
             if (!this.ModelState.IsValid) {
                 return this.BadRequest();

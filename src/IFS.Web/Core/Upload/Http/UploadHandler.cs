@@ -67,7 +67,7 @@
                     }
                 };
 
-                this._logger.LogError(LogEvents.UploadFailed, "Detected failed upload - passing error to child handler");
+                this._logger.LogError(LogEvents.UploadFailed, "Detected failed upload - passing error to child handler: {0}", ex);
 
                 PrepForReExecute(context, errors);
             }
