@@ -4,7 +4,11 @@
     ViewBag.Title = "Login";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>Internet File System <small>Upload console login</small></h2>
+
+<p>
+    Please enter your credentials to continue.
+</p>
 
 @if (!ViewData.ModelState.IsValid) {
     <div asp-validation-summary="All" class="alert alert-danger"></div>
@@ -18,7 +22,7 @@
     </div>
     
     <div class="form-group">
-        <button class="btn btn-primary">Log in</button>
+        <button class="btn btn-primary">Continue</button>
     </div>
 </form>
 
