@@ -22,7 +22,7 @@
         @foreach (var access in accessLog.LogEntries.OrderBy(x => x.Timestamp)) {
             <tr>
                 <td>@(access.IpAddress ?? "Unknown")</td>
-                <Td>@access.Timestamp.ToString("s") (@access.Timestamp.Humanize())</Td>
+                <td>@access.Timestamp.ToString("s") (@access.Timestamp.Humanize())</td>
             </tr>
         }
         </tbody>
