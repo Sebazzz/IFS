@@ -23,7 +23,8 @@
         "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
         "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0",
         "Microsoft.AspNetCore.Routing": "1.1.0",
-        "Microsoft.NETCore.App": "1.1.0"
+        "Microsoft.NETCore.App": "1.1.0",
+        "Microsoft.AspNetCore.Mvc.Razor.ViewCompilation.Design":  "1.1.0-preview4-final"
     },
 
     "runtimes": {
@@ -31,10 +32,12 @@
         "win10-x64":  {} 
     },
 
-  "tools": {
-    "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview2-final",
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview2-final"
-  },
+    "tools": {
+        "BundlerMinifier.Core": "2.0.238",
+        "Microsoft.AspNetCore.Razor.Tools": "1.1.0-preview2-final",
+        "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview2-final",
+        "Microsoft.AspNetCore.Mvc.Razor.ViewCompilation.Tools": "1.1.0-preview4-final"
+    },
 
   "frameworks": {
     "netcoreapp1.1": {
@@ -69,6 +72,9 @@
 
   "scripts": {
     "prepublish": [ "bower install", "dotnet bundle" ],
-    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+    "postpublish": [
+        "dotnet razor-precompile --configuration %publish:Configuration% --framework %publish:TargetFramework% --output-path %publish:OutputPath% %publish:ProjectPath%",
+        "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%"
+    ]
   }
 }
