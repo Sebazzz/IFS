@@ -1,37 +1,31 @@
 ﻿@model LoginModel
 
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Administrative console login";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>Internet File System <small>@ViewBag.Title</small></h2>
+
+<p>
+    Please enter your credentials to continue.
+</p>
 
 @if (!ViewData.ModelState.IsValid) {
     <div asp-validation-summary="All" class="alert alert-danger"></div>
 }
 
-<form class="form-horizontal" asp-action="Login" asp-antiforgery="true">
+<form asp-action="Login" asp-antiforgery="true">
     <input type="hidden" asp-for="ReturnUrl"/>
     
     <div class="form-group">
-        <label asp-for="UserName" class="control-label col-sm-2"></label>
-
-        <div class="col-sm-10">
-            <input asp-for="UserName" class="form-control" />
-        </div>
+        <input asp-for="UserName" placeholder-for="UserName" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Password" class="control-label col-sm-2"></label>
-        
-        <div class="col-sm-10">
-            <input asp-for="Password" type="password" class="form-control" />
-        </div>
+        <input asp-for="Password" placeholder-for="Password" class="form-control" />
     </div>
     
     <div class="form-group">
-        <p class="col-sm-10 col-sm-offset-2">
-            <button class="btn btn-primary">Log in</button>
-        </p>
+        <button class="btn btn-primary">Continue</button>
     </div>
 </form>
