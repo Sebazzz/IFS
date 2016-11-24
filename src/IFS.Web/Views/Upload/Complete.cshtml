@@ -1,4 +1,5 @@
-﻿@model IFS.Web.Core.Upload.UploadedFile
+﻿@using System.Text.Encodings.Web
+@model IFS.Web.Core.Upload.UploadedFile
 @{
     ViewBag.Title = $"Upload complete: {Model.Metadata.OriginalFileName}";
 }
@@ -24,3 +25,14 @@
 <p>
     <a asp-action="Index" class="btn btn-primary">Upload another file</a>
 </p>
+
+@section scripts {
+    <script>
+        (function() {
+            // Replace URL for easy copying
+            if ('replaceState' in history) {
+                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)');
+            }
+        })();
+    </script>
+}
