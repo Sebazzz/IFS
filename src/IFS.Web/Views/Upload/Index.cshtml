@@ -1,8 +1,6 @@
-﻿@using System
-@using System.Threading.Tasks
+﻿@using System.Threading.Tasks
 @using Humanizer
 @using IFS.Web.Core.Upload
-@using Microsoft.AspNetCore.Mvc.Rendering
 @model UploadModel
 @inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
 
@@ -11,7 +9,7 @@
 }
 
 <div id="upload-root">
-    <h2>@ViewBag.Title</h2>
+    <ifs-page-title>@ViewBag.Title</ifs-page-title>
 
     <p>
         Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.

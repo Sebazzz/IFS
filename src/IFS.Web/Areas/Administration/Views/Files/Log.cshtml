@@ -8,7 +8,8 @@
     var accessLog = Model.Metadata.Access;
 }
 
-<h2>@ViewBag.Title</h2>
+<ifs-page-title>Access log</ifs-page-title>
+<h2>@Model.Metadata.OriginalFileName</h2>
 
 @if (accessLog.LogEntries.Count > 0) {
     <table class="table table-striped">

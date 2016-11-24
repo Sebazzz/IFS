@@ -5,7 +5,7 @@
     ViewBag.Title = "Uploaded file overview";
 }
 
-<h2>Internet File System <small>@ViewBag.Title</small></h2>
+<ifs-page-title>@ViewBag.Title</ifs-page-title>
 
 @{
     var sortedFiles = Model.Files.OrderBy(x => x.Metadata.OriginalFileName);
