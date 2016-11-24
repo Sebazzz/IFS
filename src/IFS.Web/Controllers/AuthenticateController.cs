@@ -54,7 +54,7 @@ namespace IFS.Web.Controllers {
             // Due to MVC model binding, model will never be null here
             if (!this.ModelState.IsValid) {
                 this.SetHelpText(model);
-                return this.View();
+                return this.View(model);
             }
 
             // Validate password
@@ -63,7 +63,7 @@ namespace IFS.Web.Controllers {
             if (!isValid) {
                 this.SetHelpText(model);
                 this.ModelState.AddModelError(nameof(model.Passphrase), "Invalid passphrase. Please try again.");
-                return this.View();
+                return this.View(model);
             }
 
             // Create log-in
