@@ -39,3 +39,7 @@ textarea {
 
     opacity: 0;
 }
+
+#upload-link {
+    max-width: none;
+}

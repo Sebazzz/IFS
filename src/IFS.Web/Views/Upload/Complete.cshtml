@@ -15,7 +15,7 @@
 }
 
 <p>
-    Download link to share: <input type="text" value="@downloadLink" class="form-control" readonly="readonly"/>
+    Download link to share: <input type="text" value="@downloadLink" class="form-control input-lg" id="upload-link" readonly="readonly"/>
 </p>
 
 <p>
@@ -33,6 +33,13 @@
             if ('replaceState' in history) {
                 history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)');
             }
+
+            var doSelect = function() {
+                this.select();
+            };
+
+            document.getElementById('upload-link')
+                    .addEventListener('mouseup', doSelect);
         })();
     </script>
 }
