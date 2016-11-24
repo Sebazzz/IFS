@@ -9,7 +9,6 @@ namespace IFS.Web.Controllers {
     using System;
     using System.Collections.Generic;
     using System.Security.Claims;
-    using System.Security.Principal;
     using System.Threading.Tasks;
 
     using Core;
@@ -17,14 +16,17 @@ namespace IFS.Web.Controllers {
 
     using Microsoft.AspNetCore.Http.Authentication;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
 
     using Models;
 
     public sealed class AuthenticateController : Controller {
         private readonly IAuthenticationProvider _authenticationProvider;
+        private readonly IOptions<AuthenticationOptions> _authenticateOptions;
 
-        public AuthenticateController(IAuthenticationProvider authenticationProvider) {
+        public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<AuthenticationOptions> authenticateOptions) {
             this._authenticationProvider = authenticationProvider;
+            this._authenticateOptions = authenticateOptions;
         }
 
         public IActionResult Index() {
@@ -36,23 +38,35 @@ namespace IFS.Web.Controllers {
                 return this.RedirectToAction("Index", "Upload");
             }
 
-            return this.View();
+            LoginModel loginModel = new LoginModel();
+            this.SetHelpText(loginModel);
+
+            return this.View(loginModel);
+        }
+
+        private void SetHelpText(LoginModel loginModel) {
+            loginModel.HelpText = this._authenticateOptions.Value.LoginHelpText;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model) {
-            if (model == null) {
+            // Due to MVC model binding, model will never be null here
+            if (!this.ModelState.IsValid) {
+                this.SetHelpText(model);
                 return this.View();
             }
 
-            bool isValid = this._authenticationProvider.IsValidPassphrase(model.Passphrase);
+            // Validate password
+            bool isValid = this._authenticationProvider.IsValidPassphrase(model?.Passphrase);
 
             if (!isValid) {
+                this.SetHelpText(model);
                 this.ModelState.AddModelError(nameof(model.Passphrase), "Invalid passphrase. Please try again.");
                 return this.View();
             }
 
+            // Create log-in
             ClaimsIdentity userIdentity = new ClaimsIdentity(KnownAuthenticationScheme.PassphraseScheme);
             userIdentity.AddClaims(new[] {
                 new Claim(ClaimTypes.Name, KnownPolicies.Upload, ClaimValueTypes.String, "https://ifs")
@@ -69,7 +83,6 @@ namespace IFS.Web.Controllers {
             await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
             string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
-
             return this.Redirect(returnUrl);
         }
     }

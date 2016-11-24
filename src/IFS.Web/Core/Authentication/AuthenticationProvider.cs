@@ -11,6 +11,8 @@ namespace IFS.Web.Core.Authentication {
     public sealed class AuthenticationOptions {
         public string Passphrase { get; set; }
         public AdministrationAuthenticationOptions Administration { get; set; }
+
+        public string LoginHelpText { get; set; }
     }
 
     public sealed class AdministrationAuthenticationOptions {

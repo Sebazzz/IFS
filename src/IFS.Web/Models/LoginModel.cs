@@ -9,5 +9,7 @@ namespace IFS.Web.Models {
     public class LoginModel {
         public string ReturnUrl { get; set; }
         public string Passphrase { get; set; }
+
+        public string HelpText { get; set; }
     }
 }

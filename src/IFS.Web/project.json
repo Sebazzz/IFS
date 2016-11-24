@@ -9,6 +9,7 @@
         "Hangfire.MemoryStorage.Core": "1.4.0",
         "Humanizer.Core": "2.1.0",
         "BundlerMinifier.Core": "2.2.306",
+        "Markdig": "0.10.1" ,
         "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
         "Microsoft.AspNetCore.Diagnostics": "1.1.0",
         "Microsoft.AspNetCore.Mvc": "1.1.0",
