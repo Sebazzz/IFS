@@ -1,0 +1,20 @@
+﻿@model ErrorInformation
+
+@{
+    ViewBag.Title = "Not found";
+}
+
+<h1>Internet File System <small>Page not found</small></h1>
+
+<p>
+    <strong>Oops!</strong> Something might have broken, because the current page cannot be found.
+</p>
+
+<p>
+    URL: <code>@Model.GetUrl(this.ViewContext.HttpContext.Request)</code>
+</p>
+
+<p>
+    <a href="#" onclick="history.back()" class="btn btn-primary">Go back</a>
+    <a href="/" class="btn btn-default">Go somewhere else</a>
+</p>
