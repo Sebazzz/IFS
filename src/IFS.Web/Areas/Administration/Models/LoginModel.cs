@@ -8,7 +8,7 @@
 namespace IFS.Web.Areas.Administration.Models {
     using System.ComponentModel.DataAnnotations;
 
-    public class LoginModel {
+    public sealed class LoginModel {
         public string ReturnUrl { get; set; }
 
         [Required]
@@ -17,6 +17,7 @@ namespace IFS.Web.Areas.Administration.Models {
 
         [Required]
         [Display]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }
