@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IFS.Tests", "src\IFS.Tests\IFS.Tests.xproj", "{68AC4ED0-8D68-4394-B04B-AC4A873CC809}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "global", "global", "{4D2BCBD9-A048-4F82-A253-2EA28F1F78BC}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IFS.Web", "src\IFS.Web\IFS.Web.xproj", "{E0860D0C-660D-46CF-85A8-6E4131A84E7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFS.Tests", "src\IFS.Tests\IFS.Tests.csproj", "{68AC4ED0-8D68-4394-B04B-AC4A873CC809}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFS.Web", "src\IFS.Web\IFS.Web.csproj", "{E0860D0C-660D-46CF-85A8-6E4131A84E7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
