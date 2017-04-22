@@ -14,7 +14,6 @@ namespace IFS.Tests.Core.Upload {
     using Hangfire;
 
     using NSubstitute;
-    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
     using NUnit.Framework.Constraints;
