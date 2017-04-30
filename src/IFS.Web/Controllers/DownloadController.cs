@@ -44,7 +44,9 @@ namespace IFS.Web.Controllers {
             UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
-                return this.NotFound("We lost it!");
+
+                this.Response.StatusCode = 404;
+                return this.View("NotFound");
             }
 
             if (DirectDownloadClientDetector.IsDirectDownloadClient(this.Request.Headers["User-Agent"].ToString())) {
