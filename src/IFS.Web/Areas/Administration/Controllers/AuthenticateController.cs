@@ -30,9 +30,9 @@ namespace IFS.Web.Areas.Administration.Controllers {
             return this.RedirectToAction("Login");
         }
 
-        public IActionResult Login(string returnUrl) {
+        public async Task<IActionResult> Login(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
-                this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
+                await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
 
                 return this.RedirectToAction("Index");
             }
@@ -42,8 +42,8 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Logoff() {
-            this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.AdministrationScheme);
+        public async Task<IActionResult> Logoff() {
+            await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.AdministrationScheme);
 
             return this.RedirectToAction("Index", "Home", new {area = ""});
         }

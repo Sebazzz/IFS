@@ -82,7 +82,7 @@ namespace IFS.Web.Controllers {
 
             await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
-            string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
+            string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
             return this.Redirect(returnUrl);
         }
     }

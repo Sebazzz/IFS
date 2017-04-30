@@ -87,7 +87,11 @@ namespace IFS.Web.Controllers {
             UploadedFile uploadedFile = await uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file '{0}'", id);
-                return this.NotFound("We lost it!");
+                return this.NotFound("A system error occurred - unable to find just uploaded file");
+            }
+
+            if (this.User.HasClaim(KnownClaims.RestrictionId, id.ToString())) {
+                await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
             }
 
             return this.View(uploadedFile);
