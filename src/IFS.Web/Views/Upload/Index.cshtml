@@ -99,10 +99,12 @@
     <environment names="Development">
         <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/js/site.js"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
         <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/js/site.min.js"></script>
     </environment>
 
     <script>
@@ -118,7 +120,7 @@
 
                 $uploadRoot.load(trackerUrl);
 
-                // If the iframe loads, and we weren't called back within a certain time, 
+                // If the iframe loads, and we weren't called back within a certain time,
                 // we can assume there is some kind of server error.
                 $('#uploadFrame').on('load', function () {
                     console.info('Upload frame has loaded...');
@@ -169,7 +171,10 @@
                 }
             };
 
-           
+            global.app.contactInformationPersistence.initialize(
+               '@Html.IdFor(x => x.Sender.Name)',
+               '@Html.IdFor(x => x.Sender.EmailAddress)'
+            );
         })(window);
     </script>
 }
