@@ -48,3 +48,24 @@ textarea {
     float: right;
     display: inline-block;
 }
+
+.glyphicon-file-reservation {
+    position: relative;
+    display: inline-block;
+}
+
+.glyphicon-file-reservation .glyphicon-time {
+    font-size: 60%;
+
+    display: inline-block;
+    vertical-align: bottom;
+    position: absolute;
+    left: 0;
+    top: 7px;
+    color: white;
+}
+
+.glyphicon.tip, .glyphicon-file-reservation {
+    cursor: default;
+    user-select: none;
+}

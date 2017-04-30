@@ -1,4 +1,5 @@
 ﻿@using Humanizer
+@using IFS.Web.Core.Upload
 @model FilesOverviewModel
 
 @{
@@ -15,10 +16,12 @@
 <table class="table table-striped">
     <thead>
     <tr>
+        <th>Type</th>
         <th>ID</th>
         <th>File name</th>
         <th>Last downloaded on</th>
         <th>Uploaded / Created at</th>
+        <th>By</th>
         <th>Expires</th>
         <th>&nbsp;</th>
     </tr>
@@ -28,30 +31,59 @@
         var lastAccess = file.Metadata.Access.LogEntries.OrderByDescending(x => x.Timestamp).FirstOrDefault()?.Timestamp.Humanize() ?? "Never";
 
         if (!file.IsUnusedReservation) {
-             <tr>
-                 <td><code>@file.Id</code></td>
-                 <td>
-                     <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
-                 </td>
-                 <td>
-                     <a asp-action="Log" asp-route-id="@file.Id">@lastAccess</a>
-                 </td>
-                 <td>
-                     @file.Metadata.UploadedOn.Humanize()
-                 </td>
-                 <td>
-                     @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
-                 </td>
-                 <td>
-                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
-                         <button class="btn btn-sm btn-danger">
-                             <span class="glyphicon glyphicon-trash"></span>
-                         </button>
-                     </form>
-                 </td>
-             </tr>
+            <tr>
+                <td>
+                    @if (!file.Metadata.IsReservation) {
+                        <span class="glyphicon glyphicon-file tip" title="This is an uploaded file via password authentication"></span>
+                    } else {
+                        <span class="glyphicon-file-reservation tip" title="This is an uploaded file via an invitation">
+                            <span class="glyphicon glyphicon-file"></span>
+                            <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                    }
+                </td>
+                <td><code>@file.Id</code></td>
+                <td>
+                    <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
+                </td>
+                <td>
+                    <a asp-action="Log" asp-route-id="@file.Id">@lastAccess</a>
+                </td>
+                <td>
+                    @file.Metadata.UploadedOn.Humanize()
+                </td>
+                <td>
+                    @{
+                        ContactInformation sender = file.Metadata.Sender;
+
+                        if (sender != null) {
+                            string name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
+                            bool nameOnly = !String.IsNullOrEmpty(sender.EmailAddress);
+
+                            if (nameOnly) {
+                                @name
+                            } else {
+                                <a href="mailto:@sender.EmailAddress">@name</a>
+                            }
+                        } else {
+                            <i>Not available</i>
+                        }
+                    }
+                </td>
+                <td>
+                    @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
+                        <button class="btn btn-sm btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
          } else {
             <tr>
+                <td><span class="glyphicon glyphicon-time tip" title="This is an unused upload invitation link"></span></td>
                 <td><code>@file.Id</code></td>
                 <td>
                     (no file uploaded yet)
@@ -61,6 +93,24 @@
                 </td>
                 <td>
                     @file.Metadata.UploadedOn.Humanize()
+                </td>
+                <td>
+                    @{
+                        ContactInformation sender = file.Metadata.Sender;
+
+                        if (sender != null) {
+                            string name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
+                            bool nameOnly = !String.IsNullOrEmpty(sender.EmailAddress);
+
+                            if (nameOnly) {
+                                @name
+                            } else {
+                                <a href="mailto:@sender.EmailAddress">@name</a>
+                            }
+                        } else {
+                            <i>Not available</i>
+                        }
+                    }
                 </td>
                 <td>
                     @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
@@ -94,3 +144,7 @@
 
     @Html.Partial("_LogOffButton")
 </div>
+
+@section scripts {
+    <script>$('.tip').tooltip();</script>
+}
