@@ -43,3 +43,8 @@ textarea {
 #upload-link {
     max-width: none;
 }
+
+.logoff-form {
+    float: right;
+    display: inline-block;
+}
