@@ -1,6 +1,5 @@
 ﻿@using System.Threading.Tasks
 @using Humanizer
-@using IFS.Web.Core.Upload
 @model UploadModel
 @inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
 
@@ -19,6 +18,20 @@
         <p>
             Please upload the file you want to share here. After the upload your will receive a hyperlink your can share.
         </p>
+
+        if (Model.Sender != null) {
+             string name = String.IsNullOrEmpty(Model.Sender.Name) ? Model.Sender.EmailAddress : Model.Sender.Name;
+             bool nameOnly = !String.IsNullOrEmpty(Model.Sender.EmailAddress);
+
+             <p>
+                 This file upload has been request by
+                 @if (nameOnly) {
+                     @name
+                 } else {
+                     <a href="mailto:@Model.Metadata.Sender.EmailAddress">@name</a>
+                 } and after the upload the file will be available to him/her.
+             </p>
+         }
     }
 
     <div class="alert alert-info">
@@ -54,6 +67,20 @@
             </p>
         } else {
             <input asp-for="Expiration" type="hidden" value="@Model.Expiration.ToString("O")" />
+        }
+        
+        @if (Model.IsReservation == false) {
+            <p>
+                <label asp-for="Sender.Name" class="control-label">Sender: Your name</label>
+
+                <input asp-for="Sender.Name" class="form-control" />
+            </p>
+
+            <p>
+                <label asp-for="Sender.EmailAddress" class="control-label">Sender: Your e-mail address</label>
+
+                <input asp-for="Sender.EmailAddress" class="form-control" />
+            </p>
         }
 
         <p>

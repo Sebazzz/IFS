@@ -1,6 +1,7 @@
 ﻿namespace IFS.Web.Core.Upload {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     using Newtonsoft.Json;
 
@@ -16,6 +17,8 @@
 
         public string OriginalFileName { get; set; }
 
+        public ContactInformation Sender { get; set; }
+
         public string Serialize() {
             return JsonConvert.SerializeObject(this, Formatting.Indented, SerializerSettings);
         }
@@ -26,6 +29,16 @@
 
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings();
         private AccessLog _access;
+    }
+
+    public class ContactInformation {
+        [Display(Name = "Name")]
+        [StringLength(256)]
+        public string Name { get; set; }
+        [Display(Name = "E-mail address")]
+        [DataType(DataType.EmailAddress)]
+        [StringLength(256)]
+        public string EmailAddress { get; set; }
     }
 
     public class AccessLog {

@@ -157,7 +157,6 @@ namespace IFS.Web.Core.Upload {
                     metadataFactory.SetIsReservation(Boolean.Parse(isReservationRaw));
                     break;
 
-
                 case nameof(UploadModel.Expiration):
                     string dateTimeRaw = await ReadString();
 
@@ -172,6 +171,16 @@ namespace IFS.Web.Core.Upload {
                     if (formId != id) {
                         throw new InvalidOperationException($"ID mismatch: '{formId}' (received) != '{id}' (expected)");
                     }
+                    return;
+
+                case nameof(UploadModel.Sender) + "." + nameof(ContactInformation.Name):
+                    string name = await ReadString();
+                    metadataFactory.SetSenderName(name);
+                    return;
+
+                case nameof(UploadModel.Sender) + "." + nameof(ContactInformation.EmailAddress):
+                    string emailAddress = await ReadString();
+                    metadataFactory.SetSenderEmail(emailAddress);
                     return;
 
                 // Browsers don't actually send the file size in the request, but we can derive it from the Content-Length.
@@ -248,6 +257,7 @@ namespace IFS.Web.Core.Upload {
 
                 // Sync critical metadata
                 metadata.Expiration = originalStoredMetadata.Expiration;
+                metadata.Sender = originalStoredMetadata.Sender;
 
                 // Delete metadata so it can be recreated again
                 this._fileWriter.Delete(metadataFile);
@@ -287,6 +297,28 @@ namespace IFS.Web.Core.Upload {
 
             public void SetOriginalFileName(string fileName) {
                 this._metadata.OriginalFileName = Path.GetFileName(fileName);
+            }
+
+            public void SetSenderName(string value) {
+                if (String.IsNullOrEmpty(value)) {
+                    return;
+                }
+
+                ContactInformation contactInformation = this.GetContactInformationObject();
+                contactInformation.Name = value;
+            }
+
+            public void SetSenderEmail(string value) {
+                if (String.IsNullOrEmpty(value)) {
+                    return;
+                }
+
+                ContactInformation contactInformation = this.GetContactInformationObject();
+                contactInformation.Name = value;
+            }
+
+            private ContactInformation GetContactInformationObject() {
+                return this._metadata.Sender = this._metadata.Sender ?? new ContactInformation();
             }
 
             public bool IsComplete() {

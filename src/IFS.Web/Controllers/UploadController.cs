@@ -73,6 +73,7 @@ namespace IFS.Web.Controllers {
             uploadModel.FileIdentifier = file.Id;
             uploadModel.Expiration = file.Metadata.Expiration;
             uploadModel.IsReservation = true;
+            uploadModel.Sender = file.Metadata.Sender;
 
             return this.View("Index", uploadModel);
         }

@@ -16,6 +16,21 @@
     You are now downloading a file uploaded for you: <code>@Model.Metadata.OriginalFileName</code>. The file size is about @size.LargestWholeNumberValue.ToString("F0") @size.LargestWholeNumberSymbol.
 </p>
 
+@if (Model.Metadata.Sender != null) {
+    string name = String.IsNullOrEmpty(Model.Metadata.Sender.Name) ? Model.Metadata.Sender.EmailAddress : Model.Metadata.Sender.Name;
+    bool nameOnly = !String.IsNullOrEmpty(Model.Metadata.Sender.EmailAddress);
+
+    <p>
+        The file you are downloaded has been uploaded by
+
+        @if (nameOnly) {
+            @name
+        } else {
+            <a href="mailto:@Model.Metadata.Sender.EmailAddress">@name</a>
+        }.
+    </p>
+}
+
 <p class="alert alert-info" id="downloadLinkContainer">
     <strong>Notice</strong> If the download does not start, please <a href="@downloadLink" id="downloadLink" download>click here</a> to download the file manually.
 </p>

@@ -11,6 +11,7 @@ namespace IFS.Web.Models {
     using System.ComponentModel.DataAnnotations;
 
     using Core;
+    using Core.Upload;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,6 +25,8 @@ namespace IFS.Web.Models {
         [Display]
         public DateTime Expiration { get; set; }
         public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
+
+        public ContactInformation Sender { get; set; }
     }
 
     public class UploadModel : UploadModelBase {
@@ -33,9 +36,7 @@ namespace IFS.Web.Models {
         [Display(Name = "Your file")]
         public IFormFile File { get; set; }
 
-
         public long SuggestedFileSize { get; set; }
-        public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
 
         public bool IsReservation { get; set; }
 

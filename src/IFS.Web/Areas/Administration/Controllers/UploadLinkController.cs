@@ -58,7 +58,8 @@ namespace IFS.Web.Areas.Administration.Controllers {
             StoredMetadata metadata = new StoredMetadata {
                 Expiration = model.Expiration,
                 UploadedOn = DateTime.UtcNow,
-                IsReservation = true
+                IsReservation = true,
+                Sender = model.Sender
             };
 
             // Write away
