@@ -33,21 +33,7 @@
         <input asp-for="FileIdentifier" type="hidden" />
         <input asp-for="SuggestedFileSize" type="hidden" />
         <input asp-for="IsReservation" type="hidden" />
-        
-        @if (Model.IsReservation == false) {
-            <p>
-                <label asp-for="ExpirationMode" class="control-label"></label>
-            
-                @foreach (ExpirationMode value in Enum.GetValues(typeof(ExpirationMode))) {
-                    <div class="radio">
-                        <label>
-                            <input type="radio" asp-for="ExpirationMode" value="@value"> @value.Humanize()
-                        </label>
-                    </div>
-                }
-            </p>
-        }
-        
+
         <p>
             <label asp-for="File" class="control-label"></label>
 

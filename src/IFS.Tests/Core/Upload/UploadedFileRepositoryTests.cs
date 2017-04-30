@@ -28,7 +28,7 @@ namespace IFS.Tests.Core.Upload {
             fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
 
             // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, FakeLogger.Get<UploadedFileRepository>());
+            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
             UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
             // Then
@@ -43,7 +43,7 @@ namespace IFS.Tests.Core.Upload {
             fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
 
             // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, FakeLogger.Get<UploadedFileRepository>());
+            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
             UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
             // Then
@@ -61,7 +61,7 @@ namespace IFS.Tests.Core.Upload {
             fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
 
             // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, FakeLogger.Get<UploadedFileRepository>());
+            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
             UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
             // Then

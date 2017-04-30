@@ -11,7 +11,6 @@ namespace IFS.Web.Models {
     using System.ComponentModel.DataAnnotations;
 
     using Core;
-    using Core.Upload;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -33,10 +32,7 @@ namespace IFS.Web.Models {
         [FileSizeValidation]
         [Display(Name = "Your file")]
         public IFormFile File { get; set; }
-        
 
-        [Display(Name = "When will the file expiration start?")]
-        public ExpirationMode ExpirationMode { get; set; }
 
         public long SuggestedFileSize { get; set; }
         public IEnumerable<SelectListItem> AvailableExpiration { get; set; }

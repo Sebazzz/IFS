@@ -157,11 +157,6 @@ namespace IFS.Web.Core.Upload {
                     metadataFactory.SetIsReservation(Boolean.Parse(isReservationRaw));
                     break;
 
-                case nameof(UploadModel.ExpirationMode):
-                    string expirationModeRaw = await ReadString();
-
-                    metadataFactory.SetExpirationMode((ExpirationMode) Enum.Parse(typeof(ExpirationMode), expirationModeRaw));
-                    break;
 
                 case nameof(UploadModel.Expiration):
                     string dateTimeRaw = await ReadString();
@@ -306,10 +301,6 @@ namespace IFS.Web.Core.Upload {
                 this._metadata.UploadedOn = DateTime.UtcNow;
 
                 return this._metadata;
-            }
-
-            public void SetExpirationMode(ExpirationMode mode) {
-                this._metadata.ExpirationMode = mode;
             }
 
             public void SetIsReservation(bool value) {

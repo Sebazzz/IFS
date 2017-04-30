@@ -1,7 +1,6 @@
 ﻿namespace IFS.Web.Core.Upload {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
 
     using Newtonsoft.Json;
 
@@ -16,7 +15,6 @@
         }
 
         public string OriginalFileName { get; set; }
-        public ExpirationMode ExpirationMode { get; set; }
 
         public string Serialize() {
             return JsonConvert.SerializeObject(this, Formatting.Indented, SerializerSettings);
@@ -42,12 +40,5 @@
     public class FileAccessLogEntry {
         public DateTime Timestamp { get; set; }
         public string IpAddress { get; set; }
-    }
-
-    public enum ExpirationMode {
-        [Description("After the upload completes")]
-        AfterUpload,
-        [Description("When the file is first downloaded")]
-        FirstDownload
     }
 }

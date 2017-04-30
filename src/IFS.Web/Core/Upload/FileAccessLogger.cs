@@ -27,11 +27,6 @@ namespace IFS.Web.Core.Upload {
         public async Task LogFileAccessAsync(UploadedFile uploadedFile, string ipAddress) {
             var metadata = uploadedFile.Metadata;
 
-            if (metadata.ExpirationMode == ExpirationMode.FirstDownload && metadata.Access.LogEntries.Count == 0) {
-                // Recalculate expiration
-                metadata.Expiration = metadata.Expiration + (DateTime.UtcNow - metadata.UploadedOn);
-            }
-
             metadata.Access.LogEntries.Add(new FileAccessLogEntry {
                 Timestamp = DateTime.UtcNow,
                 IpAddress = ipAddress
