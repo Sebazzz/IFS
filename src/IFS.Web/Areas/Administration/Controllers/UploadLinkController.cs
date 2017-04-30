@@ -62,6 +62,11 @@ namespace IFS.Web.Areas.Administration.Controllers {
                 Sender = model.Sender
             };
 
+            // Ensure no empty contact information
+            if (model.Sender != null && String.IsNullOrEmpty(model.Sender.Name) && String.IsNullOrEmpty(model.Sender.EmailAddress)) {
+                metadata.Sender = null;
+            }
+
             // Write away
             using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(model.FileIdentifier))) {
                 using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
