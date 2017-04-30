@@ -12,6 +12,7 @@ namespace IFS.Web.Controllers {
     using Core.Upload;
     using Core.Upload.Http;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -35,7 +36,7 @@ namespace IFS.Web.Controllers {
 
         [Route("download/file/{id}", Name = "DownloadFile")]
         [FileLock]
-        public async Task<IActionResult> DownloadFile(FileIdentifier id) {
+        public async Task<IActionResult> DownloadFileSplash(FileIdentifier id) {
             if (!this.ModelState.IsValid) {
                 return this.BadRequest();
             }
@@ -46,8 +47,26 @@ namespace IFS.Web.Controllers {
                 return this.NotFound("We lost it!");
             }
 
-            await this._fileAccessLogger.LogFileAccessAsync(uploadedFile, this.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString() ?? "Unknown");
+            if (DirectDownloadClientDetector.IsDirectDownloadClient(this.Request.Headers["User-Agent"].ToString())) {
+                return this.RedirectToRoute("DownloadFileRaw");
+            }
 
+            return this.View(uploadedFile);
+        }
+
+        [Route("download/file/{id}/raw", Name = "DownloadFileRaw")]
+        public async Task<IActionResult> DownloadFileRaw(FileIdentifier id) {
+            if (!this.ModelState.IsValid) {
+                return this.BadRequest();
+            }
+
+            UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
+            if (uploadedFile == null) {
+                this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
+                return this.NotFound("404: File has not been found or download link has expired");
+            }
+
+            await this._fileAccessLogger.LogFileAccessAsync(uploadedFile, this.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString() ?? "Unknown");
             return this.File(uploadedFile.GetStream(), "application/octet-stream", uploadedFile.Metadata.OriginalFileName);
         }
     }

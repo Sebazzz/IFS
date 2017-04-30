@@ -125,5 +125,7 @@ namespace IFS.Web.Core.Upload {
         public bool IsUnusedReservation => !this._fileInfo.Exists && this.Metadata.IsReservation;
 
         public Stream GetStream() => this._fileInfo.CreateReadStream();
+
+        public long Size => this._fileInfo.Length;
     }
 }

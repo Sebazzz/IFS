@@ -1,0 +1,38 @@
+﻿@using System.Text.Encodings.Web
+@using Humanizer
+@model IFS.Web.Core.Upload.UploadedFile
+@{
+    ViewBag.Title = $"Upload download started: {Model.Metadata.OriginalFileName}";
+}
+
+@{
+    string downloadLink = this.Url.RouteUrl("DownloadFileRaw", new { id = Model.Id }, this.Context.Request.Scheme);
+    var size = Model.Size.Bytes();
+}
+
+<ifs-page-title>@ViewBag.Title</ifs-page-title>
+
+<p>
+    You are now downloading a file uploaded for you: <code>@Model.Metadata.OriginalFileName</code>. The file size is about @size.LargestWholeNumberValue.ToString("F0") @size.LargestWholeNumberSymbol.
+</p>
+
+<p class="alert alert-info" id="downloadLinkContainer">
+    <strong>Notice</strong> If the download does not start, please <a href="@downloadLink" id="downloadLink" download>click here</a> to download the file manually.
+</p>
+
+<iframe src="@downloadLink" style="visibility: hidden;"></iframe>
+
+@section scripts {
+    <script>
+        (function() {
+            // Replace URL for easy copying
+            if ('replaceState' in history) {
+                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)');
+            }
+
+            document.getElementById('downloadLink').addEventListener('click', function() {
+                document.getElementById('downloadLinkContainer').style.visibility = 'hidden';
+            });
+        })();
+    </script>
+}
