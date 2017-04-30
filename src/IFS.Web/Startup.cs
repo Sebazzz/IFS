@@ -52,7 +52,8 @@ namespace IFS.Web {
                 opt.AddPolicy(KnownPolicies.Upload,
                     b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.PassphraseScheme)
                           .RequireAuthenticatedUser()
-                          .RequireUserName(KnownPolicies.Upload));
+                          .RequireUserName(KnownPolicies.Upload)
+                          .AddRequirements(new RestrictedUploadRequirement()));
 
                 opt.AddPolicy(KnownPolicies.Administration,
                     b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.AdministrationScheme)
@@ -85,6 +86,7 @@ namespace IFS.Web {
             services.AddSingleton<IFileAccessLogger, FileAccessLogger>();
             services.AddSingleton<IUploadedFileRepository, UploadedFileRepository>();
             services.AddSingleton<IUploadFileLock, UploadFileLock>();
+            services.AddSingleton<MetadataReader>();
 
             services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();
 
@@ -141,7 +143,7 @@ namespace IFS.Web {
             app.UseMvc(
                 routes => {
                     // Async uploads - need to map this here as MVC won't generate routes to other IRouter
-                    routes.MapUploadHandler("upload/handler/{fileidentifier}");
+                    routes.MapUploadHandler("upload/handler/{fileIdentifier}");
 
                     routes.MapAreaRoute(
                         name: "areaRoute",

@@ -1,0 +1,50 @@
+﻿@using System.Text.Encodings.Web
+@model IFS.Web.Models.UploadLinkModel
+
+@{
+    ViewBag.Title = "Upload link created";
+}
+
+<ifs-page-title>@ViewBag.Title</ifs-page-title>
+
+<p>
+    Your upload link has been created and is valid until @Model.Expiration.ToString("f"). You can share the upload
+    link with another party which can use it to upload one file.
+</p>
+
+
+@{
+    string uploadLink = this.Url.RouteUrl("UploadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme);
+    string downloadLink = this.Url.RouteUrl("DownloadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme);
+}
+
+<p>
+    Upload link to share: <input type="text" value="@uploadLink" class="form-control input-lg" id="upload-link" readonly="readonly" />
+</p>
+
+<p>
+    After the upload has been completed, you will be able to download the file from:
+    <input type="text" value="@downloadLink" class="form-control input-sm" id="download-link" readonly="readonly" />
+</p>
+
+@section scripts {
+    <script>
+        (function() {
+            // Replace URL for easy copying
+            if ('replaceState' in history) {
+                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(uploadLink)');
+            }
+
+            var doSelect = function() {
+                this.select();
+            };
+
+            document.getElementById('upload-link').addEventListener('mouseup', doSelect);
+            document.getElementById('download-link').addEventListener('mouseup', doSelect);
+        })();
+    </script>
+}
+
+<p>
+    <a asp-controller="Files" class="btn btn-primary">Go back</a>
+</p>

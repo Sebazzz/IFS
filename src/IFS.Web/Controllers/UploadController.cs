@@ -7,63 +7,74 @@
 
 namespace IFS.Web.Controllers {
     using System;
-    using System.Globalization;
+    using System.Security.Claims;
     using System.Threading.Tasks;
 
     using Core;
+    using Core.ModelFactory;
     using Core.Upload;
 
     using Humanizer;
 
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http.Authentication;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.Extensions.Logging;
 
     using Models;
 
     [Authorize(KnownPolicies.Upload, ActiveAuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     public sealed class UploadController : Controller {
+        private readonly IUploadedFileRepository _uploadedFileRepository;
         private readonly IUploadProgressManager _uploadProgressManager;
         private readonly ILogger<UploadController> _logger;
 
-        public UploadController(IUploadProgressManager uploadProgressManager, ILogger<UploadController> logger) {
+        public UploadController(IUploadProgressManager uploadProgressManager, IUploadedFileRepository uploadedFileRepository, ILogger<UploadController> logger) {
             this._uploadProgressManager = uploadProgressManager;
             this._logger = logger;
+            this._uploadedFileRepository = uploadedFileRepository;
         }
 
         public IActionResult Index() {
-            Func<TimeSpan, SelectListItem> createItem = 
-                timespan => new SelectListItem {
-                    Value = (DateTime.UtcNow + timespan).ToString("O"),
-                    Text = timespan.Humanize()
-                };
-
-            Func<int, SelectListItem> createMonthItem =
-                month => new SelectListItem {
-                    Value = CultureInfo.CurrentCulture.Calendar.AddMonths(DateTime.UtcNow, month).ToString("O"),
-                    Text = $"{month} months"
-                };
-
-            UploadModel uploadModel = new UploadModel {
-                FileIdentifier = FileIdentifier.CreateNew(),
-                Expiration = DateTime.UtcNow.AddDays(7),
-                AvailableExpiration = new[] {
-                    createItem(TimeSpan.FromHours(1)),
-                    createItem(TimeSpan.FromHours(4)),
-                    createItem(TimeSpan.FromHours(8)),
-                    createItem(TimeSpan.FromDays(1)),
-                    createItem(TimeSpan.FromDays(2)),
-                    createItem(TimeSpan.FromDays(7)),
-                    createMonthItem(1),
-                    createMonthItem(2),
-                    createMonthItem(3),
-                    createMonthItem(6),
-                    createItem(TimeSpan.FromDays(CultureInfo.CurrentCulture.Calendar.GetDaysInYear(DateTime.UtcNow.Year))),
-                }
-            };
+            UploadModel uploadModel = UploadModelFactory.Create();
 
             return this.View(uploadModel);
+        }
+
+        [HttpGet("upload/{id}", Name = "UploadFile")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UploadFileHandler(FileIdentifier id) {
+            var file = await this._uploadedFileRepository.GetFileReservation(id);
+
+            if (file == null) {
+                this.Response.StatusCode = 404 /* Not Found */;
+                return this.View("UploadLinkExpired");
+            }
+
+            // Set-up authentication
+            ClaimsIdentity userIdentity = new ClaimsIdentity(KnownAuthenticationScheme.PassphraseScheme);
+            userIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Name, KnownPolicies.Upload, ClaimValueTypes.String, "https://ifs"),
+                new Claim(KnownClaims.RestrictionId, id.ToString(), ClaimValueTypes.String, "https://ifs"),
+            });
+
+            ClaimsPrincipal userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            AuthenticationProperties authenticationOptions = new AuthenticationProperties {
+                AllowRefresh = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+                IsPersistent = false
+            };
+
+            await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
+
+            // Create model for upload
+            UploadModel uploadModel = UploadModelFactory.Create();
+            uploadModel.FileIdentifier = file.Id;
+            uploadModel.Expiration = file.Metadata.Expiration;
+            uploadModel.IsReservation = true;
+
+            return this.View("Index", uploadModel);
         }
 
         [HttpGet]

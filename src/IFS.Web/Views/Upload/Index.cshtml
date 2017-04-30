@@ -11,10 +11,16 @@
 <div id="upload-root">
     <ifs-page-title>@ViewBag.Title</ifs-page-title>
 
-    <p>
-        Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.
-    </p>
-    
+    @if (Model.IsReservation == false) {
+        <p>
+            Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.
+        </p>
+    } else {
+        <p>
+            Please upload the file you want to share here. After the upload your will receive a hyperlink your can share.
+        </p>
+    }
+
     <div class="alert alert-info">
         <strong>Maximum file size: </strong> @FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")
     </div>
@@ -26,18 +32,21 @@
           enctype="multipart/form-data" method="post">
         <input asp-for="FileIdentifier" type="hidden" />
         <input asp-for="SuggestedFileSize" type="hidden" />
+        <input asp-for="IsReservation" type="hidden" />
         
-        <p>
-            <label asp-for="ExpirationMode" class="control-label"></label>
+        @if (Model.IsReservation == false) {
+            <p>
+                <label asp-for="ExpirationMode" class="control-label"></label>
             
-            @foreach (ExpirationMode value in Enum.GetValues(typeof(ExpirationMode))) {
-                <div class="radio">
-                    <label>
-                        <input type="radio" asp-for="ExpirationMode" value="@value"> @value.Humanize()
-                    </label>
-                </div>
-            }
-        </p>
+                @foreach (ExpirationMode value in Enum.GetValues(typeof(ExpirationMode))) {
+                    <div class="radio">
+                        <label>
+                            <input type="radio" asp-for="ExpirationMode" value="@value"> @value.Humanize()
+                        </label>
+                    </div>
+                }
+            </p>
+        }
         
         <p>
             <label asp-for="File" class="control-label"></label>
@@ -51,11 +60,15 @@
             <span asp-validation-for="File" class="text-danger">*</span>
         </p>
 
-        <p>
-            <label asp-for="Expiration" class="control-label"></label>
+        @if (Model.IsReservation == false) {
+            <p>
+                <label asp-for="Expiration" class="control-label"></label>
 
-            <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
-        </p>
+                <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
+            </p>
+        } else {
+            <input asp-for="Expiration" type="hidden" value="@Model.Expiration.ToString("O")" />
+        }
 
         <p>
             <button class="btn btn-primary">

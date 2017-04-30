@@ -1,0 +1,40 @@
+﻿@using System.Threading.Tasks
+@model IFS.Web.Models.UploadLinkModel
+
+@{
+    ViewBag.Title = "Create upload hyperlink";
+}
+
+<ifs-page-title>@ViewBag.Title</ifs-page-title>
+
+<p>
+    Create an upload link so an external party can upload a file for you. Give the link an
+    expiration date so the file will be automatically removed from the server after upload.
+</p>
+
+<form method="post">
+    <input asp-for="FileIdentifier" type="hidden" />
+        
+    <p>
+        <label asp-for="Expiration" class="control-label"></label>
+
+        <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
+    </p>
+
+    <p>
+        <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-upload"></span> Create link
+        </button>
+    </p>
+</form>
+
+@section scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    </environment> 
+}

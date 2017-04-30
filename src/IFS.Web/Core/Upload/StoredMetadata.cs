@@ -2,7 +2,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
 
     using Newtonsoft.Json;
 
@@ -10,9 +9,10 @@
         public DateTime Expiration { get; set; }
         public DateTime UploadedOn { get; set; }
 
+        public bool IsReservation { get; set; }
         public AccessLog Access {
-            get { return this._access ?? (this._access = new AccessLog()); }
-            set { this._access = value; }
+            get => this._access ?? (this._access = new AccessLog());
+            set => this._access = value;
         }
 
         public string OriginalFileName { get; set; }
@@ -34,8 +34,8 @@
         private List<FileAccessLogEntry> _logEntries;
 
         public List<FileAccessLogEntry> LogEntries {
-            get { return this._logEntries ?? (this._logEntries = new List<FileAccessLogEntry>()); }
-            set { this._logEntries = value; }
+            get => this._logEntries ?? (this._logEntries = new List<FileAccessLogEntry>());
+            set => this._logEntries = value;
         }
     }
 

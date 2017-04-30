@@ -16,22 +16,32 @@ namespace IFS.Web.Models {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    public class UploadModel {
+    public class UploadLinkModel : UploadModelBase {
+        
+    }
+
+    public class UploadModelBase {
         public FileIdentifier FileIdentifier { get; set; }
+        [Display]
+        public DateTime Expiration { get; set; }
+        public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
+    }
+
+    public class UploadModel : UploadModelBase {
 
         [Required(ErrorMessage = "Please select a file to upload")]
         [FileSizeValidation]
         [Display(Name = "Your file")]
         public IFormFile File { get; set; }
         
-        [Display]
-        public DateTime Expiration { get; set; }
 
         [Display(Name = "When will the file expiration start?")]
         public ExpirationMode ExpirationMode { get; set; }
 
         public long SuggestedFileSize { get; set; }
         public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
+
+        public bool IsReservation { get; set; }
 
     }
 

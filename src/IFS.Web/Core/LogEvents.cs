@@ -18,6 +18,7 @@ namespace IFS.Web.Core {
 
         public static readonly EventId UploadNotFound = new EventId(2001, nameof(UploadNotFound));
         public static readonly EventId UploadIncomplete = new EventId(1002, nameof(UploadIncomplete));
+        public static readonly EventId UploadReservationTaken = new EventId(1003, nameof(UploadReservationTaken));
 
         public static readonly EventId UploadCorrupted = new EventId(0xDEAD, nameof(UploadCorrupted));
     }

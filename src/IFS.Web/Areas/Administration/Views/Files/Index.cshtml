@@ -18,7 +18,7 @@
         <th>ID</th>
         <th>File name</th>
         <th>Last downloaded on</th>
-        <th>Uploaded</th>
+        <th>Uploaded / Created at</th>
         <th>Expires</th>
         <th>&nbsp;</th>
     </tr>
@@ -27,28 +27,53 @@
     @foreach (var file in sortedFiles) {
         var lastAccess = file.Metadata.Access.LogEntries.OrderByDescending(x => x.Timestamp).FirstOrDefault()?.Timestamp.Humanize() ?? "Never";
 
-        <tr>
-            <td><code>@file.Id</code></td>
-            <td>
-                <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
-            </td>
-            <td>
-                <a asp-action="Log" asp-route-id="@file.Id">@lastAccess</a>
-            </td>
-            <td>
-                @file.Metadata.UploadedOn.Humanize()
-            </td>
-            <td>
-                @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
-            </td>
-            <td>
-                <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
-                    <button class="btn btn-sm btn-danger">
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                </form>
-            </td>
-        </tr>
+        if (!file.IsUnusedReservation) {
+             <tr>
+                 <td><code>@file.Id</code></td>
+                 <td>
+                     <a asp-route="DownloadFile" asp-route-id="@file.Id">@file.Metadata.OriginalFileName</a>
+                 </td>
+                 <td>
+                     <a asp-action="Log" asp-route-id="@file.Id">@lastAccess</a>
+                 </td>
+                 <td>
+                     @file.Metadata.UploadedOn.Humanize()
+                 </td>
+                 <td>
+                     @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
+                 </td>
+                 <td>
+                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
+                         <button class="btn btn-sm btn-danger">
+                             <span class="glyphicon glyphicon-trash"></span>
+                         </button>
+                     </form>
+                 </td>
+             </tr>
+         } else {
+            <tr>
+                <td><code>@file.Id</code></td>
+                <td>
+                    (no file uploaded yet)
+                </td>
+                <td>
+                    (reservation)
+                </td>
+                <td>
+                    @file.Metadata.UploadedOn.Humanize()
+                </td>
+                <td>
+                    @file.Metadata.Expiration.Humanize() (@file.Metadata.Expiration.ToString("g"))
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
+                        <button class="btn btn-sm btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+         }
     }
         
     @if (Model.Files.Count == 0) {
@@ -62,5 +87,7 @@
 </table>
 
 <p>
+    <a class="btn btn-link" asp-controller="UploadLink">Create upload link</a>
+
     @Html.Partial("_LogOffButton")
 </p>

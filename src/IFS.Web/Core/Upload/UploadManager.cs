@@ -18,6 +18,7 @@ namespace IFS.Web.Core.Upload {
     using Humanizer;
 
     using Microsoft.AspNetCore.WebUtilities;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Logging;
     using Microsoft.Net.Http.Headers;
 
@@ -63,11 +64,13 @@ namespace IFS.Web.Core.Upload {
         private readonly IUploadProgressManager _uploadProgressManager;
         private readonly IUploadFileLock _uploadFileLock;
         private readonly ILogger<UploadManager> _logger;
+        private readonly MetadataReader _metadataReader;
 
-        public UploadManager(IFileStore fileStore, IFileWriter fileWriter, IUploadProgressManager uploadProgressManager, IUploadFileLock uploadFileLock, ILogger<UploadManager> logger) {
+        public UploadManager(IFileStore fileStore, IFileWriter fileWriter, IUploadProgressManager uploadProgressManager, IUploadFileLock uploadFileLock, MetadataReader metadataReader, ILogger<UploadManager> logger) {
             this._fileStore = fileStore;
             this._fileWriter = fileWriter;
             this._logger = logger;
+            this._metadataReader = metadataReader;
             this._uploadFileLock = uploadFileLock;
             this._uploadProgressManager = uploadProgressManager;
         }
@@ -141,28 +144,34 @@ namespace IFS.Web.Core.Upload {
         private async Task ProcessFormSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, ContentDispositionHeaderValue contentDisposition) {
             string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
 
-            Func<Task<string>> readString = async () => {
+            async Task<string> ReadString() {
                 using (StreamReader sr = new StreamReader(section.Body)) {
                     return await sr.ReadToEndAsync();
                 }
-            };
+            }
 
             switch (cleanName) {
+                case nameof(UploadModel.IsReservation):
+                    string isReservationRaw = await ReadString();
+
+                    metadataFactory.SetIsReservation(Boolean.Parse(isReservationRaw));
+                    break;
+
                 case nameof(UploadModel.ExpirationMode):
-                    string expirationModeRaw = await readString();
+                    string expirationModeRaw = await ReadString();
 
                     metadataFactory.SetExpirationMode((ExpirationMode) Enum.Parse(typeof(ExpirationMode), expirationModeRaw));
                     break;
 
                 case nameof(UploadModel.Expiration):
-                    string dateTimeRaw = await readString();
+                    string dateTimeRaw = await ReadString();
 
                     // MVC we send date as roundtrip
                     metadataFactory.SetExpiration(DateTime.ParseExact(dateTimeRaw, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind));
                     return;
 
                 case nameof(UploadModel.FileIdentifier):
-                    string rawId = await readString();
+                    string rawId = await ReadString();
                     FileIdentifier formId = FileIdentifier.FromString(rawId);
 
                     if (formId != id) {
@@ -174,7 +183,7 @@ namespace IFS.Web.Core.Upload {
                 // However, that is not very accurate and if we use some javascript to send a more accurate file size, we use that.
                 case nameof(UploadModel.SuggestedFileSize):
                     long size;
-                    if (Int64.TryParse(await readString(), out size) && size > 0) {
+                    if (Int64.TryParse(await ReadString(), out size) && size > 0) {
                         this.GetProgressObject(id).Total = size;
                     }
                     return;
@@ -231,12 +240,30 @@ namespace IFS.Web.Core.Upload {
         }
 
         private async Task StoreMetadataAsync(FileIdentifier id, StoredMetadata metadata, CancellationToken cancellationToken) {
-            // Correct the timestamp with the upload time
-            TimeSpan diff = DateTime.UtcNow - this.GetProgressObject(id).StartTime;
-            metadata.Expiration += diff;
+            IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
+
+            if (metadata.IsReservation) {
+                StoredMetadata originalStoredMetadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+
+                if (originalStoredMetadata == null) {
+                    this._logger.LogWarning(LogEvents.UploadFailed, "{0}: Metadata file expected for reservation at {1}", id, metadataFile.PhysicalPath);
+
+                    throw new UploadFailedException("Missing metadata for reserved upload");
+                }
+
+                // Sync critical metadata
+                metadata.Expiration = originalStoredMetadata.Expiration;
+
+                // Delete metadata so it can be recreated again
+                this._fileWriter.Delete(metadataFile);
+            } else {
+                // Correct the timestamp with the upload time
+                TimeSpan diff = DateTime.UtcNow - this.GetProgressObject(id).StartTime;
+                metadata.Expiration += diff;
+            }
 
             // Write away
-            using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(id))) {
+            using (Stream fileStream = this._fileWriter.OpenWriteStream(metadataFile)) {
                 using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
                     await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
 
@@ -283,6 +310,10 @@ namespace IFS.Web.Core.Upload {
 
             public void SetExpirationMode(ExpirationMode mode) {
                 this._metadata.ExpirationMode = mode;
+            }
+
+            public void SetIsReservation(bool value) {
+                this._metadata.IsReservation = value;
             }
         }
     }

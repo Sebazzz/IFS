@@ -19,6 +19,7 @@ namespace IFS.Web.Core.Upload {
 
     public interface IUploadedFileRepository {
         Task<UploadedFile> GetFile(FileIdentifier id);
+        Task<UploadedFile> GetFileReservation(FileIdentifier id);
 
         Task<IList<UploadedFile>> GetFiles();
         void Delete(FileIdentifier id);
@@ -27,11 +28,14 @@ namespace IFS.Web.Core.Upload {
     public sealed class UploadedFileRepository : IUploadedFileRepository {
         private readonly IFileStore _fileStore;
         private readonly IFileWriter _fileWriter;
+
+        private readonly MetadataReader _metadataReader;
         private readonly ILogger<UploadedFileRepository> _logger;
 
-        public UploadedFileRepository(IFileStore fileStore, IFileWriter fileWriter, ILogger<UploadedFileRepository> logger) {
+        public UploadedFileRepository(IFileStore fileStore, IFileWriter fileWriter, MetadataReader metadataReader, ILogger<UploadedFileRepository> logger) {
             this._fileStore = fileStore;
             this._logger = logger;
+            this._metadataReader = metadataReader;
             this._fileWriter = fileWriter;
         }
 
@@ -47,19 +51,36 @@ namespace IFS.Web.Core.Upload {
                 return null;
             }
 
-            StoredMetadata metadata;
-            try {
-                string json;
-                using (StreamReader sw = new StreamReader(metadataFile.CreateReadStream())) {
-                    json = await sw.ReadToEndAsync().ConfigureAwait(false);
-                }
+            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
 
-                metadata = StoredMetadata.Deserialize(json);
-            }
-            catch (Exception ex) {
-                this._logger.LogError(LogEvents.UploadCorrupted, ex, "Metadata of upload {0} at location {1} is corrupted", id, metadataFile.PhysicalPath);
+            return new UploadedFile(id, dataFile, metadata);
+        }
+
+        public async Task<UploadedFile> GetFileReservation(FileIdentifier id) {
+            IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
+            if (!metadataFile.Exists) {
                 return null;
             }
+
+            IFileInfo dataFile = this._fileStore.GetDataFile(id);
+            if (dataFile.Exists) {
+                this._logger.LogError(LogEvents.UploadReservationTaken, "Data of uploaded file {0} has been uploaded at {1}", id, metadataFile.PhysicalPath);
+                return null;
+            }
+
+            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+
+            return new UploadedFile(id, dataFile, metadata);
+        }
+
+        private async Task<UploadedFile> GetFileInternal(FileIdentifier id) {
+            IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
+            if (!metadataFile.Exists) {
+                return null;
+            }
+
+            IFileInfo dataFile = this._fileStore.GetDataFile(id);
+            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
 
             return new UploadedFile(id, dataFile, metadata);
         }
@@ -72,7 +93,7 @@ namespace IFS.Web.Core.Upload {
 
             List<UploadedFile> uploadedFiles = new List<UploadedFile>();
             foreach (FileIdentifier id in fileIds.Distinct()) {
-                UploadedFile file = await this.GetFile(id).ConfigureAwait(false);
+                UploadedFile file = await this.GetFileInternal(id).ConfigureAwait(false);
 
                 if (file != null) {
                     uploadedFiles.Add(file);
@@ -100,6 +121,8 @@ namespace IFS.Web.Core.Upload {
         public FileIdentifier Id { get; }
 
         public StoredMetadata Metadata { get; }
+
+        public bool IsUnusedReservation => !this._fileInfo.Exists && this.Metadata.IsReservation;
 
         public Stream GetStream() => this._fileInfo.CreateReadStream();
     }

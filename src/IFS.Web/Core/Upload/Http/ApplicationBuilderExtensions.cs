@@ -8,11 +8,9 @@
 namespace IFS.Web.Core.Upload.Http {
     using System.Collections.Generic;
 
-    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.Routing.Constraints;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
 
     public static class ApplicationBuilderExtensions {
         public static void AddUploadHandler(this IServiceCollection serviceCollection) {

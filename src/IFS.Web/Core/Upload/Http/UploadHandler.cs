@@ -34,7 +34,7 @@
         }
 
         public async Task ExecuteAsync(HttpContext context) {
-            FileIdentifier identifier = FileIdentifier.FromString(context.GetRouteValue("fileidentifier").ToString());
+            FileIdentifier identifier = FileIdentifier.FromString(context.GetRouteValue("fileIdentifier").ToString());
 
             this._logger.LogInformation(LogEvents.NewUpload, "New upload of file with id {0}", identifier);
 
@@ -54,6 +54,7 @@
             reader.BodyLengthLimit = (long?) this._fileStoreOptions.Value?.MaximumFileSize.Megabytes().Bytes;
 
             // Delegate actual request parsing
+            // ... after the request "completes" we re-execute to send the final response to the browser
             try {
                 using (context.RequestAborted.Register(context.Abort)) {
                     await this._uploadManager.StoreAsync(identifier, reader, context.RequestAborted);
@@ -98,7 +99,7 @@
             var routeData = new {
                 controller = "Upload",
                 action = "Frame",
-                id = context.GetRouteValue("fileidentifier")
+                id = context.GetRouteValue("fileIdentifier")
             };
 
             foreach (IRouter router in context.GetRouteData().Routers.Reverse()) {
