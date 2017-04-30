@@ -59,28 +59,8 @@
             <span asp-validation-for="File" class="text-danger">*</span>
         </p>
 
-        @if (Model.IsReservation == false) {
-            <p>
-                <label asp-for="Expiration" class="control-label"></label>
-
-                <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
-            </p>
-        } else {
-            <input asp-for="Expiration" type="hidden" value="@Model.Expiration.ToString("O")" />
-        }
-        
-        @if (Model.IsReservation == false) {
-            <p>
-                <label asp-for="Sender.Name" class="control-label">Sender: Your name</label>
-
-                <input asp-for="Sender.Name" class="form-control" />
-            </p>
-
-            <p>
-                <label asp-for="Sender.EmailAddress" class="control-label">Sender: Your e-mail address</label>
-
-                <input asp-for="Sender.EmailAddress" class="form-control" />
-            </p>
+        @{
+            Html.RenderPartial(Model.IsReservation == false ? "_UploadForm.Full" : "_UploadForm.Reservation", Model);
         }
 
         <p>
