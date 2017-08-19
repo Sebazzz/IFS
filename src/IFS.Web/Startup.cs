@@ -17,6 +17,7 @@ namespace IFS.Web {
     using Hangfire.Dashboard;
     using Hangfire.MemoryStorage;
 
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -60,6 +61,20 @@ namespace IFS.Web {
                           .RequireAuthenticatedUser()
                           .RequireUserName(this.Configuration.GetSection("Authentication").GetSection("Administration").GetValue<string>("UserName")));
             });
+
+            services.AddAuthentication()
+                .AddCookie(KnownAuthenticationScheme.PassphraseScheme, 
+                            opt => {
+                                opt.LoginPath = new PathString("/authenticate/login");
+                                opt.AccessDeniedPath = new PathString("/error/accessDenied");
+                                opt.ReturnUrlParameter = "returnUrl";
+                            })
+                .AddCookie(KnownAuthenticationScheme.AdministrationScheme, 
+                    opt => {
+                        opt.LoginPath = new PathString("/administration/authenticate/login");
+                        opt.AccessDeniedPath = new PathString("/error/accessDenied");
+                        opt.ReturnUrlParameter = "returnUrl";
+                    });
 
             // Hangfire
             services.AddHangfire(config => {
@@ -109,23 +124,7 @@ namespace IFS.Web {
             
             app.UseStaticFiles();
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions {
-                AuthenticationScheme = KnownAuthenticationScheme.PassphraseScheme,
-                LoginPath = new PathString("/authenticate/login"),
-                AccessDeniedPath = new PathString("/error/accessDenied"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                ReturnUrlParameter = "returnUrl"
-            });
-
-            app.UseCookieAuthentication(new CookieAuthenticationOptions {
-                AuthenticationScheme = KnownAuthenticationScheme.AdministrationScheme,
-                LoginPath = new PathString("/administration/authenticate/login"),
-                AccessDeniedPath = new PathString("/error/accessdenied"),
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                ReturnUrlParameter = "returnUrl"
-            });
+            app.UseAuthentication();
 
             // Hangfire
             app.UseHangfireDashboard(

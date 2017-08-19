@@ -142,7 +142,7 @@ namespace IFS.Web.Core.Upload {
         }
 
         private async Task ProcessFormSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, ContentDispositionHeaderValue contentDisposition) {
-            string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
+            string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
 
             async Task<string> ReadString() {
                 using (StreamReader sr = new StreamReader(section.Body)) {
@@ -211,8 +211,8 @@ namespace IFS.Web.Core.Upload {
         }
 
         private async Task ProcessFileSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, CancellationToken cancellationToken, ContentDispositionHeaderValue contentDisposition) {
-            string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name);
-            string fileName = HeaderUtilities.RemoveQuotes(contentDisposition.FileName);
+            string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
+            string fileName = HeaderUtilities.RemoveQuotes(contentDisposition.FileName).Value;
 
             if (cleanName == nameof(UploadModel.File)) {
                 this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1} [{2:s}]", fileName, id, DateTime.UtcNow);

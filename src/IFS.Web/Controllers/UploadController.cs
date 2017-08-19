@@ -17,13 +17,13 @@ namespace IFS.Web.Controllers {
     using Humanizer;
 
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http.Authentication;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
     using Models;
 
-    [Authorize(KnownPolicies.Upload, ActiveAuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
+    [Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     public sealed class UploadController : Controller {
         private readonly IUploadedFileRepository _uploadedFileRepository;
         private readonly IUploadProgressManager _uploadProgressManager;
@@ -66,7 +66,7 @@ namespace IFS.Web.Controllers {
                 IsPersistent = false
             };
 
-            await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
+            await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
             // Create model for upload
             UploadModel uploadModel = UploadModelFactory.Create();
@@ -91,7 +91,7 @@ namespace IFS.Web.Controllers {
             }
 
             if (this.User.HasClaim(KnownClaims.RestrictionId, id.ToString())) {
-                await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
+                await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
             }
 
             return this.View(uploadedFile);

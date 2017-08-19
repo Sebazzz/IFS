@@ -115,7 +115,7 @@
         }
 
         private static string GetBoundary(MediaTypeHeaderValue contentType) {
-            string boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary);
+            string boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary).Value;
 
             if (string.IsNullOrWhiteSpace(boundary)) {
                 throw new InvalidOperationException("Missing content-type boundary.");

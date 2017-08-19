@@ -13,7 +13,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
     using Core;
     using Core.Authentication;
 
-    using Microsoft.AspNetCore.Http.Authentication;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Mvc;
 
     using Models;
@@ -32,7 +32,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         public async Task<IActionResult> Login(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
-                await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
+                await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
 
                 return this.RedirectToAction("Index");
             }
@@ -43,7 +43,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logoff() {
-            await this.HttpContext.Authentication.SignOutAsync(KnownAuthenticationScheme.AdministrationScheme);
+            await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.AdministrationScheme);
 
             return this.RedirectToAction("Index", "Home", new {area = ""});
         }
@@ -79,7 +79,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
                 IsPersistent = false
             };
 
-            await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.AdministrationScheme, userPrincipal, authenticationOptions);
+            await this.HttpContext.SignInAsync(KnownAuthenticationScheme.AdministrationScheme, userPrincipal, authenticationOptions);
 
             string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
 

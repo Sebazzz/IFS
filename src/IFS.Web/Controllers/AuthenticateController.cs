@@ -7,14 +7,13 @@
 
 namespace IFS.Web.Controllers {
     using System;
-    using System.Collections.Generic;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
     using Core;
     using Core.Authentication;
 
-    using Microsoft.AspNetCore.Http.Authentication;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
@@ -22,9 +21,9 @@ namespace IFS.Web.Controllers {
 
     public sealed class AuthenticateController : Controller {
         private readonly IAuthenticationProvider _authenticationProvider;
-        private readonly IOptions<AuthenticationOptions> _authenticateOptions;
+        private readonly IOptions<Core.Authentication.AuthenticationOptions> _authenticateOptions;
 
-        public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<AuthenticationOptions> authenticateOptions) {
+        public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<Core.Authentication.AuthenticationOptions> authenticateOptions) {
             this._authenticationProvider = authenticationProvider;
             this._authenticateOptions = authenticateOptions;
         }
@@ -80,7 +79,7 @@ namespace IFS.Web.Controllers {
                 IsPersistent = false
             };
 
-            await this.HttpContext.Authentication.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
+            await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
             string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
             return this.Redirect(returnUrl);
