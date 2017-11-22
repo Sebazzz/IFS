@@ -29,10 +29,10 @@ namespace IFS.Web.Core.Upload {
         private readonly IFileStore _fileStore;
         private readonly IFileWriter _fileWriter;
 
-        private readonly MetadataReader _metadataReader;
+        private readonly IMetadataReader _metadataReader;
         private readonly ILogger<UploadedFileRepository> _logger;
 
-        public UploadedFileRepository(IFileStore fileStore, IFileWriter fileWriter, MetadataReader metadataReader, ILogger<UploadedFileRepository> logger) {
+        public UploadedFileRepository(IFileStore fileStore, IFileWriter fileWriter, IMetadataReader metadataReader, ILogger<UploadedFileRepository> logger) {
             this._fileStore = fileStore;
             this._logger = logger;
             this._metadataReader = metadataReader;

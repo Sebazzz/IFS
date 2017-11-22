@@ -9,6 +9,7 @@ namespace IFS.Tests.Core.Upload {
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Logging;
 
     using NSubstitute;
 
@@ -54,6 +55,7 @@ namespace IFS.Tests.Core.Upload {
         public async Task UploadedFileRepository_Success_ReturnsFileWithMetadata() {
             // Given
             IFileStore fileStore = Substitute.For<IFileStore>();
+            IMetadataReader metadataReader = new MetadataReader(Substitute.For<ILogger<MetadataReader>>());
 
             var metadataString = (new StoredMetadata {OriginalFileName = "TestFile.txt"}).Serialize();
             fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile(contents: metadataString));
@@ -61,7 +63,7 @@ namespace IFS.Tests.Core.Upload {
             fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
 
             // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
+            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, metadataReader, FakeLogger.Get<UploadedFileRepository>());
             UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
             // Then

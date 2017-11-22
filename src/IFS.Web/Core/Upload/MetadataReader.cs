@@ -13,7 +13,12 @@ namespace IFS.Web.Core.Upload {
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Logging;
 
-    public class MetadataReader {
+
+    public interface IMetadataReader {
+        Task<StoredMetadata> GetMetadataAsync(IFileInfo file);
+    }
+
+    public class MetadataReader : IMetadataReader {
         private readonly ILogger<MetadataReader> _logger;
 
         public MetadataReader(ILogger<MetadataReader> logger) {
