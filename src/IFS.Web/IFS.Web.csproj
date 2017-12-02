@@ -9,7 +9,6 @@
     <PackageId>IFS.Web</PackageId>
     <RuntimeIdentifiers>win7-x64;win10-x64</RuntimeIdentifiers>
     <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
@@ -31,7 +30,6 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.17" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="Humanizer.Core" Version="2.2.0" />
-    <PackageReference Include="BundlerMinifier.Core" Version="2.6.362" />
     <PackageReference Include="Markdig" Version="0.14.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.0.1" />
@@ -49,13 +47,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.1" />
   </ItemGroup>
 
-  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="bower install" />
-    <Exec Command="dotnet bundle" />
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition="'false'=='true'">
+    <!-- Do not run this task. Webpack may change the files causing havoc in the build process as msbuild won't be able to find files it through it would find. -->
+    <Exec Command="npm install" />
+    <Exec Command="npm run-script build" />
   </Target>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.2.301" />
-  </ItemGroup>
 
 </Project>
