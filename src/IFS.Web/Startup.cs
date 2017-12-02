@@ -17,7 +17,6 @@ namespace IFS.Web {
     using Hangfire.Dashboard;
     using Hangfire.MemoryStorage;
 
-    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -94,6 +93,7 @@ namespace IFS.Web {
             services.Configure<FileStoreOptions>(this.Configuration.GetSection("FileStore"));
 
             // ... Upload
+            services.AddSingleton<IMetadataReader, MetadataReader>();
             services.AddSingleton<IUploadProgressManager, UploadProgressManager>();
             services.AddSingleton<IUploadManager, UploadManager>();
             services.AddSingleton<IFileWriter, FileWriter>();
@@ -117,7 +117,6 @@ namespace IFS.Web {
 
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             } else {
                 app.UseExceptionHandler("/Error/Error");
             }

@@ -1,4 +1,4 @@
-﻿(function(app, storage) {
+﻿(function (app, storage) {
     app.contactInformationPersistence = {
         initialize: function(nameFieldId, emailFieldId) {
             function initFromLocalStorage(key, id) {

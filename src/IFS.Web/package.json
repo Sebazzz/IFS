@@ -1,0 +1,30 @@
+{
+    "name": "ifs",
+    "version": "1.0.0",
+    "description": "Internet File System - privately hosted file upload & sharing service",
+    "scripts": {
+        "start": "webpack",
+        "build": "webpack",
+        "webpack-stats": "webpack --json > webpack-stats.json",
+        "watch": "webpack --watch"
+    },
+    "author": "",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "bootstrap": "3.3.7",
+        "jquery": "3.2.1",
+        "jquery-validation": "1.17.0",
+        "jquery-validation-unobtrusive": "3.2.6"
+    },
+    "devDependencies": {
+        "css-loader": "0.28.7",
+        "extract-text-webpack-plugin": "3.0.2",
+        "file-loader": "0.11.2",
+        "style-loader": "0.19.0",
+        "uglifyjs-webpack-plugin": "0.4.6",
+        "url-loader": "0.6.2",
+        "webpack": "3.9.1",
+        "webpack-merge": "4.1.1"
+    }
+}

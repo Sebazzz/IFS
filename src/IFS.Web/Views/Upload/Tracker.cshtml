@@ -1,4 +1,5 @@
-﻿@model UploadFileInProgressModel
+﻿@using System.Text.Encodings.Web
+@model UploadFileInProgressModel
 
 <div id="uploadTracker">
     <h2>
@@ -27,73 +28,7 @@
 }
 
 <script>
-    (function () {
-        var $tracker = $('#uploadTracker'),
-            $progress = $tracker.find('.progress .progress-bar'),
-            $textBlock = $tracker.find('#uploadProgress'),
-            $performance = $tracker.find('#uploadPerformance'),
-            firstTime = true;
-
-        function updateProgress(incoming) {
-            if (incoming.total === 0) {
-                return;
-            }
-
-            if (incoming.total < 0) {
-                $textBlock.text('Uploading ...');
-                $performance.text('(unable to determine speed)');
-                return;
-            }
-
-            var percent = incoming.percent,
-                currentkb = Math.round(incoming.current / 1024),
-                totalkb = Math.round(incoming.total / 1024);
-
-            $progress
-                .css('width', percent + '%')
-                .find('.sr-only').text(percent + '%');
-
-            $textBlock
-                .text('Uploading ' + currentkb + '/' + totalkb + ' KB (' + percent + '%)');
-
-            $performance.text(incoming.performance);
-        }
-
-        function isTrackerRemoved() {
-            return $tracker.closest('body').length === 0;
-        }
-
-        function triggerAjax() {
-            if (isTrackerRemoved()) {
-                return;
-            }
-
-            $.getJSON('@uploadApi', {})
-                .success(data => {
-                    if (firstTime) {
-                        $progress.stop();
-
-                        firstTime = false;
-                    }
-
-                    updateProgress(data);
-
-                    window.setTimeout(triggerAjax, 250);
-                })
-                .fail(() => {
-                    if (firstTime) {
-                        $textBlock.text('Waiting for progress information...');
-
-                        $progress.animate({ width: '0%' }, 100);
-                    } else {
-                        $textBlock.text('Error updating progress...');
-                    }
-
-                    window.setTimeout(triggerAjax, 1000);
-                });
-        }
-
-        triggerAjax();
-    })();
-
+    window.scriptparams = window.scriptparams || {};
+    window.scriptparams.uploadApi = '@JavaScriptEncoder.Default.Encode(uploadApi)';
 </script>
+<script src="~/build/upload/tracker.js" asp-append-version="true"></script>

@@ -1,4 +1,5 @@
-﻿@using System.Threading.Tasks
+﻿@using System.Text.Encodings.Web
+@using System.Threading.Tasks
 @using Humanizer
 @model UploadModel
 @inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
@@ -48,13 +49,13 @@
         <input asp-for="IsReservation" type="hidden" />
 
         <p>
-            <label asp-for="File" class="control-label"></label>
+            <label asp-for="File" class="control-label"></label><br/>
 
-            <div class="upload-control form-control btn btn-primary">
+            <span class="upload-control form-control btn btn-primary">
                 <span>Select file</span>
 
                 <input type="file" asp-for="File" />
-            </div>
+            </span>
             
             <span asp-validation-for="File" class="text-danger">*</span>
         </p>
@@ -96,85 +97,17 @@
 </div>
 
 @section scripts {
-    <environment names="Development">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-        <script src="~/js/site.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-        <script src="~/js/site.min.js"></script>
-    </environment>
-
     <script>
-        (function (global) {
-            var $uploadRoot = $('#upload-root'),
-                errorIntervalTimerHandle = 0,
-                trackerUrl = '@Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier })';
-
-            $uploadRoot.find('form').submit(function () {
-                if (!$(this).valid()) {
-                    return;
-                }
-
-                $uploadRoot.load(trackerUrl);
-
-                // If the iframe loads, and we weren't called back within a certain time,
-                // we can assume there is some kind of server error.
-                $('#uploadFrame').on('load', function () {
-                    console.info('Upload frame has loaded...');
-
-                    errorIntervalTimerHandle = window.setTimeout(global.uploadCoordinator.assumeServerUploadError, 2000);
-                });
-            });
-
-            $(document).on('load', '.reload-button', function(ev) {
-                ev.preventDefault();
-
-                document.location.reload(true);
-            });
-
-            $('.upload-control input[type=file]').change(function() {
-                $(this).parent().next('[data-valmsg-for]')
-                       .removeClass('text-danger')
-                       .text('')
-                       .addClass('text-success')
-                       .addClass('glyphicon')
-                       .addClass('glyphicon-ok');
-
-                var fileInput = this;
-                var files = fileInput.files;
-                var firstFile = (files || [])[0];
-
-                if (firstFile && firstFile.size) {
-                    $('input[name="@Html.NameFor(x => x.SuggestedFileSize)"]').val(firstFile.size);
-                }
-            });
-
-            global.uploadCoordinator = {
-                validationError: function(text) {
-                    alert(text);
-
-                    document.location.reload(true);
-                },
-
-                assumeServerUploadError: function() {
-                    $uploadRoot.html($('#upload-error').html());
-                },
-                complete: function (targetUrl) {
-                    clearTimeout(errorIntervalTimerHandle);
-
-                    $uploadRoot.html($('#upload-done').html());
-
-                    document.location.href = targetUrl;
-                }
-            };
-
-            global.app.contactInformationPersistence.initialize(
-               '@Html.IdFor(x => x.Sender.Name)',
-               '@Html.IdFor(x => x.Sender.EmailAddress)'
-            );
-        })(window);
+        window.uploadParameters = {
+            trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier }))',
+            names: {
+                suggestedFileSize: '@Html.NameFor(x => x.SuggestedFileSize)'
+            },
+            ids: {
+                nameField: '@Html.IdFor(x => x.Sender.Name)',
+                emailAddressField: '@Html.IdFor(x => x.Sender.EmailAddress)'
+            }
+        };
     </script>
+    <script src="~/build/upload/index.js" asp-append-version="true"></script>
 }

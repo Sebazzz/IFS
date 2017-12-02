@@ -15,17 +15,5 @@
 </p>
 
 @section scripts {
-    <script>
-        $(document).on('click', '#reload-button', ev => {
-            ev.preventDefault();
-
-            document.location.reload(true);
-        });
-
-        $(document).on('click', '#back-button', ev => {
-            ev.preventDefault();
-
-            history.back();
-        });
-    </script>
+    <script src="~/build/shared/error.js" asp-append-version="true"></script>
 }
