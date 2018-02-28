@@ -11,10 +11,6 @@ const globals = new webpack.ProvidePlugin({
     Popper: ['popper.js', 'default']
 });
 
-const libExtract = new webpack.optimize.CommonsChunkPlugin({
-    name: 'lib.js'
-});
-
 // Extract compiled CSS into a seperate file
 const extractCss = new ExtractTextPlugin({
     filename: 'site.css'
@@ -24,6 +20,7 @@ const libraries = [
     'jquery',
     'jquery-validation',
     'jquery-validation-unobtrusive',
+    'popper.js',
     'bootstrap'
 ];
 
@@ -41,12 +38,26 @@ module.exports =  {
     },
     plugins: [
         globals,
-        libExtract,
         extractCss
     ],
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+				'lib.js': {
+					test: function(chunk) {
+                        var request = chunk.rawRequest;
+                        return libraries.indexOf(request) !== -1;   
+                    },
+					chunks: "initial",
+					name: "lib.js",
+					enforce: true
+				}
+            },
+        },
+    },
     output: {
         filename: '[name]',
-        chunkFilename: 'lazy_[name].[chunkhash].js',
+        chunkFilename: '[name]',
         path: targetDir,
         publicPath: '/build/'
     },
@@ -73,3 +84,7 @@ module.exports =  {
         ]
     }
 };
+
+if (process.env.NODE_ENV) {
+    module.exports.mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+}
