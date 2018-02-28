@@ -29,6 +29,7 @@ namespace IFS.Web.Framework.Views.TagHelpers {
             string tagContentsString = tagContents.GetContent(NullHtmlEncoder.Default);
 
             TagBuilder innerBuilder = new TagBuilder("small");
+            innerBuilder.AddCssClass("text-muted");
             innerBuilder.InnerHtml.Append(tagContentsString);
 
             output.TagName = "h1";

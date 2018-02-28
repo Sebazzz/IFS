@@ -71,3 +71,7 @@ textarea {
     cursor: default;
     user-select: none;
 }
+
+.alert p {
+    margin-bottom: 0;
+}

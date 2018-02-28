@@ -7,7 +7,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const globals = new webpack.ProvidePlugin({
     $: 'jquery',
     jQuery: 'jquery',
-    'window.jQuery': 'jquery'
+    'window.jQuery': 'jquery',
+    Popper: ['popper.js', 'default']
 });
 
 const libExtract = new webpack.optimize.CommonsChunkPlugin({

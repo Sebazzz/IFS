@@ -1,19 +1,19 @@
 ﻿@model UploadModel
 
 <p>
-    <label asp-for="Expiration" class="control-label"></label>
+    <label asp-for="Expiration"></label>
 
     <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
 </p>
         
 <p>
-    <label asp-for="Sender.Name" class="control-label">Sender: Your name</label>
+    <label asp-for="Sender.Name">Sender: Your name</label>
 
     <input asp-for="Sender.Name" class="form-control" />
 </p>
 
 <p>
-    <label asp-for="Sender.EmailAddress" class="control-label">Sender: Your e-mail address</label>
+    <label asp-for="Sender.EmailAddress">Sender: Your e-mail address</label>
 
     <input asp-for="Sender.EmailAddress" class="form-control" />
 </p>
