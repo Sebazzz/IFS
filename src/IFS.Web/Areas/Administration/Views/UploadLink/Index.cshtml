@@ -35,7 +35,7 @@
 
     <p>
         <button class="btn btn-primary">
-            <span class="glyphicon glyphicon-upload"></span> Create link
+            <span class=" fas fa-upload"></span> Create link
         </button>
         
         <a asp-controller="Files" class="btn btn-link">Go back</a>
@@ -43,17 +43,6 @@
 </form>
 
 @section scripts {
-    <environment names="Development">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-        <script src="~/js/site.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-        <script src="~/js/site.min.js"></script>
-    </environment>
-    
     <script>
         window.app.contactInformationPersistence.initialize(
             '@Html.IdFor(x => x.Sender.Name)',

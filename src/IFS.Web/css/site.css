@@ -1,4 +1,8 @@
-﻿@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+﻿@charset "UTF-8";
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css";
+@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-regular.css";
+@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css";
 
 body {
     padding-top: 50px;
@@ -48,15 +52,14 @@ textarea {
 
 .logoff-form {
     float: right;
-    display: inline-block;
 }
 
-.glyphicon-file-reservation {
+.icon-file-reservation {
     position: relative;
     display: inline-block;
 }
 
-.glyphicon-file-reservation .glyphicon-time {
+.icon-file-reservation .fa-clock {
     font-size: 60%;
 
     display: inline-block;
@@ -67,11 +70,15 @@ textarea {
     color: white;
 }
 
-.glyphicon.tip, .glyphicon-file-reservation {
+.fas.tip, .icon-file-reservation {
     cursor: default;
     user-select: none;
 }
 
 .alert p {
     margin-bottom: 0;
+}
+
+.hidden {
+    display: none;
 }

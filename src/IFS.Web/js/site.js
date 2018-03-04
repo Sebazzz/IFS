@@ -1,4 +1,9 @@
-﻿(function (app, storage) {
+﻿import 'bootstrap';
+import 'jquery-validation';
+import 'jquery-validation-unobtrusive';
+import '../css/site.css';
+
+(function (app, storage) {
     app.contactInformationPersistence = {
         initialize: function(nameFieldId, emailFieldId) {
             function initFromLocalStorage(key, id) {
@@ -26,5 +31,9 @@
             initFromLocalStorage('name', nameFieldId);
             initFromLocalStorage('type', emailFieldId);
         }
-    }
+    };
+
+    app.setTooltips = function(selector) {
+        $(selector).tooltip();
+    };
 })(window.app = (window.app || {}), localStorage);

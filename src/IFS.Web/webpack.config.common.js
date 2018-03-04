@@ -11,10 +11,6 @@ const globals = new webpack.ProvidePlugin({
     Popper: ['popper.js', 'default']
 });
 
-const libExtract = new webpack.optimize.CommonsChunkPlugin({
-    name: 'lib.js'
-});
-
 // Extract compiled CSS into a seperate file
 const extractCss = new ExtractTextPlugin({
     filename: 'site.css'
@@ -24,15 +20,14 @@ const libraries = [
     'jquery',
     'jquery-validation',
     'jquery-validation-unobtrusive',
+    'popper.js',
     'bootstrap'
 ];
 
 module.exports =  {
     devtool: 'inline-source-map',
     entry: {
-        'site.css': ['./css/site.css'],
         'site.js': ['./js/site.js'],
-        'lib.js': libraries,
 
          // pages
         'shared/error.js': './js/pages/shared/error.js',
@@ -41,12 +36,23 @@ module.exports =  {
     },
     plugins: [
         globals,
-        libExtract,
         extractCss
     ],
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+				'lib.js': {
+					test: /node_modules/,
+					chunks: "initial",
+					name: "lib.js",
+					enforce: true
+				}
+            },
+        },
+    },
     output: {
         filename: '[name]',
-        chunkFilename: 'lazy_[name].[chunkhash].js',
+        chunkFilename: '[name]',
         path: targetDir,
         publicPath: '/build/'
     },
@@ -63,7 +69,7 @@ module.exports =  {
                         {
                             loader: 'css-loader',
                             options: {
-                                sourceMap: true
+                                sourceMap: true,
                             }
                         }
                     ],
@@ -73,3 +79,7 @@ module.exports =  {
         ]
     }
 };
+
+if (process.env.NODE_ENV) {
+    module.exports.mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+}
