@@ -1,4 +1,6 @@
 ﻿import 'bootstrap';
+import 'jquery-validation';
+import 'jquery-validation-unobtrusive';
 import '../css/site.css';
 
 (function (app, storage) {
@@ -29,5 +31,9 @@ import '../css/site.css';
             initFromLocalStorage('name', nameFieldId);
             initFromLocalStorage('type', emailFieldId);
         }
-    }
+    };
+
+    app.setTooltips = function(selector) {
+        $(selector).tooltip();
+    };
 })(window.app = (window.app || {}), localStorage);

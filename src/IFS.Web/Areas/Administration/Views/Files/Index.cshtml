@@ -34,11 +34,11 @@
             <tr>
                 <td>
                     @if (!file.Metadata.IsReservation) {
-                        <span class="glyphicon glyphicon-file tip" title="This is an uploaded file via password authentication"></span>
+                        <span class="fas fa-file tip" title="This is an uploaded file via password authentication"></span>
                     } else {
-                        <span class="glyphicon-file-reservation tip" title="This is an uploaded file via an invitation">
-                            <span class="glyphicon glyphicon-file"></span>
-                            <span class="glyphicon glyphicon-time"></span>
+                        <span class="con-file-reservation tip" title="This is an uploaded file via an invitation">
+                            <span class="fas fa-file"></span>
+                            <span class="fa fa-clock"></span>
                         </span>
                     }
                 </td>
@@ -76,14 +76,14 @@
                 <td>
                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
                         <button class="btn btn-sm btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            <span class="fas fa-trash"></span>
                         </button>
                     </form>
                 </td>
             </tr>
          } else {
             <tr>
-                <td><span class="glyphicon glyphicon-time tip" title="This is an unused upload invitation link"></span></td>
+                <td><span class="fas fa-clock tip" title="This is an unused upload invitation link"></span></td>
                 <td><code>@file.Id</code></td>
                 <td>
                     (no file uploaded yet)
@@ -118,7 +118,7 @@
                 <td>
                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
                         <button class="btn btn-sm btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            <span class="fas fa-trash"></span>
                         </button>
                     </form>
                 </td>
@@ -138,7 +138,7 @@
 
 <div>
     <a class="btn btn-default" asp-controller="UploadLink">
-        <span class="glyphicon glyphicon-link"></span>
+        <span class="fas fa-link"></span>
         Create upload link
     </a>
 
@@ -146,5 +146,5 @@
 </div>
 
 @section scripts {
-    <script>$('.tip').tooltip();</script>
+    <script>window.app.setTooltips('.tip');</script>
 }

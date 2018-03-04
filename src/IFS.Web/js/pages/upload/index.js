@@ -33,8 +33,8 @@
             .removeClass('text-danger')
             .text('')
             .addClass('text-success')
-            .addClass('glyphicon')
-            .addClass('glyphicon-ok');
+            .addClass('fas')
+            .addClass('fa-check');
 
         var fileInput = this;
         var files = fileInput.files;
