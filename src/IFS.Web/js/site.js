@@ -1,4 +1,7 @@
-﻿(function (app, storage) {
+﻿import 'bootstrap';
+import '../css/site.css';
+
+(function (app, storage) {
     app.contactInformationPersistence = {
         initialize: function(nameFieldId, emailFieldId) {
             function initFromLocalStorage(key, id) {

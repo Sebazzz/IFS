@@ -27,9 +27,7 @@ const libraries = [
 module.exports =  {
     devtool: 'inline-source-map',
     entry: {
-        'site.css': ['./css/site.css'],
         'site.js': ['./js/site.js'],
-        'lib.js': libraries,
 
          // pages
         'shared/error.js': './js/pages/shared/error.js',
@@ -44,10 +42,7 @@ module.exports =  {
         splitChunks: {
             cacheGroups: {
 				'lib.js': {
-					test: function(chunk) {
-                        var request = chunk.rawRequest;
-                        return libraries.indexOf(request) !== -1;   
-                    },
+					test: /node_modules/,
 					chunks: "initial",
 					name: "lib.js",
 					enforce: true

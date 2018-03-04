@@ -48,7 +48,6 @@ textarea {
 
 .logoff-form {
     float: right;
-    display: inline-block;
 }
 
 .glyphicon-file-reservation {
@@ -74,4 +73,8 @@ textarea {
 
 .alert p {
     margin-bottom: 0;
+}
+
+.hidden {
+    display: none;
 }
