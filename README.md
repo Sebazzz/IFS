@@ -6,7 +6,7 @@ Built-in data retention. Secure. Fast.
 ## Building the project
 To build the project ensure you have:
 
-- .NET Core 2.0 SDK installed
+- .NET Core 2.1 SDK installed
 - Node.js 6.0 or higher installed and in PATH
 - Powershell 4 or higher
 
