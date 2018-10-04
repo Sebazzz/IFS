@@ -16,14 +16,6 @@ const extractCss = new ExtractTextPlugin({
     filename: 'site.css'
 });
 
-const libraries = [
-    'jquery',
-    'jquery-validation',
-    'jquery-validation-unobtrusive',
-    'popper.js',
-    'bootstrap'
-];
-
 module.exports =  {
     devtool: 'inline-source-map',
     entry: {
