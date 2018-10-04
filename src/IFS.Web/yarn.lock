@@ -1506,16 +1506,16 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-jquery-validation-unobtrusive@3.2.6:
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/jquery-validation-unobtrusive/-/jquery-validation-unobtrusive-3.2.6.tgz#0f8767c5462e30b4a5743d12461e8057da7572e5"
+jquery-validation-unobtrusive@3.2.10:
+  version "3.2.10"
+  resolved "https://registry.yarnpkg.com/jquery-validation-unobtrusive/-/jquery-validation-unobtrusive-3.2.10.tgz#5ed7096c10d917c272ce71055b90ca67c27c219c"
   dependencies:
     jquery ">=1.8"
-    jquery-validation ">=1.8"
+    jquery-validation ">=1.16"
 
-jquery-validation@1.17.0, jquery-validation@>=1.8:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/jquery-validation/-/jquery-validation-1.17.0.tgz#ab66b6b583d7740b9bbd148993e50e8ac041f35b"
+jquery-validation@1.18.0, jquery-validation@>=1.16:
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/jquery-validation/-/jquery-validation-1.18.0.tgz#69898f6cddc3e8ef5811de84ff8b23fc24d93776"
   dependencies:
     jquery "^1.7 || ^2.0 || ^3.1"
 
