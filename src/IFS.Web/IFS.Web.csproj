@@ -30,7 +30,7 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.21" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
-    <PackageReference Include="Markdig" Version="0.15.4" />
+    <PackageReference Include="Markdig" Version="0.15.6" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.1" />
   </ItemGroup>
 
