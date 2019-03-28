@@ -1,5 +1,5 @@
 ﻿/// <binding />
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const webpack = require('webpack');
 
@@ -8,9 +8,9 @@ module.exports = {
     optimization: {
         minimizer: [
             // Minification
-            new UglifyJsPlugin({
+            new TerserPlugin({
                 parallel: true,
-                uglifyOptions: {
+                terserOptions: {
                     compress: {
                         dead_code: true,
                         drop_console: true,
@@ -26,8 +26,7 @@ module.exports = {
                         beautify: false,
                     },
                     ecma: 5,
-                },
-                warningsFilter: () => true,
+                }
             })
         ]
     }
