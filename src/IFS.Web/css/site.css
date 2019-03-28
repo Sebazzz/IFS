@@ -1,8 +1,8 @@
 ﻿@charset "UTF-8";
-@import "../node_modules/bootstrap/dist/css/bootstrap.css";
-@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css";
-@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-regular.css";
-@import "../node_modules/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css";
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fontawesome.css";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fa-regular.css";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fa-solid.css";
 
 body {
     padding-top: 50px;
@@ -81,4 +81,8 @@ textarea {
 
 .hidden {
     display: none;
+}
+
+.alert.validation-summary-errors ul {
+    margin-bottom: 0;
 }
