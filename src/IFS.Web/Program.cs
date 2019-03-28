@@ -7,13 +7,26 @@
 
 namespace IFS.Web {
     using System.IO;
-
+    using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Logging;
 
     public sealed class Program {
         public static void Main(string[] args) {
-            IWebHost host = new WebHostBuilder()
+            IWebHost host = 
+                WebHost.CreateDefaultBuilder(args)
                 .CaptureStartupErrors(true)
+                .ConfigureLogging((wc,logging) => {
+                      var env = wc.HostingEnvironment;
+                      var config = wc.Configuration;
+
+                      logging.AddConfiguration(config.GetSection("Logging"));
+                      logging.AddConsole();
+
+                      if (env.IsDevelopment()) {
+                          logging.AddDebug();
+                      }
+                 })
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
