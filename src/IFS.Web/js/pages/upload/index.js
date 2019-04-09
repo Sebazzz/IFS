@@ -7,7 +7,7 @@
         trackerUrl = uploadParameters.trackerUrl;
 
     $uploadRoot.find('form').submit(function () {
-        if (!$(this).valid()) {
+        if (!this.checkValidity()) {
             return;
         }
 
