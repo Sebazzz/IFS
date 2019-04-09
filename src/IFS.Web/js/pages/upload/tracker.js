@@ -1,5 +1,5 @@
 ﻿import * as $ from 'jquery';
-(function () {
+(function (global) {
     var $tracker = $('#uploadTracker'),
         $progress = $tracker.find('.progress .progress-bar'),
         $textBlock = $tracker.find('#uploadProgress'),
@@ -40,8 +40,8 @@
             return;
         }
 
-        $.getJSON(global.scriptParams.uploadApi, {})
-            .success(function(data) {
+        $.getJSON(global.scriptparams.uploadApi, {})
+            .done(function(data) {
                 if (firstTime) {
                     $progress.stop();
 

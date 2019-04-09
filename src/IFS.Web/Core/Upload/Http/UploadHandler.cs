@@ -89,10 +89,15 @@
             context.Request.Method = "POST";
             context.Request.Body = Stream.Null;
 
-            var query = new Dictionary<string, StringValues> {
-                [nameof(uploadErrorsModel.Errors)] = uploadErrorsModel.Errors
-            };
-            context.Request.QueryString = QueryString.Create(query);
+            if (uploadErrorsModel.Errors?.Length > 0) {
+                Dictionary<string, StringValues> query = new Dictionary<string, StringValues> {
+                    [nameof(uploadErrorsModel.Errors)] = uploadErrorsModel.Errors
+                };
+                context.Request.QueryString = QueryString.Create(query);
+            } else {
+                context.Request.QueryString = new QueryString();
+            }
+
             context.Request.ContentType = "text/plain";
 
             // Set route data

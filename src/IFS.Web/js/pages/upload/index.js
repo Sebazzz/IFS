@@ -22,7 +22,7 @@
         });
     });
 
-    $(document).on('load', '.reload-button', function (ev) {
+    $(document).on('click', '.reload-button', function (ev) {
         ev.preventDefault();
 
         document.location.reload(true);
