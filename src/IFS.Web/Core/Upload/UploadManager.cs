@@ -173,6 +173,11 @@ namespace IFS.Web.Core.Upload {
                     }
                     return;
 
+                case nameof(UploadModel.Password):
+                    string password = await ReadString();
+                    metadataFactory.SetPassword(password);
+                    return;
+
                 case nameof(UploadModel.Sender) + "." + nameof(ContactInformation.Name):
                     string name = await ReadString();
                     metadataFactory.SetSenderName(name);
@@ -337,6 +342,10 @@ namespace IFS.Web.Core.Upload {
 
             public void SetIsReservation(bool value) {
                 this._metadata.IsReservation = value;
+            }
+
+            public void SetPassword(string password) {
+                this._metadata.DownloadSecurity = String.IsNullOrWhiteSpace(password) ? null : DownloadSecurity.CreateNew(password.Trim());
             }
         }
     }

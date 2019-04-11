@@ -40,6 +40,9 @@ namespace IFS.Web.Models {
 
         public bool IsReservation { get; set; }
 
+        [StringLength(512)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
     }
 
     public class UploadFileInProgressModel {

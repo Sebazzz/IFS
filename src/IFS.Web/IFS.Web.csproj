@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <PackageId>IFS.Web</PackageId>
     <RuntimeIdentifiers>win7-x64;win10-x64</RuntimeIdentifiers>
-    <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.2.4</RuntimeFrameworkVersion>
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
@@ -34,7 +34,7 @@
     <PackageReference Include="Humanizer.Core" Version="2.6.2" />
     <PackageReference Include="Markdig" Version="0.16.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition="'false'=='true'">

@@ -19,6 +19,8 @@
 
         public ContactInformation Sender { get; set; }
 
+        public DownloadSecurity DownloadSecurity { get; set; }
+
         public string Serialize() {
             return JsonConvert.SerializeObject(this, Formatting.Indented, SerializerSettings);
         }
@@ -29,6 +31,24 @@
 
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings();
         private AccessLog _access;
+    }
+
+    public class DownloadSecurity {
+        public string SecurityToken { get; set; }
+        public string HashedPassword { get; set; }
+
+        public static DownloadSecurity CreateNew(string password) {
+            string securityToken = Guid.NewGuid().ToString("n");
+            return new DownloadSecurity {
+                SecurityToken = securityToken,
+                HashedPassword = PasswordHasher.HashPassword(password, securityToken)
+            };
+        }
+
+        public bool Verify(string password) {
+            string hashedPassword = PasswordHasher.HashPassword(password, this.SecurityToken);
+            return hashedPassword == this.HashedPassword;
+        }
     }
 
     public class ContactInformation {

@@ -40,9 +40,7 @@ namespace IFS.Web.Core.Upload.Http {
         }
 
         private static void DisposeLock(HttpContext httpContext) {
-            IDisposable @lock = httpContext.Items[FileLockItemKey] as IDisposable;
-
-            if (@lock != null) {
+            if (httpContext.Items[FileLockItemKey] is IDisposable @lock) {
                 @lock.Dispose();
 
                 httpContext.Items.Remove(FileLockItemKey);

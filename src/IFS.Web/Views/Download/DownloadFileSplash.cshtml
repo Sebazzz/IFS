@@ -32,22 +32,28 @@
 }
 
 <p class="alert alert-info" id="downloadLinkContainer">
-    <strong>Notice</strong> If the download does not start, please <a href="@downloadLink" id="downloadLink" download>click here</a> to download the file manually.
+    <strong>Notice</strong> If the download does not start, please <a href="@downloadLink@(ViewBag.HashedPassword != null ? $"?_={ViewBag.HashedPassword}" : "")" id="downloadLink" download>click here</a> to download the file manually.
 </p>
 
-<iframe src="@downloadLink" style="visibility: hidden;"></iframe>
+<form target="downloadFrame" action="@downloadLink" method="post" id="downloadForm" novalidate="">
+    <input type="hidden" name="HashedPassword" value="@ViewBag.HashedPassword"/>
+</form>
+
+<iframe src="about:blank" name="downloadFrame" style="visibility: hidden;"></iframe>
 
 @section scripts {
     <script>
         (function() {
             // Replace URL for easy copying
             if ('replaceState' in history) {
-                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)');
+                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)@(ViewBag.HashedPassword != null ? $"?_={ViewBag.HashedPassword}" : "")');
             }
 
             document.getElementById('downloadLink').addEventListener('click', function() {
                 document.getElementById('downloadLinkContainer').style.visibility = 'hidden';
             });
+
+            document.getElementById('downloadForm').submit();
         })();
     </script>
 }
