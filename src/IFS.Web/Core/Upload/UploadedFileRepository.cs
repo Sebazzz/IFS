@@ -118,6 +118,8 @@ namespace IFS.Web.Core.Upload {
             this.Id = id;
         }
 
+        public bool IsPasswordProtected => this.Metadata.DownloadSecurity != null;
+
         public FileIdentifier Id { get; }
 
         public StoredMetadata Metadata { get; }

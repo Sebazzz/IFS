@@ -1,5 +1,6 @@
 ﻿@using System.Text.Encodings.Web
 @using Humanizer
+@using Microsoft.AspNetCore.Http.Extensions
 @model IFS.Web.Core.Upload.UploadedFile
 @{
     ViewBag.Title = $"Download started: {Model.Metadata.OriginalFileName}";
@@ -8,6 +9,8 @@
 @{
     string downloadLink = this.Url.RouteUrl("DownloadFileRaw", new { id = Model.Id }, this.Context.Request.Scheme);
     var size = Model.Size.Bytes();
+
+    string directDownloadUrl = Model.IsPasswordProtected ? this.Context.Request.GetDisplayUrl() : downloadLink;
 }
 
 <ifs-page-title>@ViewBag.Title</ifs-page-title>
@@ -32,23 +35,47 @@
 }
 
 <p class="alert alert-info" id="downloadLinkContainer">
-    <strong>Notice</strong> If the download does not start, please <a href="@downloadLink@(ViewBag.HashedPassword != null ? $"?_={ViewBag.HashedPassword}" : "")" id="downloadLink" download>click here</a> to download the file manually.
+    <strong>Notice</strong> If the download does not start, please <a href="@directDownloadUrl" id="downloadLink" download>click here</a> to download the file manually.
 </p>
 
 <form target="downloadFrame" action="@downloadLink" method="post" id="downloadForm" novalidate="">
-    <input type="hidden" name="HashedPassword" value="@ViewBag.HashedPassword"/>
+    <input type="hidden" name="_" value="@ViewBag.ProtectedPassword"/>
 </form>
 
 <iframe src="about:blank" name="downloadFrame" style="visibility: hidden;"></iframe>
 
 @section scripts {
+    @if (Model.IsPasswordProtected == false) {
+        <script>
+            (function() {
+                // Replace URL for easy copying
+                if ('replaceState' in history) {
+                    history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)');
+                }
+            })();
+        </script>
+    }
+    else {
+        <script>
+            (function() {
+                function downloadFileManually() {
+                    // Manually submit form in top-level window
+                    const form = document.getElementById('downloadForm');
+                    form.target = '_top';
+                    form.submit();
+                }
+
+                document.getElementById('downloadLink').addEventListener('click', function(ev) {
+                    ev.preventDefault();
+
+                    downloadFileManually();
+                });
+            })();
+        </script>
+    }
+
     <script>
         (function() {
-            // Replace URL for easy copying
-            if ('replaceState' in history) {
-                history.replaceState({}, null, '@JavaScriptEncoder.Default.Encode(downloadLink)@(ViewBag.HashedPassword != null ? $"?_={ViewBag.HashedPassword}" : "")');
-            }
-
             document.getElementById('downloadLink').addEventListener('click', function() {
                 document.getElementById('downloadLinkContainer').style.visibility = 'hidden';
             });

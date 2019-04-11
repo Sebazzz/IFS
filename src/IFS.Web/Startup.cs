@@ -40,6 +40,8 @@ namespace IFS.Web {
 
             });
 
+            services.AddDataProtection();
+
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
 
             services.AddAuthorization(opt => {
@@ -80,6 +82,7 @@ namespace IFS.Web {
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
             services.AddScoped<IAdministrationAuthenticationProvider, AuthenticationProvider>();
+            services.AddScoped<ITransitPasswordProtector, TransitPasswordProtector>();
 
             // ... Configuration
             services.AddOptions();
