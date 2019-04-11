@@ -6,18 +6,25 @@
     <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
 </div>
 
+<hr />
+
+<h4>Sender</h4>
+
 <div class="form-group">
-    <label asp-for="Sender.Name">Sender: Your name</label>
+    <label asp-for="Sender.Name">Your name</label>
 
     <input asp-for="Sender.Name" class="form-control" />
 </div>
 
 <div class="form-group">
-    <label asp-for="Sender.EmailAddress">Sender: Your e-mail address</label>
+    <label asp-for="Sender.EmailAddress">Your e-mail address</label>
 
     <input asp-for="Sender.EmailAddress" class="form-control" />
 </div>
 
+<hr />
+
+<h4>Protect this download</h4>
 <div class="form-group">
     <div class="custom-control custom-checkbox">
         <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
