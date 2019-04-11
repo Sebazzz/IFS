@@ -113,6 +113,10 @@ namespace IFS.Web {
                 app.UseDeveloperExceptionPage();
             } else {
                 app.UseExceptionHandler("/Error/Error");
+
+                // Come on, it is >= 2019, so anything stuff should be done over HTTPS
+                app.UseHttpsRedirection();
+                app.UseHsts();
             }
             
             app.UseStaticFiles();
