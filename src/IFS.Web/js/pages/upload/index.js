@@ -45,6 +45,34 @@
         }
     });
 
+    (function() {
+        const pPasswordProtect = document.getElementById('pPasswordProtect'),
+              cbPasswordProtect = document.getElementById('cbPasswordProtect');
+
+        let isFirstTimeShowingPanel = true;
+
+        function setState() {
+            const showPanel = cbPasswordProtect.checked,
+                  removeClazzName = showPanel ? 'hidden' : 'visible',
+                  addClazzName = showPanel ? 'visible' : 'hidden';
+
+            pPasswordProtect.classList.add(addClazzName);
+            pPasswordProtect.classList.remove(removeClazzName);
+
+            if (showPanel && isFirstTimeShowingPanel) {
+                isFirstTimeShowingPanel = false;
+
+                const passwordBox = pPasswordProtect.querySelector('input[type=password]');
+                if (passwordBox) {
+                    passwordBox.value = ''; // Stop browsers from pre-filling it
+                }
+            }
+        }
+
+        setState();
+        cbPasswordProtect.addEventListener('change', setState);
+    })();
+
     global.uploadCoordinator = {
         validationError: function (text) {
             alert(text);

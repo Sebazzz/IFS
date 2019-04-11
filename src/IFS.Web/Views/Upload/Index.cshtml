@@ -48,7 +48,7 @@
         <input asp-for="SuggestedFileSize" type="hidden" />
         <input asp-for="IsReservation" type="hidden" />
 
-        <p>
+        <div class="form-group">
             <label asp-for="File"></label><br/>
 
             <span class="upload-control form-control btn btn-primary">
@@ -58,17 +58,19 @@
             </span>
             
             <span asp-validation-for="File" class="text-danger">*</span>
-        </p>
+        </div>
 
         @{
             Html.RenderPartial(Model.IsReservation == false ? "_UploadForm.Full" : "_UploadForm.Reservation", Model);
         }
 
-        <p>
-            <button class="btn btn-primary">
-                <span class="fas fa-upload"></span> Upload
-            </button>
-        </p>
+        <div class="form-group">
+            <p>
+                <button class="btn btn-primary">
+                    <span class="fas fa-upload"></span> Upload
+                </button>
+            </p>
+        </div>
     </form>
 </div>
 

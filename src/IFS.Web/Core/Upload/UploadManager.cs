@@ -178,6 +178,11 @@ namespace IFS.Web.Core.Upload {
                     metadataFactory.SetPassword(password);
                     return;
 
+                case nameof(UploadModel.EnablePasswordProtection):
+                    string enablePasswordProtection = await ReadString();
+                    metadataFactory.SetEnablePasswordProtection(String.Equals(Boolean.TrueString, enablePasswordProtection, StringComparison.OrdinalIgnoreCase));
+                    return;
+
                 case nameof(UploadModel.Sender) + "." + nameof(ContactInformation.Name):
                     string name = await ReadString();
                     metadataFactory.SetSenderName(name);
@@ -295,6 +300,7 @@ namespace IFS.Web.Core.Upload {
 
         private sealed class StoredMetadataFactory {
             private readonly StoredMetadata _metadata = new StoredMetadata();
+            private bool _enablePasswordProtection;
 
             public void SetExpiration(DateTime expiration) {
                 this._metadata.Expiration = expiration;
@@ -337,6 +343,10 @@ namespace IFS.Web.Core.Upload {
             public StoredMetadata Build() {
                 this._metadata.UploadedOn = DateTime.UtcNow;
 
+                if (!this._enablePasswordProtection) {
+                    this._metadata.DownloadSecurity = null;
+                }
+
                 return this._metadata;
             }
 
@@ -346,6 +356,10 @@ namespace IFS.Web.Core.Upload {
 
             public void SetPassword(string password) {
                 this._metadata.DownloadSecurity = String.IsNullOrWhiteSpace(password) ? null : DownloadSecurity.CreateNew(password.Trim());
+            }
+
+            public void SetEnablePasswordProtection(bool enable) {
+                this._enablePasswordProtection = enable;
             }
         }
     }

@@ -43,6 +43,8 @@ namespace IFS.Web.Models {
         [StringLength(512)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        public bool EnablePasswordProtection { get;set; }
     }
 
     public class UploadFileInProgressModel {
