@@ -15,10 +15,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="css\site.css" />
     <Content Include="css\site.min.css" />
     <Content Include="js\site.js" />
     <Content Include="js\site.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.local.json" />
   </ItemGroup>
 
   <ItemGroup>

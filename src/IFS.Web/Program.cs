@@ -9,12 +9,14 @@ namespace IFS.Web {
     using System.IO;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     public sealed class Program {
         public static void Main(string[] args) {
             IWebHost host = 
                 WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(x => x.AddJsonFile("appsettings.local.json", true))
                 .CaptureStartupErrors(true)
                 .ConfigureLogging((wc,logging) => {
                       var env = wc.HostingEnvironment;
