@@ -27,9 +27,7 @@ namespace IFS.Web {
                           logging.AddDebug();
                       }
                  })
-                .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 
