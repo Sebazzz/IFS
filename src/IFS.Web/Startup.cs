@@ -5,6 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Framework.Middleware.Fail2Ban;
+using IFS.Web.Framework.Services;
+
 namespace IFS.Web {
     using System;
 
@@ -82,7 +85,10 @@ namespace IFS.Web {
             // Add app services
             services.AddScoped<IAuthenticationProvider, AuthenticationProvider>();
             services.AddScoped<IAdministrationAuthenticationProvider, AuthenticationProvider>();
+
+            // ... Security
             services.AddScoped<ITransitPasswordProtector, TransitPasswordProtector>();
+            services.AddFail2Ban();
 
             // ... Configuration
             services.AddOptions();
@@ -120,8 +126,8 @@ namespace IFS.Web {
             }
             
             app.UseStaticFiles();
-
             app.UseAuthentication();
+            app.UseFail2BanRecording();
 
             // Hangfire
             app.UseHangfireDashboard(

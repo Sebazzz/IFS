@@ -5,6 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Framework.Filters;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+
 namespace IFS.Web.Controllers {
     using System.Threading.Tasks;
 
@@ -35,6 +38,7 @@ namespace IFS.Web.Controllers {
         }
 
         [Route("download/file/{id}", Name = "DownloadFile")]
+        [Fail2BanModelState(nameof(DownloadPasswordModel.Password))]
         [FileLock]
         public async Task<IActionResult> DownloadFileSplash(FileIdentifier id) {
             if (!this.ModelState.IsValid) {
@@ -66,6 +70,7 @@ namespace IFS.Web.Controllers {
         }
 
         [Route("download/file/{id}", Name = "DownloadFile")]
+        [Fail2BanModelState(nameof(DownloadPasswordModel.Password))]
         [FileLock]
         [HttpPost]
         public async Task<IActionResult> DownloadFileSplash(FileIdentifier id, DownloadPasswordModel passwordInfo) {
@@ -95,9 +100,12 @@ namespace IFS.Web.Controllers {
                 await this.MakeBadPasswordDelayTask();
 
                 this.ModelState.AddModelError(nameof(passwordInfo.Password), "Invalid password");
+                this.HttpContext.RecordFail2BanFailure();
 
                 return this.View("DownloadFilePassword", passwordInfo);
             }
+
+            this.HttpContext.RecordFail2BanSuccess();
 
             // Show download prompt, protect password to prevent reuse
             this.ViewBag.ProtectedPassword = this._passwordProtector.Protect(passwordInfo.Password);
@@ -122,6 +130,14 @@ namespace IFS.Web.Controllers {
             // Decrypt password if given
             if (password == null && protectedPassword != null) {
                 password = this._passwordProtector.Unprotect(protectedPassword);
+
+                // Handle no password (protectedPassword might be expired)
+                if (password == null)
+                {
+                    DownloadPasswordModel passwordInfo = new DownloadPasswordModel();
+                    this.ModelState.AddModelError(nameof(passwordInfo.Password), "Password authentication expired");
+                    return this.View("DownloadFilePassword", passwordInfo);
+                }
             }
 
             // Direct-download support
@@ -133,15 +149,11 @@ namespace IFS.Web.Controllers {
 
                 if (uploadedFile.Metadata.DownloadSecurity.Verify(password) == false) {
                     await this.MakeBadPasswordDelayTask();
+                    this.HttpContext.RecordFail2BanFailure();
                     return this.StatusCode(401, "This resource is protected by a password");
                 }
-            }
 
-            // Handle no password (protectedPassword might be expired)
-            if (password == null) {
-                DownloadPasswordModel passwordInfo = new DownloadPasswordModel();
-                this.ModelState.AddModelError(nameof(passwordInfo.Password), "Password authentication expired");
-                return this.View("DownloadFilePassword", passwordInfo);
+                this.HttpContext.RecordFail2BanSuccess();
             }
 
             // Do download

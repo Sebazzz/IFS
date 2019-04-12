@@ -5,6 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Framework.Filters;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+
 namespace IFS.Web.Controllers {
     using System;
     using System.Security.Claims;
@@ -32,6 +35,7 @@ namespace IFS.Web.Controllers {
             return this.RedirectToAction("Login");
         }
 
+        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
         public IActionResult Login(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
                 return this.RedirectToAction("Index", "Upload");
@@ -49,6 +53,7 @@ namespace IFS.Web.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
         public async Task<IActionResult> Login(LoginModel model) {
             // Due to MVC model binding, model will never be null here
             if (!this.ModelState.IsValid) {
@@ -60,6 +65,7 @@ namespace IFS.Web.Controllers {
             bool isValid = this._authenticationProvider.IsValidPassphrase(model?.Passphrase);
 
             if (!isValid) {
+                this.HttpContext.RecordFail2BanFailure();
                 this.SetHelpText(model);
                 this.ModelState.AddModelError(nameof(model.Passphrase), "Invalid passphrase. Please try again.");
                 return this.View(model);
@@ -79,6 +85,7 @@ namespace IFS.Web.Controllers {
                 IsPersistent = false
             };
 
+            this.HttpContext.RecordFail2BanSuccess();
             await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
             string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;

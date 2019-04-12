@@ -5,6 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Framework.Filters;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+
 namespace IFS.Web.Areas.Administration.Controllers {
     using System;
     using System.Security.Claims;
@@ -30,6 +33,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
             return this.RedirectToAction("Login");
         }
 
+        [Fail2BanModelState(nameof(LoginModel.Password))]
         public async Task<IActionResult> Login(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
                 await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
@@ -50,6 +54,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Fail2BanModelState(nameof(LoginModel.Password))]
         public async Task<IActionResult> Login(LoginModel model) {
             if (model == null) {
                 return this.View();
@@ -63,6 +68,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
             if (!isValid) {
                 this.ModelState.AddModelError(nameof(model.Password), "Invalid username or password. Please try again.");
+                this.HttpContext.RecordFail2BanFailure();
                 return this.View();
             }
 
@@ -79,6 +85,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
                 IsPersistent = false
             };
 
+            this.HttpContext.RecordFail2BanSuccess();
             await this.HttpContext.SignInAsync(KnownAuthenticationScheme.AdministrationScheme, userPrincipal, authenticationOptions);
 
             string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
