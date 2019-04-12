@@ -152,7 +152,9 @@ namespace IFS.Web {
                 });
 
             // Configure hangfire jobs (not sure where to do this else)
-            RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(x => x.Execute(JobCancellationToken.Null), Cron.MinuteInterval(30));
+            RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(
+                x => x.Execute(JobCancellationToken.Null),
+                "*/30 * * * *");
         }
 
         private sealed class AdministratorDashboardFilter : IDashboardAuthorizationFilter {
