@@ -17,19 +17,13 @@ namespace IFS.Web.Framework.Middleware.Fail2Ban
 
         public Fail2BanRecordMiddleware(IFail2Ban fail2Ban)
         {
-            _fail2Ban = fail2Ban;
+            this._fail2Ban = fail2Ban;
         }
 
-        public Task InvokeAsync(HttpContext context, RequestDelegate next)
-        {
-            return next.Invoke(context).ContinueWith(this.CheckAndApplyFail2Ban, context);
-        }
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
+            await next.Invoke(context);
 
-        private void CheckAndApplyFail2Ban(Task arg1, object arg2)
-        {
-            HttpContext httpContext = arg2 as HttpContext;
-           
-            CheckAndApplyFail2Ban(httpContext);
+            this.CheckAndApplyFail2Ban(context);
         }
 
         private void CheckAndApplyFail2Ban(HttpContext httpContext)
