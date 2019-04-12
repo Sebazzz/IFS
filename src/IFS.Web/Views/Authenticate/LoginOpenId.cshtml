@@ -1,0 +1,25 @@
+﻿@model LoginModel
+
+@{
+    ViewBag.Title = "Upload login";
+}
+
+<ifs-page-title>@ViewBag.Title</ifs-page-title>
+
+<p>
+    You need to log in to upload files.
+</p>
+
+@if (!ViewData.ModelState.IsValid) {
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+}
+
+<form asp-action="Login" asp-antiforgery="true">
+    <input type="hidden" asp-for="ReturnUrl"/>
+
+    <div class="form-group">
+        <button class="btn btn-primary">Continue</button>
+    </div>
+</form>
+
+<markdown class="alert alert-info">@Model.HelpText</markdown>

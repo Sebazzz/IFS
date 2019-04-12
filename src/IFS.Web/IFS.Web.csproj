@@ -12,6 +12,8 @@
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

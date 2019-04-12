@@ -13,6 +13,9 @@ namespace IFS.Web {
 
     using Core;
     using Core.Authentication;
+    using Core.Authentication.OpenIdConnect;
+    using Core.Authentication.Static;
+    using Core.Authorization;
     using Core.Upload;
     using Core.Upload.Http;
 
@@ -48,31 +51,12 @@ namespace IFS.Web {
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
 
             services.AddAuthorization(opt => {
-                opt.AddPolicy(KnownPolicies.Upload,
-                    b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.PassphraseScheme)
-                          .RequireAuthenticatedUser()
-                          .RequireUserName(KnownPolicies.Upload)
-                          .AddRequirements(new RestrictedUploadRequirement()));
-
-                opt.AddPolicy(KnownPolicies.Administration,
-                    b => b.AddAuthenticationSchemes(KnownAuthenticationScheme.AdministrationScheme)
-                          .RequireAuthenticatedUser()
-                          .RequireUserName(this.Configuration.GetSection("Authentication").GetSection("Administration").GetValue<string>("UserName")));
+                opt.AddUploadPolicy(this.Configuration);
+                opt.AddAdministrationPolicy(this.Configuration);
             });
 
             services.AddAuthentication()
-                .AddCookie(KnownAuthenticationScheme.PassphraseScheme, 
-                            opt => {
-                                opt.LoginPath = new PathString("/authenticate/login");
-                                opt.AccessDeniedPath = new PathString("/error/accessDenied");
-                                opt.ReturnUrlParameter = "returnUrl";
-                            })
-                .AddCookie(KnownAuthenticationScheme.AdministrationScheme, 
-                    opt => {
-                        opt.LoginPath = new PathString("/administration/authenticate/login");
-                        opt.AccessDeniedPath = new PathString("/error/accessDenied");
-                        opt.ReturnUrlParameter = "returnUrl";
-                    });
+                .AddFromSettings(this.Configuration);
 
             // Hangfire
             services.AddHangfire(config => {
@@ -92,7 +76,7 @@ namespace IFS.Web {
 
             // ... Configuration
             services.AddOptions();
-            services.Configure<Core.Authentication.AuthenticationOptions>(this.Configuration.GetSection("Authentication"));
+            services.Configure<AuthenticationOptions>(this.Configuration.GetSection("Authentication"));
             services.Configure<FileStoreOptions>(this.Configuration.GetSection("FileStore"));
 
             // ... Upload
@@ -171,7 +155,7 @@ namespace IFS.Web {
             }
 
             public bool Authorize(DashboardContext context) {
-                var auth = this._serviceProvider.GetRequiredService<IOptions<Core.Authentication.AuthenticationOptions>>().Value?.Administration;
+                var auth = this._serviceProvider.GetRequiredService<IOptions<Core.Authentication.AuthenticationOptions>>().Value?.Static.Administration;
 
                 if (auth == null) {
                     return false;

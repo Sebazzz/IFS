@@ -17,11 +17,17 @@ namespace IFS.Web.Controllers {
     using Core.Authentication;
 
     using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
     using Models;
 
+    // Force authentication, or we will never redirect
+    [Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
+    [AllowAnonymous]
     public sealed class AuthenticateController : Controller {
         private readonly IAuthenticationProvider _authenticationProvider;
         private readonly IOptions<Core.Authentication.AuthenticationOptions> _authenticateOptions;
@@ -36,7 +42,9 @@ namespace IFS.Web.Controllers {
         }
 
         [Fail2BanModelState(nameof(LoginModel.Passphrase))]
-        public IActionResult Login(string returnUrl) {
+        [StaticAuthenticationAction]
+        [ActionName("Login")]
+        public IActionResult LoginStatic(string returnUrl) {
             if (this.User.Identity.IsAuthenticated) {
                 return this.RedirectToAction("Index", "Upload");
             }
@@ -47,6 +55,19 @@ namespace IFS.Web.Controllers {
             return this.View(loginModel);
         }
 
+        [OpenIdAuthenticationAction]
+        [ActionName("Login")]
+        public IActionResult LoginOpenId(string returnUrl) {
+            if (this.User.Identity.IsAuthenticated) {
+                return this.RedirectToAction("Index", "Upload");
+            }
+
+            LoginModel loginModel = new LoginModel();
+            this.SetHelpText(loginModel);
+
+            return this.View("LoginOpenId", loginModel);
+        }
+
         private void SetHelpText(LoginModel loginModel) {
             loginModel.HelpText = this._authenticateOptions.Value.LoginHelpText;
         }
@@ -54,7 +75,21 @@ namespace IFS.Web.Controllers {
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Fail2BanModelState(nameof(LoginModel.Passphrase))]
-        public async Task<IActionResult> Login(LoginModel model) {
+        [OpenIdAuthenticationAction]
+        [ActionName("Login")]
+        public async Task LoginOpenId(string returnUrl, IFormCollection form) {
+            await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, new OpenIdConnectChallengeProperties {
+                Prompt = "Sign in to upload files",
+                RedirectUri = returnUrl
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
+        [StaticAuthenticationAction]
+        [ActionName("Login")]
+        public async Task<IActionResult> LoginStatic(LoginModel model) {
             // Due to MVC model binding, model will never be null here
             if (!this.ModelState.IsValid) {
                 this.SetHelpText(model);

@@ -16,6 +16,11 @@ namespace IFS.Web.Core {
     public static class KnownAuthenticationScheme {
         public const string PassphraseScheme= nameof(PassphraseScheme);
         public const string AdministrationScheme = nameof(AdministrationScheme);
+
+        public static class OpenIdConnect {
+            public const string PassphraseScheme = nameof(OpenIdConnect) + nameof(PassphraseScheme);
+            public const string AdministrationScheme =  nameof(OpenIdConnect) +nameof(AdministrationScheme);
+        }
     }
 
     public static class KnownClaims {
