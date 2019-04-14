@@ -85,4 +85,6 @@ textarea {
 
 .alert.validation-summary-errors ul {
     margin-bottom: 0;
+    list-style: none;
+    padding-left: 0; 
 }
