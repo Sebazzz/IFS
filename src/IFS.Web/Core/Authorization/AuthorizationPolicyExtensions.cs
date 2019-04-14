@@ -33,7 +33,7 @@
                      .RequireAuthenticatedUser();
 
                     if (authOptions.OpenIdConnect?.Enable == true) {
-                        b.RequireRole(nameof(authOptions.OpenIdConnect.RoleClaims.Administrator));
+                        b.RequireRole(KnownRoles.Administrator);
                     } else {
                         b.RequireUserName(authOptions.Static.Administration.UserName);
                     }

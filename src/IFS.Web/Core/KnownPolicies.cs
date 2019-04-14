@@ -23,6 +23,10 @@ namespace IFS.Web.Core {
         }
     }
 
+    public static class KnownRoles {
+        public const string Administrator = nameof(Administrator);
+    }
+
     public static class KnownClaims {
         public const string RestrictionId = ClaimTypes.PrimarySid;
     }

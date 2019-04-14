@@ -16,7 +16,7 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
     using Newtonsoft.Json.Linq;
 
     internal static class AuthenticationBuilderExtensions {
-        public static AuthenticationBuilder AddOpenIdConnectFromSettings(this AuthenticationBuilder authBuilder, string authenticationScheme, string mappedAuthenticationScheme, IConfiguration configuration) {
+        public static AuthenticationBuilder AddOpenIdConnectFromSettings(this AuthenticationBuilder authBuilder, string authenticationScheme, string mappedAuthenticationScheme, string suffix, IConfiguration configuration) {
             OpenIdConnectSettings openIdConnectSettings = configuration.GetSection("Authentication").GetSection("OpenIdConnect").Get<OpenIdConnectSettings>();
 
             if (openIdConnectSettings.Enable == false) {
@@ -30,8 +30,8 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
                     opts.ClientId = openIdConnectSettings.ClientId;
                     opts.ClientSecret = openIdConnectSettings.ClientSecret;
                     opts.MetadataAddress = openIdConnectSettings.MetadataAddress;
-                    opts.SignedOutCallbackPath = "/oidc_signout";
-                    opts.CallbackPath = "/oidc_signin";
+                    opts.SignedOutCallbackPath = $"/oidc_signout_{suffix}";
+                    opts.CallbackPath = $"/oidc_signin_{suffix}";
                     
                     opts.SignInScheme = mappedAuthenticationScheme;
                     opts.SignOutScheme = mappedAuthenticationScheme;

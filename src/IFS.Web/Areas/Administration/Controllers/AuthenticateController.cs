@@ -17,11 +17,16 @@ namespace IFS.Web.Areas.Administration.Controllers {
     using Core.Authentication;
 
     using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     using Models;
 
     [Area(nameof(Administration))]
+    [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
+    [AllowAnonymous]
     public sealed class AuthenticateController : Controller {
         private readonly IAdministrationAuthenticationProvider _authenticationProvider;
 
@@ -34,14 +39,43 @@ namespace IFS.Web.Areas.Administration.Controllers {
         }
 
         [Fail2BanModelState(nameof(LoginModel.Password))]
-        public async Task<IActionResult> Login(string returnUrl) {
-            if (this.User.Identity.IsAuthenticated) {
+        [StaticAuthenticationAction]
+        [ActionName("Login")]
+        public async Task<IActionResult> LoginStatic(string returnUrl) {
+            if (this.User.Identity.IsAuthenticated && this.User.Identity.Name == KnownPolicies.Upload) {
                 await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
 
                 return this.RedirectToAction("Index");
             }
 
             return this.View();
+        }
+
+        [OpenIdAuthenticationAction]
+        [ActionName("Login")]
+        public async Task<IActionResult> LoginOpenId(string returnUrl) {
+            if (this.User.Identity.IsAuthenticated) {
+                if (this.User.IsInRole(KnownRoles.Administrator)) {
+                    return this.Redirect(returnUrl ?? this.Url.Action("Index", "Home"));
+                }
+
+                await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
+
+                return this.RedirectToAction("Index");
+            }
+
+            return this.View("LoginOpenId");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [OpenIdAuthenticationAction]
+        [ActionName("Login")]
+        public async Task LoginOpenId(string returnUrl, IFormCollection form) {
+            await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, new OpenIdConnectChallengeProperties {
+                Prompt = "Sign in to administrate",
+                RedirectUri = returnUrl
+            });
         }
 
         [HttpPost]
@@ -54,6 +88,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [StaticAuthenticationAction]
         [Fail2BanModelState(nameof(LoginModel.Password))]
         public async Task<IActionResult> Login(LoginModel model) {
             if (model == null) {

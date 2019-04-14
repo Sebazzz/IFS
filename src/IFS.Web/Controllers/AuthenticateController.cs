@@ -74,7 +74,6 @@ namespace IFS.Web.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
         [OpenIdAuthenticationAction]
         [ActionName("Login")]
         public async Task LoginOpenId(string returnUrl, IFormCollection form) {

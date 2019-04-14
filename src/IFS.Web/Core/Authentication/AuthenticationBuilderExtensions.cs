@@ -16,8 +16,16 @@ namespace IFS.Web.Core.Authentication {
             AuthenticationOptions authOptions = configuration.GetSection("Authentication").Get<AuthenticationOptions>();
 
             if (authOptions.OpenIdConnect?.Enable == true) {
-                authBuilder.AddOpenIdConnectFromSettings(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, KnownAuthenticationScheme.PassphraseScheme, configuration)
-                           .AddOpenIdConnectFromSettings(KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, KnownAuthenticationScheme.AdministrationScheme, configuration);
+                authBuilder.AddOpenIdConnectFromSettings(
+                                KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, 
+                                KnownAuthenticationScheme.PassphraseScheme,
+                                "upload",
+                                configuration)
+                           .AddOpenIdConnectFromSettings(
+                               KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, 
+                               KnownAuthenticationScheme.AdministrationScheme, 
+                               "admin",
+                               configuration);
             }
 
             return authBuilder.AddCookie(KnownAuthenticationScheme.PassphraseScheme, "/authenticate/login")

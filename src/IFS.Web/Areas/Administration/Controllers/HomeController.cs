@@ -11,7 +11,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize(KnownPolicies.Administration)]
+    [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [Area(nameof(Administration))]
     public sealed class HomeController : Controller {
         public IActionResult Index() {

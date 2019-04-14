@@ -19,7 +19,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
     using Web.Models;
 
-    [Authorize(KnownPolicies.Administration)]
+    [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [Area(nameof(Administration))]
     public sealed class FilesController : Controller {
         private readonly IUploadedFileRepository _uploadedFileRepository;
