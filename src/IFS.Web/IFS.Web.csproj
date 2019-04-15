@@ -51,7 +51,7 @@
     <PackageReference Include="Humanizer.Core" Version="2.6.2" />
     <PackageReference Include="Markdig" Version="0.16.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.4" />
     <!--<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0-rtm-t000" />-->
   </ItemGroup>
 
