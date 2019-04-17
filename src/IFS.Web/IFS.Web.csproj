@@ -52,6 +52,11 @@
     <PackageReference Include="Markdig" Version="0.16.0" />
 
     <PackageReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <!--<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0-rtm-t000" />-->
   </ItemGroup>
 
