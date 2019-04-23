@@ -61,12 +61,12 @@
                 }
 
                 PrepForReExecute(context, new UploadErrorsModel());
-            } catch (Exception ex) {
-                UploadErrorsModel errors = new UploadErrorsModel {
-                    Errors = new[] {
-                        ex.Message
-                    }
-                };
+            }
+            catch (UploadCryptoArgumentOrderException) {
+                PrepForReExecute(context, UploadErrorsModel.CreateFromMessage("Invalid order of cryptographic parameters: file was uploaded before password."));
+            } 
+            catch (Exception ex) {
+                UploadErrorsModel errors = UploadErrorsModel.CreateFromMessage(ex.Message);
 
                 this._logger.LogError(LogEvents.UploadFailed, "Detected failed upload - passing error to child handler: {0}", ex);
 

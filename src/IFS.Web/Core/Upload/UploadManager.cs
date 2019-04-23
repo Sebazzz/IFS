@@ -11,12 +11,13 @@ namespace IFS.Web.Core.Upload {
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using Crypto;
     using Humanizer;
-
+    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Logging;
@@ -43,9 +44,7 @@ namespace IFS.Web.Core.Upload {
         }
 
         public UploadProgress GetProgress(FileIdentifier id) {
-            UploadProgress value;
-
-            if (!this._uploadsByFileIdentifier.TryGetValue(id, out value)) {
+            if (!this._uploadsByFileIdentifier.TryGetValue(id, out var value)) {
                 return null;
             }
 
@@ -85,20 +84,20 @@ namespace IFS.Web.Core.Upload {
             // We need to manually read each part of the request. The browser may do as it likes and send whichever part first, 
             // which means we have to build up the metadata incrementally and can only write it later
 
-            StoredMetadataFactory metadataFactory = new StoredMetadataFactory();
+            UploadContext uploadContext = new UploadContext(id);
             StoredMetadata metadata = null;
 
             try {
                 MultipartSection section = await reader.ReadNextSectionAsync(cancellationToken);
 
                 while (section != null) {
-                    await this.ProcessSectionAsync(id, section, metadataFactory, cancellationToken);
+                    await this.ProcessSectionAsync(uploadContext, section, cancellationToken);
 
                     section = await reader.ReadNextSectionAsync(cancellationToken);
                 }
 
-                if (metadataFactory.IsComplete()) {
-                    metadata = metadataFactory.Build();
+                if (uploadContext.MetadataFactory.IsComplete()) {
+                    metadata = uploadContext.MetadataFactory.Build();
                 }
 
                 if (metadata == null) {
@@ -113,6 +112,8 @@ namespace IFS.Web.Core.Upload {
                 this._logger.LogWarning(LogEvents.UploadCancelled, ex, "Upload failed due to cancellation");
 
                 this.TryCleanup(id);
+
+                // No use rethrowing the exception, we're done anyway.
             }
             catch (InvalidDataException ex) {
                 this._logger.LogError(LogEvents.UploadFailed, ex, "Upload failed due to file size exceeding");
@@ -121,7 +122,7 @@ namespace IFS.Web.Core.Upload {
 
                 throw new UploadFailedException("File size exceeded of " + reader.BodyLengthLimit.GetValueOrDefault().Bytes().Megabytes);
             }
-            catch (Exception ex) {
+            catch (Exception ex) when (!(ex is UploadCryptoArgumentOrderException)) {
                 this._logger.LogError(LogEvents.UploadFailed, ex, "Upload failed due to exception");
 
                 this.TryCleanup(id);
@@ -130,25 +131,22 @@ namespace IFS.Web.Core.Upload {
             }
         }
 
-        private async Task ProcessSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, CancellationToken cancellationToken) {
+        private async Task ProcessSectionAsync(UploadContext uploadContext, MultipartSection section, CancellationToken cancellationToken) {
             ContentDispositionHeaderValue contentDisposition = ContentDispositionHeaderValue.Parse(section.ContentDisposition);
 
             if (contentDisposition.FileName != null) {
-                await this.ProcessFileSectionAsync(id, section, metadataFactory, cancellationToken, contentDisposition);
+                await this.ProcessFileSectionAsync(uploadContext, section, contentDisposition, cancellationToken);
                 return;
             }
 
-            await this.ProcessFormSectionAsync(id, section, metadataFactory, contentDisposition);
+            await this.ProcessFormSectionAsync(uploadContext, section, contentDisposition);
         }
 
-        private async Task ProcessFormSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, ContentDispositionHeaderValue contentDisposition) {
+        private async Task ProcessFormSectionAsync(UploadContext uploadContext, MultipartSection section, ContentDispositionHeaderValue contentDisposition) {
             string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
 
-            async Task<string> ReadString() {
-                using (StreamReader sr = new StreamReader(section.Body)) {
-                    return await sr.ReadToEndAsync();
-                }
-            }
+            StoredMetadataFactory metadataFactory = uploadContext.MetadataFactory;
+            UploadPassword passwordSetting = uploadContext.PasswordSetting;
 
             switch (cleanName) {
                 case nameof(UploadModel.IsReservation):
@@ -168,19 +166,28 @@ namespace IFS.Web.Core.Upload {
                     string rawId = await ReadString();
                     FileIdentifier formId = FileIdentifier.FromString(rawId);
 
-                    if (formId != id) {
-                        throw new InvalidOperationException($"ID mismatch: '{formId}' (received) != '{id}' (expected)");
+                    if (formId != uploadContext.Identifier) {
+                        throw new InvalidOperationException($"ID mismatch: '{formId}' (received) != '{uploadContext.Identifier}' (expected)");
                     }
                     return;
 
                 case nameof(UploadModel.Password):
                     string password = await ReadString();
                     metadataFactory.SetPassword(password);
+                    passwordSetting.Password = password;
+
+                    EnsureFileNotUploaded();
                     return;
 
                 case nameof(UploadModel.EnablePasswordProtection):
-                    string enablePasswordProtection = await ReadString();
-                    metadataFactory.SetEnablePasswordProtection(String.Equals(Boolean.TrueString, enablePasswordProtection, StringComparison.OrdinalIgnoreCase));
+                    bool passwordSettingWasSet = passwordSetting.IsSet;
+
+                    string enablePasswordProtectionRaw = await ReadString();
+                    bool enablePasswordProtection = String.Equals(Boolean.TrueString, enablePasswordProtectionRaw, StringComparison.OrdinalIgnoreCase);
+                    metadataFactory.SetEnablePasswordProtection(enablePasswordProtection);
+                    passwordSetting.SetEnabled(enablePasswordProtection);
+
+                    if (!passwordSettingWasSet) EnsureFileNotUploaded();
                     return;
 
                 case nameof(UploadModel.Sender) + "." + nameof(ContactInformation.Name):
@@ -197,13 +204,29 @@ namespace IFS.Web.Core.Upload {
                 // However, that is not very accurate and if we use some javascript to send a more accurate file size, we use that.
                 case nameof(UploadModel.SuggestedFileSize):
                     if (Int64.TryParse(await ReadString(), out var size) && size > 0) {
-                        this.GetProgressObject(id).Total = size;
+                        this.GetProgressObject(uploadContext.Identifier).Total = size;
                     }
                     return;
 
                 default:
-                    this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown form field '{1}'", id, contentDisposition.Name);
+                    this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown form field '{1}'", uploadContext.Identifier, contentDisposition.Name);
                     break;
+            }
+
+            async Task<string> ReadString() {
+                using (StreamReader sr = new StreamReader(section.Body)) {
+                    return await sr.ReadToEndAsync();
+                }
+            }
+
+            void EnsureFileNotUploaded() {
+                bool needToValidate = !String.IsNullOrEmpty(passwordSetting.Password) && passwordSetting.Enable == true;
+
+                if (needToValidate && uploadContext.HasUploadedFile) {
+                    this._logger.LogError(LogEvents.UploadPasswordAfterFileUpload, "{0}: The upload password is set after the file is uploaded. The file is not encrypted. Terminating upload.");
+
+                    throw new UploadCryptoArgumentOrderException("File uploaded before password has been set");
+                }
             }
         }
 
@@ -219,27 +242,45 @@ namespace IFS.Web.Core.Upload {
             return progressObject;
         }
 
-        private async Task ProcessFileSectionAsync(FileIdentifier id, MultipartSection section, StoredMetadataFactory metadataFactory, CancellationToken cancellationToken, ContentDispositionHeaderValue contentDisposition) {
+        private async Task ProcessFileSectionAsync(UploadContext uploadContext, MultipartSection section, ContentDispositionHeaderValue contentDisposition, CancellationToken cancellationToken) {
             string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
             string fileName = HeaderUtilities.RemoveQuotes(contentDisposition.FileName).Value;
 
             if (cleanName == nameof(UploadModel.File)) {
-                this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1} [{2:s}]", fileName, id, DateTime.UtcNow);
+                this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1} [{2:s}]", fileName, uploadContext.Identifier, DateTime.UtcNow);
 
-                metadataFactory.SetOriginalFileName(fileName);
+                uploadContext.MetadataFactory.SetOriginalFileName(fileName);
 
-                await this.StoreDataAsync(id, section.Body, cancellationToken).ConfigureAwait(false);
+                await this.StoreDataAsync(uploadContext.Identifier, section.Body, uploadContext.PasswordSetting, cancellationToken).ConfigureAwait(false);
+
+                uploadContext.HasUploadedFile = true;
             } else {
-                this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown file '{1}' with file name '{2}'. Skipping.", id, fileName, cleanName);
+                this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown file '{1}' with file name '{2}'. Skipping.", uploadContext.Identifier, fileName, cleanName);
             }
         }
 
 
-        private async Task StoreDataAsync(FileIdentifier id, Stream dataStream, CancellationToken cancellationToken) {
+        private async Task StoreDataAsync(FileIdentifier id, Stream dataStream, UploadPassword passwordSetting, CancellationToken cancellationToken) {
             UploadProgress progress = this.GetProgressObject(id);
 
             // Copy with progress
             using (Stream outputStream = this._fileWriter.OpenWriteStream(this._fileStore.GetDataFile(id))) {
+                if (passwordSetting.Enable == true && !String.IsNullOrEmpty(passwordSetting.Password)) {
+                    using (Aes crypto = CryptoFactory.CreateCrypto(passwordSetting.Password)) {
+                        ICryptoTransform encryptor = crypto.CreateEncryptor();
+
+                        CryptoMetadata.WriteMetadata(outputStream, crypto);
+
+                        using (CryptoStream cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write, true)) {
+                            await CopyStreamWithProgress(cryptoStream);
+                        }
+                    }
+                } else {
+                    await CopyStreamWithProgress(outputStream);
+                }
+            }
+
+            async Task CopyStreamWithProgress(Stream outputStream) {
                 using (Stream inputStream = dataStream) {
                     int read;
                     byte[] buffer = new byte[4096];
@@ -297,9 +338,35 @@ namespace IFS.Web.Core.Upload {
             }
         }
 
+        private sealed class UploadContext {
+            public UploadContext(FileIdentifier id) {
+                this.Identifier = id;
+            }
+
+            public FileIdentifier Identifier { get; }
+
+            public StoredMetadataFactory MetadataFactory { get; } = new StoredMetadataFactory();
+
+            public UploadPassword PasswordSetting { get; } = new UploadPassword();
+
+            public bool HasUploadedFile { get; set; }
+        }
+
+        private sealed class UploadPassword {
+            public string Password { get;set; }
+            public bool? Enable { get; private set; }
+            public bool IsSet => this.Enable != null;
+
+            public void SetEnabled(bool enable) {
+                if (this.Enable == null) {
+                    this.Enable = enable;
+                }
+            }
+        }
+
         private sealed class StoredMetadataFactory {
             private readonly StoredMetadata _metadata = new StoredMetadata();
-            private bool _enablePasswordProtection;
+            private bool? _enablePasswordProtection;
 
             public void SetExpiration(DateTime expiration) {
                 this._metadata.Expiration = expiration;
@@ -342,7 +409,7 @@ namespace IFS.Web.Core.Upload {
             public StoredMetadata Build() {
                 this._metadata.UploadedOn = DateTime.UtcNow;
 
-                if (!this._enablePasswordProtection) {
+                if (this._enablePasswordProtection != null && !this._enablePasswordProtection.Value) {
                     this._metadata.DownloadSecurity = null;
                 }
 
@@ -358,6 +425,11 @@ namespace IFS.Web.Core.Upload {
             }
 
             public void SetEnablePasswordProtection(bool enable) {
+                if (this._enablePasswordProtection != null) {
+                    // Ignore - this is an helper value set by MVC
+                    return;
+                }
+
                 this._enablePasswordProtection = enable;
             }
         }

@@ -12,6 +12,7 @@ namespace IFS.Web.Controllers {
     using System.Threading.Tasks;
 
     using Core;
+    using Core.Download;
     using Core.Upload;
     using Core.Upload.Http;
     using Microsoft.AspNetCore.Http.Features;
@@ -159,7 +160,7 @@ namespace IFS.Web.Controllers {
             // Do download
             await this._fileAccessLogger.LogFileAccessAsync(uploadedFile, this.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString() ?? "Unknown");
 
-            return this.File(uploadedFile.GetStream(), "application/octet-stream", uploadedFile.Metadata.OriginalFileName);
+            return this.File(DownloadStreamFactory.GetDownloadStream(uploadedFile, password), "application/octet-stream", uploadedFile.Metadata.OriginalFileName);
         }
 
         private bool IsDirectDownloadClient() {

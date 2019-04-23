@@ -21,5 +21,7 @@ namespace IFS.Web.Core {
         public static readonly EventId UploadReservationTaken = new EventId(1003, nameof(UploadReservationTaken));
 
         public static readonly EventId UploadCorrupted = new EventId(0xDEAD, nameof(UploadCorrupted));
+
+        public static readonly EventId UploadPasswordAfterFileUpload = new EventId(0xC000, nameof(UploadPasswordAfterFileUpload));
     }
 }
