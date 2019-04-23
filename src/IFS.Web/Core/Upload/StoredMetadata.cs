@@ -2,7 +2,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    using Crypto;
     using Newtonsoft.Json;
 
     public class StoredMetadata {

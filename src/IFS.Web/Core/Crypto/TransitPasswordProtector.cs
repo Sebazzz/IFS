@@ -5,7 +5,7 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core {
+namespace IFS.Web.Core.Crypto {
     using System;
     using Microsoft.AspNetCore.DataProtection;
 

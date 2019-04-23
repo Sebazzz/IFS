@@ -12,6 +12,7 @@ namespace IFS.Web.Controllers {
     using System.Threading.Tasks;
 
     using Core;
+    using Core.Crypto;
     using Core.Download;
     using Core.Upload;
     using Core.Upload.Http;

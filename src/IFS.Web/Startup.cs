@@ -14,6 +14,7 @@ namespace IFS.Web {
     using Core;
     using Core.Authentication;
     using Core.Authorization;
+    using Core.Crypto;
     using Core.Upload;
     using Core.Upload.Http;
     using Framework;
