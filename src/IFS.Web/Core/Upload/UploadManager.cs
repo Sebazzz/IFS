@@ -94,11 +94,11 @@ namespace IFS.Web.Core.Upload {
                 while (section != null) {
                     await this.ProcessSectionAsync(id, section, metadataFactory, cancellationToken);
 
-                    if (metadataFactory.IsComplete() && metadata == null) {
-                        metadata = metadataFactory.Build();
-                    }
-
                     section = await reader.ReadNextSectionAsync(cancellationToken);
+                }
+
+                if (metadataFactory.IsComplete()) {
+                    metadata = metadataFactory.Build();
                 }
 
                 if (metadata == null) {
