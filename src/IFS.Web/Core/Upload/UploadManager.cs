@@ -196,8 +196,7 @@ namespace IFS.Web.Core.Upload {
                 // Browsers don't actually send the file size in the request, but we can derive it from the Content-Length.
                 // However, that is not very accurate and if we use some javascript to send a more accurate file size, we use that.
                 case nameof(UploadModel.SuggestedFileSize):
-                    long size;
-                    if (Int64.TryParse(await ReadString(), out size) && size > 0) {
+                    if (Int64.TryParse(await ReadString(), out var size) && size > 0) {
                         this.GetProgressObject(id).Total = size;
                     }
                     return;
