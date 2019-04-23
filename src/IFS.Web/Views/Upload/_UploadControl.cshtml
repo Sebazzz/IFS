@@ -1,0 +1,15 @@
+﻿@model UploadModel
+
+<div class="ordered-form__part">
+    <div class="form-group">
+        <label asp-for="File"></label><br/>
+
+        <span class="upload-control form-control btn btn-primary">
+            <span>Select file</span>
+
+            <input type="file" asp-for="File" required />
+        </span>
+            
+        <span asp-validation-for="File" class="text-danger">*</span>
+    </div>
+</div>

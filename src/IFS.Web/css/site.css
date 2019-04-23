@@ -88,3 +88,21 @@ textarea {
     list-style: none;
     padding-left: 0; 
 }
+
+/*
+    Ordered form: allow ordering of vertically layed-out items. We can use this
+    for multipart forms to make sure that the form has a certain layout (visually)
+    while still laying them out properly in HTML for POST form order.
+*/
+.ordered-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.ordered-form__part {
+    flex: 0 0 auto;
+}
+
+.ordered-form__part--last {
+    order: 999;
+}

@@ -47,22 +47,12 @@
         <input asp-for="FileIdentifier" type="hidden" />
         <input asp-for="SuggestedFileSize" type="hidden" />
         <input asp-for="IsReservation" type="hidden" />
-
-        <div class="form-group">
-            <label asp-for="File"></label><br/>
-
-            <span class="upload-control form-control btn btn-primary">
-                <span>Select file</span>
-
-                <input type="file" asp-for="File" required />
-            </span>
-            
-            <span asp-validation-for="File" class="text-danger">*</span>
+        
+        <div class="ordered-form">
+            @{
+                await Html.RenderPartialAsync(Model.IsReservation == false ? "_UploadForm.Full" : "_UploadForm.Reservation", Model);
+            }
         </div>
-
-        @{
-            Html.RenderPartial(Model.IsReservation == false ? "_UploadForm.Full" : "_UploadForm.Reservation", Model);
-        }
 
         <div class="form-group">
             <p>

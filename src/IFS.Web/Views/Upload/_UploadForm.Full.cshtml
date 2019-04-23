@@ -1,39 +1,52 @@
 ﻿@model UploadModel
 
-<div class="form-group">
-    <label asp-for="Expiration"></label>
+<div class="ordered-form__part ordered-form__part--last">
+    <hr />
 
-    <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
-</div>
+    <h4>Protect this download</h4>
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
+            <label class="custom-control-label" for="cbPasswordProtect">Password-protect this download</label>
+        </div>
+    </div>
 
-<hr />
+    <div id="pPasswordProtect" class="form-group">
+        <label asp-for="Password">Download password</label>
 
-<h4>Sender</h4>
-
-<div class="form-group">
-    <label asp-for="Sender.Name">Your name</label>
-
-    <input asp-for="Sender.Name" class="form-control" />
-</div>
-
-<div class="form-group">
-    <label asp-for="Sender.EmailAddress">Your e-mail address</label>
-
-    <input asp-for="Sender.EmailAddress" class="form-control" />
-</div>
-
-<hr />
-
-<h4>Protect this download</h4>
-<div class="form-group">
-    <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
-        <label class="custom-control-label" for="cbPasswordProtect">Password-protect this download</label>
+        <input asp-for="Password" class="form-control" />
     </div>
 </div>
 
-<div id="pPasswordProtect" class="form-group">
-    <label asp-for="Password">Download password</label>
+@{
+    await Html.RenderPartialAsync("_UploadControl", Model);
+}
 
-    <input asp-for="Password" class="form-control" />
+<div class="ordered-form__part">
+    <div class="form-group">
+        <label asp-for="Expiration"></label>
+
+        <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
+    </div>
+    <hr />
 </div>
+
+
+<div class="ordered-form__part">
+    <h4>Sender</h4>
+
+    <div class="form-group">
+        <label asp-for="Sender.Name">Your name</label>
+
+        <input asp-for="Sender.Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Sender.EmailAddress">Your e-mail address</label>
+
+        <input asp-for="Sender.EmailAddress" class="form-control" />
+    </div>
+
+</div>
+
+

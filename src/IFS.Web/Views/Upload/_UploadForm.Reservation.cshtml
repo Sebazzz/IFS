@@ -2,21 +2,27 @@
 
 <input asp-for="Expiration" type="hidden" value="@Model.Expiration.ToString("O")" />
 
-<hr />
+<div class="ordered-form__part ordered-form__part--last">
+    <hr />
 
-<div class="hidden">
-    <h4>Protect this download</h4>
+    <div class="hidden">
+        <h4>Protect this download</h4>
 
-    <div class="form-group">
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
-            <label class="custom-control-label" for="cbPasswordProtect">Password-protect this download</label>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
+                <label class="custom-control-label" for="cbPasswordProtect">Password-protect this download</label>
+            </div>
+        </div>
+
+        <div id="pPasswordProtect" class="form-group">
+            <label asp-for="Password">Download password</label>
+
+            <input asp-for="Password" class="form-control" />
         </div>
     </div>
-
-    <div id="pPasswordProtect" class="form-group">
-        <label asp-for="Password">Download password</label>
-
-        <input asp-for="Password" class="form-control" />
-    </div>
 </div>
+
+@{
+    await Html.RenderPartialAsync("_UploadControl", Model);
+}

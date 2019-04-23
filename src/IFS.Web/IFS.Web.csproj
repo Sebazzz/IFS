@@ -57,6 +57,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <!--<PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0-rtm-t000" />-->
   </ItemGroup>
 
