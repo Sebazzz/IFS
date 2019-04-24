@@ -6,8 +6,8 @@ Built-in data retention. Secure. Fast.
 ## Building the project
 To build the project ensure you have:
 
-- .NET Core 2.1 SDK installed
-- Node.js 6.0 or higher installed and in PATH
+- .NET Core 2.2 SDK installed
+- Node.js 8.0 or higher installed and in PATH
 - Powershell 4 or higher
 
 To build the project simply run:
@@ -16,7 +16,11 @@ To build the project simply run:
 
 If you want to publish for a platform (win10-x64 for instance), run:
 
-    build -Target Publish-Win10
+    build --target=Publish-Win10
+	
+To query for build targets:
+
+    build --showdescription
 
 ## Deployment
 To deploy the application, take the published files and install them under IIS or run the `IFS.Web` executable directly. Ensure to give the application pool permissions to load its user profile.

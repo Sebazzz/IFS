@@ -1,5 +1,5 @@
-#addin nuget:?package=Cake.Compression&version=0.1.4
-#addin nuget:?package=SharpZipLib
+#addin nuget:?package=Cake.Compression&version=0.2.2
+#addin nuget:?package=SharpZipLib&version=1.1.0
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -83,7 +83,9 @@ Task("Check-Yarn-Version")
 Task("Restore-NuGet-Packages")
     .Does(() => {
     DotNetCoreRestore(new DotNetCoreRestoreSettings {
-		IgnoreFailedSources = true
+		IgnoreFailedSources = true,
+		ForceEvaluate = true,
+		NoCache = true
 	});
 });
 
@@ -109,7 +111,7 @@ Task("Restore-Node-Packages")
 			.WithArguments(args => args.Append("/C").AppendQuoted("yarn --production=false --frozen-lockfile --non-interactive")));
 		
 	if (exitCode != 0) {
-		throw new CakeException($"'yarn' returned exit code {exitCode} (0x{exitCode:x2})");
+		throw new CakeException($"'yarn' returned exit code {exitCode} (0x{exitCode:x8})");
 	}
 });
 
@@ -165,21 +167,28 @@ Task("Publish-Win10")
     .IsDependentOn("Publish-Common")
     .Does(() => PublishSelfContained("win10-x64", null));
 
-Task("Publish-Ubuntu-Core")
+Task("Publish-Linux-Core")
 	.Description("Internal task - do not use")
     .IsDependentOn("Publish-Common")
-    .Does(() => PublishSelfContained("ubuntu.14.04-x64", "ubuntu.14.04-x64/app"));
+    .Does(() => PublishSelfContained("linux-x64", "linux-x64/app"));
 
-Task("Publish-Ubuntu")
-    .IsDependentOn("Publish-Ubuntu-Core")
-	.Description("Publish for Ubuntu 14.04")
+Task("Publish-Linux")
+    .IsDependentOn("Publish-Linux-Core")
+	.Description("Publish for Linux x64 (Ubuntu, Debian)")
     .Does(() => {
-       GZipCompress(publishDir + Directory("ubuntu.14.04-x64/"), publishDir + File("financial-app-ubuntu-14.04-x64.tar.gz"));
+       GZipCompress(publishDir + Directory("linux-x64/"), publishDir + File("ifs-linux-x64.tar.gz"));
 	});
 	
 Task("Publish")
     .IsDependentOn("Publish-Win10")
-    .IsDependentOn("Publish-Ubuntu");
+    .IsDependentOn("Publish-Linux");
+	
+Task("Test")
+    .IsDependentOn("Build")
+    .Does(() => {
+        DotNetCoreTest();
+});
+
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
