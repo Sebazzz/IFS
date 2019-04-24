@@ -22,6 +22,8 @@ namespace IFS.Web {
     using Hangfire.MemoryStorage;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
@@ -44,7 +46,9 @@ namespace IFS.Web {
 
             services.AddDataProtection();
 
-            services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
+            services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddMvcOptions(opts => opts.InputFormatterExceptionPolicy = InputFormatterExceptionPolicy.AllExceptions);
 
             services.AddAuthorization(opt => {
                 opt.AddUploadPolicy(this.Configuration);
