@@ -51,14 +51,14 @@ Roles:
 - `ClaimType`: The type of claim sent by the OpenID server.
 - `Value`: The contents of the claim to match and assign the given role to.
 
-## Fail2Ban
+### Fail2Ban
 The system can lock users out which attempt too many logins or enter too many wrong passwords in file downloads. This currently works on IP address.
 
 Settings under `Fail2Ban`:
 - `DebounceTime`: A time string: the time after a IP-based lock-out is reset.
 - `MaximumAttempts`: The number of password attempts until the ban is enforced for the duration of `DebounceTime`.
 
-## Storage
+### Storage
 Configure where and how the uploaded files are stored.
 
 Settings under `FileStore`:
