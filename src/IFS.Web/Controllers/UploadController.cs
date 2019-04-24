@@ -14,7 +14,7 @@ namespace IFS.Web.Controllers {
     using Core;
     using Core.ModelFactory;
     using Core.Upload;
-
+    using Framework.Filters;
     using Humanizer;
 
     using Microsoft.AspNetCore.Authorization;
@@ -36,6 +36,7 @@ namespace IFS.Web.Controllers {
             this._uploadedFileRepository = uploadedFileRepository;
         }
 
+        [AutoFillSenderInformation]
         public IActionResult Index() {
             UploadModel uploadModel = UploadModelFactory.Create();
 

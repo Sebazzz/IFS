@@ -17,16 +17,13 @@ namespace IFS.Web {
     using Core.Crypto;
     using Core.Upload;
     using Core.Upload.Http;
-    using Framework;
     using Hangfire;
     using Hangfire.Dashboard;
     using Hangfire.MemoryStorage;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Options;
 
     public sealed class Startup {

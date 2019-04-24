@@ -16,6 +16,8 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
 
         public OpenIdRoleClaims RoleClaims { get; set; }
 
+        public OpenIdConnectClaimMapping ClaimMapping { get; set; }
+
         public string Authority { get; set; }
     }
 }
