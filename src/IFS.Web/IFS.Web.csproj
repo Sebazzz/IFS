@@ -9,7 +9,6 @@
     <PackageId>IFS.Web</PackageId>
     <RuntimeIdentifiers>win10-x64;linux-64</RuntimeIdentifiers>
     <RuntimeFrameworkVersion>2.2.4</RuntimeFrameworkVersion>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 
