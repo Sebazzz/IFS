@@ -14,6 +14,7 @@ namespace IFS.Web.Core.ModelFactory {
     using Microsoft.AspNetCore.Mvc.Rendering;
 
     using Models;
+    using Upload;
 
     internal static class UploadModelFactory {
         private static TModel Create<TModel>() where TModel : UploadModelBase,new() {
@@ -30,6 +31,7 @@ namespace IFS.Web.Core.ModelFactory {
             TModel uploadModel = new TModel {
                 FileIdentifier = FileIdentifier.CreateNew(),
                 Expiration = DateTime.UtcNow.AddDays(7),
+                Sender = new ContactInformation(),
                 AvailableExpiration = new[] {
                     CreateItem(TimeSpan.FromHours(1)),
                     CreateItem(TimeSpan.FromHours(4)),

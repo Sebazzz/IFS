@@ -44,12 +44,21 @@ Connect to an OpenID / OAuth provider like AD FS.
 
 Settings under the `/Authentication/OpenIdConnect` node: `ClientSecret`, `ClientId`, `MetadataAddress`, `Authority`, `Enable`.
 
+In your OpenID server configure `<url>/oidc_sigin_admin` and `<url>/oidc_sigin_upload` as login urls.
+
 Roles:
 
 `RoleClaims`: For each role in the system (currently only `Administrator`), two keys:
 
 - `ClaimType`: The type of claim sent by the OpenID server.
 - `Value`: The contents of the claim to match and assign the given role to.
+
+Additional claims:
+
+`ClaimMapping`: To allow IFS to pre-fill some information you can enter the claims sent by the OpenID server.
+
+- `Email`: Claim type for pre-filling the e-mail address.
+- `Value`: Claim type for pre-filling the sender display name.
 
 ### Fail2Ban
 The system can lock users out which attempt too many logins or enter too many wrong passwords in file downloads. This currently works on IP address.

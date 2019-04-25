@@ -20,13 +20,15 @@ namespace IFS.Web.Models {
         
     }
 
-    public class UploadModelBase {
+    public class UploadModelBase : IContactInformationModel {
         public FileIdentifier FileIdentifier { get; set; }
         [Display]
         public DateTime Expiration { get; set; }
         public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
 
         public ContactInformation Sender { get; set; }
+
+        public bool IsSenderInformationPrefilled{ get; set; }
     }
 
     public class UploadModel : UploadModelBase {

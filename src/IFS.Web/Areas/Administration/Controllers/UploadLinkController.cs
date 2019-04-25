@@ -15,7 +15,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
     using Core;
     using Core.ModelFactory;
     using Core.Upload;
-
+    using Framework.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -35,6 +35,7 @@ namespace IFS.Web.Areas.Administration.Controllers {
 
         // GET: /<controller>/
         [HttpGet]
+        [AutoFillSenderInformation]
         public IActionResult Index() {
             UploadLinkModel model = UploadModelFactory.CreateLink();
             return this.View(model);

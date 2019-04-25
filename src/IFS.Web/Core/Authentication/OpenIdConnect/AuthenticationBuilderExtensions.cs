@@ -38,12 +38,42 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
 
                     opts.AuthenticationMethod = OpenIdConnectRedirectBehavior.FormPost;
 
+                    opts.ClaimActions.Add(new RenameClaimAction(openIdConnectSettings.ClaimMapping.Email, ClaimTypes.Email));
+                    opts.ClaimActions.Add(new RenameClaimAction(openIdConnectSettings.ClaimMapping.DisplayName, ClaimTypes.GivenName));
                     opts.ClaimActions.Add(
                         new ConsolidateRoleClaimAction(
                             nameof(openIdConnectSettings.RoleClaims.Administrator), 
                             openIdConnectSettings.RoleClaims.Administrator));
                 }
             );
+        }
+
+        private sealed class RenameClaimAction : ClaimAction {
+            private readonly string _replacementClaimType;
+
+            public RenameClaimAction(string claimType, string replacementClaimType) : base(claimType, "http://www.w3.org/2001/XMLSchema#string") {
+                this._replacementClaimType = replacementClaimType;
+            }
+
+            public override void Run(JObject userData, ClaimsIdentity identity, string issuer) {
+                if (this.ClaimType == this._replacementClaimType) {
+                    return;
+                }
+
+                Claim originalClaim = identity.FindFirst(this.ClaimType);
+                if (originalClaim == null) {
+                    return;
+                }
+
+                Claim replaceClaim = new Claim(
+                    this.ClaimType,
+                    this._replacementClaimType,
+                    this.ValueType,
+                    originalClaim.Issuer
+                );
+                identity.RemoveClaim(originalClaim);
+                identity.AddClaim(replaceClaim);
+            }
         }
 
         private sealed class ConsolidateRoleClaimAction : ClaimAction {

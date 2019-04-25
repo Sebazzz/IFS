@@ -14,30 +14,23 @@
 
 <form method="post">
     <input asp-for="FileIdentifier" type="hidden" />
-        
-    <p>
-        <label asp-for="Expiration" class="control-label"></label>
+
+    <div class="form-group">
+        <label asp-for="Expiration"></label>
 
         <select asp-for="Expiration" asp-items="Model.AvailableExpiration" class="form-control"></select>
-    </p>
-    
-    <p>
-        <label asp-for="Sender.Name" class="control-label">Sender: Your name</label>
-            
-        <input asp-for="Sender.Name" class="form-control"/>
-    </p>
-        
-    <p>
-        <label asp-for="Sender.EmailAddress" class="control-label">Sender: Your e-mail address</label>
+    </div>
+    <hr />
 
-        <input asp-for="Sender.EmailAddress" class="form-control" />
-    </p>
+    @{
+        await Html.RenderPartialAsync("_ContactInformationEntry", Model);
+    }
 
     <p>
         <button class="btn btn-primary">
             <span class=" fas fa-upload"></span> Create link
         </button>
-        
+
         <a asp-controller="Files" class="btn btn-link">Go back</a>
     </p>
 </form>

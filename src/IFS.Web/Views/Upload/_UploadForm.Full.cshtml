@@ -33,20 +33,9 @@
 
 
 <div class="ordered-form__part">
-    <h4>Sender</h4>
-
-    <div class="form-group">
-        <label asp-for="Sender.Name">Your name</label>
-
-        <input asp-for="Sender.Name" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Sender.EmailAddress">Your e-mail address</label>
-
-        <input asp-for="Sender.EmailAddress" class="form-control" />
-    </div>
-
+    @{
+        await Html.RenderPartialAsync("_ContactInformationEntry", Model);
+    }
 </div>
 
 
