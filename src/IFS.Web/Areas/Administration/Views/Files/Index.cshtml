@@ -100,7 +100,7 @@
 
                         if (sender != null) {
                             string name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
-                            bool nameOnly = !String.IsNullOrEmpty(sender.EmailAddress);
+                            bool nameOnly = String.IsNullOrEmpty(sender.EmailAddress);
 
                             if (nameOnly) {
                                 @name
