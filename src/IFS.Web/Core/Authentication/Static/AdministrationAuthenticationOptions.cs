@@ -5,6 +5,7 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 namespace IFS.Web.Core.Authentication.Static {
+    #nullable disable
     public sealed class AdministrationAuthenticationOptions {
         public string UserName { get; set; }
         public string Password { get; set; }

@@ -42,7 +42,7 @@ namespace IFS.Tests.Core.Upload {
         [Test]
         public void FileStoreFileProviderFactory_GetFileProvider_ReturnsPhysicalPathCombined() {
             // Given
-            IHostingEnvironment env = Substitute.For<IHostingEnvironment>();
+            IWebHostEnvironment env = Substitute.For<IWebHostEnvironment>();
             env.ContentRootPath.Returns(TestContext.CurrentContext.WorkDirectory);
 
             IOptions<FileStoreOptions> options = new OptionsWrapper<FileStoreOptions>(new FileStoreOptions {

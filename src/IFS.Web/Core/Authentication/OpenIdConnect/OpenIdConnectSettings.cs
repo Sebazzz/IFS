@@ -6,6 +6,7 @@
 // ******************************************************************************
 
 namespace IFS.Web.Core.Authentication.OpenIdConnect {
+    #nullable disable
     public class OpenIdConnectSettings {
         public bool Enable { get; set; }
 

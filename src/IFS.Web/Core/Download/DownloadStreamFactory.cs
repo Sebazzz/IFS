@@ -10,12 +10,9 @@ namespace IFS.Web.Core.Download {
     using Upload;
 
     internal static class DownloadStreamFactory {
-        public static Stream GetDownloadStream(UploadedFile file, string password) {
-            if (password == null) {
-                return file.GetStream();
-            }
-
-            return CryptoStreamWrapper.Create(file, password);
+        public static Stream GetDownloadStream(UploadedFile file, string? password)
+        {
+            return password == null ? file.GetStream() : CryptoStreamWrapper.Create(file, password);
         }
     }
 }

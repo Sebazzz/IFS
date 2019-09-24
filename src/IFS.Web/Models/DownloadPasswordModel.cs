@@ -12,6 +12,6 @@ namespace IFS.Web.Models {
         [Required]
         [DataType(DataType.Password)]
         [StringLength(1204)] // DoS protection
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

@@ -16,11 +16,11 @@ namespace IFS.Web.Core.Authentication {
             this._options = options.Value.Static;
         }
 
-        public bool IsValidPassphrase(string passphrase) {
+        public bool IsValidPassphrase(string? passphrase) {
             return this._options?.Passphrase == passphrase;
         }
 
-        public bool IsValidCredentials(string userName, string password) {
+        public bool IsValidCredentials(string? userName, string? password) {
             var options = this._options?.Administration;
 
             if (options == null) {
@@ -33,10 +33,10 @@ namespace IFS.Web.Core.Authentication {
     }
 
     public interface IAuthenticationProvider {
-        bool IsValidPassphrase(string passphrase);
+        bool IsValidPassphrase(string? passphrase);
     }
 
     public interface IAdministrationAuthenticationProvider {
-        bool IsValidCredentials(string userName, string password);
+        bool IsValidCredentials(string? userName, string? password);
     }
 }

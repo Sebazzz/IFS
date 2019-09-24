@@ -24,11 +24,11 @@ namespace IFS.Web.Models {
         public FileIdentifier FileIdentifier { get; set; }
         [Display]
         public DateTime Expiration { get; set; }
-        public IEnumerable<SelectListItem> AvailableExpiration { get; set; }
+        public IEnumerable<SelectListItem>? AvailableExpiration { get; set; }
 
-        public ContactInformation Sender { get; set; }
+        public ContactInformation? Sender { get; set; }
 
-        public bool IsSenderInformationPrefilled{ get; set; }
+        public bool IsSenderInformationPrefilled { get; set; }
     }
 
     public class UploadModel : UploadModelBase {
@@ -36,7 +36,7 @@ namespace IFS.Web.Models {
         [Required(ErrorMessage = "Please select a file to upload")]
         [FileSizeValidation]
         [Display(Name = "Your file")]
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
 
         public long SuggestedFileSize { get; set; }
 
@@ -44,13 +44,13 @@ namespace IFS.Web.Models {
 
         [StringLength(512)]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public bool EnablePasswordProtection { get;set; }
     }
 
     public class UploadFileInProgressModel {
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
         public FileIdentifier FileIdentifier { get; set; }
     }
@@ -59,9 +59,9 @@ namespace IFS.Web.Models {
         public long Current { get; set; }
         public long Total { get; set; }
 
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
-        public string Performance { get; set; }
+        public string? Performance { get; set; }
 
         public int Percent { get; set; }
     }

@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>IFS.Web</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>IFS.Web</PackageId>
-    <RuntimeIdentifiers>win10-x64;linux-64</RuntimeIdentifiers>
-    <RuntimeFrameworkVersion>2.2.4</RuntimeFrameworkVersion>
-
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
+    <RuntimeFrameworkVersion>3.0.0</RuntimeFrameworkVersion>
 
     <LangVersion>latest</LangVersion>
   	<Version>2.0.0</Version>
@@ -19,6 +17,8 @@
 	  <Company>Damsteen.nl</Company>
 	  <Product>IFS</Product>
 	  <Description>Internet File System: Small scale upload</Description>
+
+    <Nullable>Enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -44,20 +44,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hangfire.Core" Version="1.7.3" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.3" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.6" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="Humanizer.Core" Version="2.7.2" />
     <PackageReference Include="Markdig" Version="0.17.1" />
 
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0" />
 
     <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition="'false'=='true'">

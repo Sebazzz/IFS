@@ -19,7 +19,7 @@ namespace IFS.Web.Core {
                 return new ModelBinder();
             }
 
-            return null;
+            return null!;
         }
 
         private sealed class ModelBinder : IModelBinder {

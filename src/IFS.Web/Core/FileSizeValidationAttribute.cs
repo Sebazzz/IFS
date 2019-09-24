@@ -18,8 +18,7 @@ namespace IFS.Web.Core {
 
     public sealed class FileSizeValidationAttribute : ValidationAttribute {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext) {
-            IFormFile file = value as IFormFile;
-            if (file == null) {
+            if (!(value is IFormFile file)) {
                 return new ValidationResult("File is required");
             }
 

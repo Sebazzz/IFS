@@ -18,10 +18,10 @@ namespace IFS.Web.Core.Upload {
     }
 
     public class FileStoreFileProviderFactory : IFileStoreFileProviderFactory {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly FileStoreOptions _fileStoreOptions;
 
-        public FileStoreFileProviderFactory(IHostingEnvironment hostingEnvironment, IOptions<FileStoreOptions> fileStoreOptions) {
+        public FileStoreFileProviderFactory(IWebHostEnvironment hostingEnvironment, IOptions<FileStoreOptions> fileStoreOptions) {
             this._hostingEnvironment = hostingEnvironment;
             this._fileStoreOptions = fileStoreOptions.Value;
         }

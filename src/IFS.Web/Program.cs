@@ -5,6 +5,8 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using Microsoft.Extensions.Hosting;
+
 namespace IFS.Web {
     using System.IO;
     using Microsoft.AspNetCore;
@@ -28,7 +30,7 @@ namespace IFS.Web {
                       if (env.IsDevelopment()) {
                           logging.AddDebug();
                       }
-                 })
+                })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .Build();

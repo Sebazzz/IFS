@@ -31,7 +31,7 @@ namespace IFS.Web.Core.Upload {
 
 
     public interface IUploadProgressManager {
-        UploadProgress GetProgress(FileIdentifier id);
+        UploadProgress? GetProgress(FileIdentifier id);
 
         void SetProgress(FileIdentifier id, UploadProgress uploadProgress);
     }
@@ -43,7 +43,7 @@ namespace IFS.Web.Core.Upload {
             this._uploadsByFileIdentifier = new ConcurrentDictionary<FileIdentifier, UploadProgress>();
         }
 
-        public UploadProgress GetProgress(FileIdentifier id) {
+        public UploadProgress? GetProgress(FileIdentifier id) {
             if (!this._uploadsByFileIdentifier.TryGetValue(id, out var value)) {
                 return null;
             }
@@ -85,7 +85,7 @@ namespace IFS.Web.Core.Upload {
             // which means we have to build up the metadata incrementally and can only write it later
 
             UploadContext uploadContext = new UploadContext(id);
-            StoredMetadata metadata = null;
+            StoredMetadata? metadata = null;
 
             try {
                 MultipartSection section = await reader.ReadNextSectionAsync(cancellationToken);
@@ -297,7 +297,7 @@ namespace IFS.Web.Core.Upload {
             IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
 
             if (metadata.IsReservation) {
-                StoredMetadata originalStoredMetadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+                StoredMetadata? originalStoredMetadata = await this._metadataReader.GetMetadataAsync(metadataFile);
 
                 if (originalStoredMetadata == null) {
                     this._logger.LogWarning(LogEvents.UploadFailed, "{0}: Metadata file expected for reservation at {1}", id, metadataFile.PhysicalPath);
@@ -353,7 +353,7 @@ namespace IFS.Web.Core.Upload {
         }
 
         private sealed class UploadPassword {
-            public string Password { get;set; }
+            public string? Password { get;set; }
             public bool? Enable { get; private set; }
             public bool IsSet => this.Enable != null;
 

@@ -29,9 +29,9 @@ namespace IFS.Web.Core.Authentication
 
         public void RecordFailure(HttpContext httpContext)
         {
-            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext);
+            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext)!;
 
-            LogMessages.OnFailure(this._logger, requesterIdentifier, null);
+            LogMessages.OnFailure(this._logger, requesterIdentifier, null!);
 
             Fail2BanRecord newRecord = this._recordStore.AddOrUpdate(
                 requesterIdentifier,
@@ -41,27 +41,27 @@ namespace IFS.Web.Core.Authentication
 
             if (CheckApplyRateLimiting(newRecord) == true)
             {
-                LogMessages.OnRateLimitingApplied(this._logger, requesterIdentifier, null);
+                LogMessages.OnRateLimitingApplied(this._logger, requesterIdentifier, null!);
             }
         }
 
         public void RecordSuccess(HttpContext httpContext)
         {
-            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext);
+            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext)!;
 
             bool success = this._recordStore.TryRemove(requesterIdentifier, out _);
 
             if (success)
             {
-                LogMessages.OnSuccess(this._logger, requesterIdentifier, null);
+                LogMessages.OnSuccess(this._logger, requesterIdentifier, null!);
             }
         }
 
         public bool IsRateLimitApplied(HttpContext httpContext)
         {
-            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext);
+            string requesterIdentifier = GetUniqueRequesterIdentifier(httpContext)!;
 
-            if (this._recordStore.TryGetValue(requesterIdentifier, out Fail2BanRecord record))
+            if (this._recordStore.TryGetValue(requesterIdentifier, out Fail2BanRecord? record))
             {
                 // Yes there is a potential race condition here in which a failure is recorded
                 // while the record expires. I don't care, it is not bad enough to worry about.
@@ -73,7 +73,7 @@ namespace IFS.Web.Core.Authentication
 
                     if (success)
                     {
-                        LogMessages.OnRateLimitingRelaxed(this._logger, requesterIdentifier, null);
+                        LogMessages.OnRateLimitingRelaxed(this._logger, requesterIdentifier, null!);
                     }
                 }
 
@@ -103,7 +103,7 @@ namespace IFS.Web.Core.Authentication
             return true;
         }
 
-        private static string GetUniqueRequesterIdentifier(HttpContext httpContext)
+        private static string? GetUniqueRequesterIdentifier(HttpContext httpContext)
         {
             return httpContext.Connection.RemoteIpAddress?.ToString();
         }

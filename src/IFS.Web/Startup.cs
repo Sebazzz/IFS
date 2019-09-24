@@ -7,6 +7,7 @@
 
 using IFS.Web.Framework.Middleware.Fail2Ban;
 using IFS.Web.Framework.Services;
+using Microsoft.Extensions.Hosting;
 
 namespace IFS.Web
 {
@@ -51,10 +52,10 @@ namespace IFS.Web
             services.AddDataProtection();
 
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddMvcOptions(opts =>
                 {
-                    opts.InputFormatterExceptionPolicy = InputFormatterExceptionPolicy.AllExceptions;
+                    //opts.InputFormatterExceptionPolicy = InputFormatterExceptionPolicy.AllExceptions;
                     opts.EnableEndpointRouting = false;
                 });
 
@@ -106,7 +107,7 @@ namespace IFS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseStatusCodePagesWithReExecute("/Error/Http-{0}");
 

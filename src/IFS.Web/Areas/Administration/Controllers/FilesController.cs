@@ -32,15 +32,12 @@ namespace IFS.Web.Areas.Administration.Controllers {
         public async Task<IActionResult> Index() {
             IList<UploadedFile> allFiles = await this._uploadedFileRepository.GetFiles();
 
-            FilesOverviewModel model = new FilesOverviewModel {
-                Files = allFiles
-            };
-
+            FilesOverviewModel model = new FilesOverviewModel(allFiles);
             return this.View(model);
         }
 
         public async Task<IActionResult> Log(FileIdentifier id) {
-            UploadedFile file = await this._uploadedFileRepository.GetFile(id);
+            UploadedFile? file = await this._uploadedFileRepository.GetFile(id);
 
             if (file == null) {
                 return this.NotFound();

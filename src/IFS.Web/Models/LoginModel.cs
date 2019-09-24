@@ -9,11 +9,11 @@ namespace IFS.Web.Models {
     using System.ComponentModel.DataAnnotations;
 
     public sealed class LoginModel {
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
 
         [DataType(DataType.Password)]
-        public string Passphrase { get; set; }
+        public string? Passphrase { get; set; }
 
-        public string HelpText { get; set; }
+        public string? HelpText { get; set; }
     }
 }

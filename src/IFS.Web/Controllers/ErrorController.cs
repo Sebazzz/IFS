@@ -30,7 +30,7 @@ namespace IFS.Web.Controllers {
 
         private ErrorInformation GetModel() {
             IStatusCodeReExecuteFeature statusCodeFeature = this.HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-            StatusCodeReExecuteFeature specific = statusCodeFeature as StatusCodeReExecuteFeature;
+            StatusCodeReExecuteFeature? specific = statusCodeFeature as StatusCodeReExecuteFeature;
 
             if (statusCodeFeature == null) {
                 return new ErrorInformation {

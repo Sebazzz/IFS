@@ -17,7 +17,7 @@ namespace IFS.Web.Core.Crypto {
             return CreateCrypto(password, null);
         }
 
-        public static Aes CreateCrypto(string password, byte[] iv) {
+        public static Aes CreateCrypto(string password, byte[]? iv) {
             Aes crypto = new AesManaged();
 
             if (iv != null) {

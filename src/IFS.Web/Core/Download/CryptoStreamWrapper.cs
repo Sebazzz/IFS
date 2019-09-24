@@ -27,7 +27,7 @@ namespace IFS.Web.Core.Download {
 
         public static Stream Create(UploadedFile file, string password) {
             Stream fileStream = file.GetStream();
-            Aes crypto = null;
+            Aes? crypto = null;
 
             try {
                 crypto = CryptoMetadata.ReadMetadataAndInitializeAlgorithm(fileStream, password);
@@ -57,11 +57,11 @@ namespace IFS.Web.Core.Download {
 
         #region Delegated members
 
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state) {
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object? state) {
             return this._cryptoStream.BeginRead(buffer, offset, count, callback, state);
         }
 
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state) {
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object? state) {
             return this._cryptoStream.BeginWrite(buffer, offset, count, callback, state);
         }
 

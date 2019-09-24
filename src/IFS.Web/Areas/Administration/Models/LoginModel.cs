@@ -9,15 +9,15 @@ namespace IFS.Web.Areas.Administration.Models {
     using System.ComponentModel.DataAnnotations;
 
     public sealed class LoginModel {
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
 
         [Required]
         [Display(Name = "User name")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [Required]
         [Display]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

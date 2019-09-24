@@ -21,7 +21,9 @@ namespace IFS.Web.Framework.Views.TagHelpers {
     public sealed class PageTitleTagHelper : TagHelper {
         [HtmlAttributeNotBound]
         [ViewContext]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public ViewContext ViewContext { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         [SuppressMessage("ReSharper", "MustUseReturnValue", Justification = "IHtmlBuilder returns itself ('this' instance)")]
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {

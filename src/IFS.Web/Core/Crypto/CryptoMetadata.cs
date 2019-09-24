@@ -12,10 +12,10 @@ namespace IFS.Web.Core.Crypto {
 
     internal static class CryptoMetadata {
         public static void WriteMetadata(Stream outputStream, Aes algorithm) {
-            using (BinaryWriter bw = new BinaryWriter(outputStream, Encoding.UTF8, true)) {
-                bw.Write(algorithm.IV.Length);
-                bw.Write(algorithm.IV);
-            }
+            using BinaryWriter bw = new BinaryWriter(outputStream, Encoding.UTF8, true);
+
+            bw.Write(algorithm.IV.Length);
+            bw.Write(algorithm.IV);
         }
 
         public static Aes ReadMetadataAndInitializeAlgorithm(Stream inputStream, string password) {

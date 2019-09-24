@@ -5,6 +5,8 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Core.Upload;
+
 namespace IFS.Web.Framework.Filters {
     using System;
     using System.Security.Claims;
@@ -26,6 +28,7 @@ namespace IFS.Web.Framework.Filters {
             string displayName = user.FindFirstValue(ClaimTypes.GivenName);
             string email = user.FindFirstValue(ClaimTypes.Email);
 
+            contactInformationModel.Sender ??= new ContactInformation();
             contactInformationModel.Sender.Name = displayName;
             contactInformationModel.Sender.EmailAddress = email;
 

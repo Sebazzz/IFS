@@ -15,7 +15,7 @@ namespace IFS.Web.Core.Upload {
 
 
     public interface IMetadataReader {
-        Task<StoredMetadata> GetMetadataAsync(IFileInfo file);
+        Task<StoredMetadata?> GetMetadataAsync(IFileInfo file);
     }
 
     public class MetadataReader : IMetadataReader {
@@ -26,7 +26,7 @@ namespace IFS.Web.Core.Upload {
         }
 
 
-        public async Task<StoredMetadata> GetMetadataAsync(IFileInfo file) {
+        public async Task<StoredMetadata?> GetMetadataAsync(IFileInfo file) {
             StoredMetadata metadata;
             try {
                 string json;

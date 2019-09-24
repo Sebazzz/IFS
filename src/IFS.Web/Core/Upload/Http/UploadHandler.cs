@@ -34,7 +34,7 @@
         }
 
         public async Task ExecuteAsync(HttpContext context) {
-            FileIdentifier identifier = FileIdentifier.FromString(context.GetRouteValue("fileIdentifier").ToString());
+            FileIdentifier identifier = FileIdentifier.FromString(context.GetRouteValue("fileIdentifier")?.ToString() ?? throw new InvalidOperationException("No ID"));
 
             this._logger.LogInformation(LogEvents.NewUpload, "New upload of file with id {0}", identifier);
 

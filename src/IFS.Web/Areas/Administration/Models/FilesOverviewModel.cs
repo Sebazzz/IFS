@@ -11,6 +11,11 @@ namespace IFS.Web.Areas.Administration.Models {
     using Core.Upload;
 
     public class FilesOverviewModel {
-        public IList<UploadedFile> Files { get; set; }
+        public IList<UploadedFile> Files { get;}
+
+        public FilesOverviewModel(IList<UploadedFile> files)
+        {
+            this.Files = files;
+        }
     }
 }

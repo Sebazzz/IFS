@@ -11,11 +11,11 @@ namespace IFS.Web.Models {
     using Microsoft.AspNetCore.Http;
 
     public class ErrorInformation {
-        public string OriginalPath { get; set; }
+        public string? OriginalPath { get; set; }
 
-        public string QueryString { get; set; }
+        public string? QueryString { get; set; }
 
-        public string GetUrl(HttpRequest request) {
+        public string? GetUrl(HttpRequest request) {
             if (String.IsNullOrEmpty(this.OriginalPath)) {
                 return null;
             }
@@ -24,7 +24,7 @@ namespace IFS.Web.Models {
                 Scheme = request.Scheme,
                 Host = request.Host.Host,
                 Path = this.OriginalPath,
-                Query = this.QueryString
+                Query = this.QueryString ?? String.Empty
             };
 
             return uriBuilder.ToString();

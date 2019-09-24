@@ -47,7 +47,7 @@ namespace IFS.Web.Controllers {
                 return this.BadRequest();
             }
 
-            UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
+            UploadedFile? uploadedFile = await this._uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
 
@@ -85,19 +85,20 @@ namespace IFS.Web.Controllers {
             }
 
             // Get the file
-            UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
-            if (!uploadedFile.HasDownloadSecurity()) {
+            UploadedFile? uploadedFile = await this._uploadedFileRepository.GetFile(id);
+
+            if (uploadedFile == null || !uploadedFile.HasDownloadSecurity()) {
                 // How? Don't know, but execute regular procedure.
                 return await this.DownloadFileSplash(id);
             }
 
             // Directly validate password and return file for wget
             if (this.IsDirectDownloadClient()) {
-                return await this.DownloadFileRaw(id, passwordInfo.Password, null);
+                return await this.DownloadFileRaw(id, passwordInfo.Password!, null);
             }
 
             // In web browser case validate password and show regular download view
-            bool passwordIsValid = uploadedFile.Metadata.DownloadSecurity.Verify(passwordInfo.Password);
+            bool passwordIsValid = uploadedFile.Metadata.DownloadSecurity?.Verify(passwordInfo.Password) != false;
             if (!passwordIsValid) {
                 await this.MakeBadPasswordDelayTask();
 
@@ -110,20 +111,20 @@ namespace IFS.Web.Controllers {
             this.HttpContext.RecordFail2BanSuccess();
 
             // Show download prompt, protect password to prevent reuse
-            this.ViewBag.ProtectedPassword = this._passwordProtector.Protect(passwordInfo.Password);
+            this.ViewBag.ProtectedPassword = this._passwordProtector.Protect(passwordInfo.Password!);
             return this.View(uploadedFile);
         }
         
 
         [Route("download/file/{id}/raw", Name = "DownloadFileRaw")]
         [FileLock]
-        public async Task<IActionResult> DownloadFileRaw(FileIdentifier id, string password, [Bind(Prefix="_")]string protectedPassword) {
+        public async Task<IActionResult> DownloadFileRaw(FileIdentifier id, string password, [Bind(Prefix="_")]string? protectedPassword) {
             if (!this.ModelState.IsValid) {
                 return this.BadRequest();
             }
 
             // Get file
-            UploadedFile uploadedFile = await this._uploadedFileRepository.GetFile(id);
+            UploadedFile? uploadedFile = await this._uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
                 return this.NotFound("404: File has not been found or download link has expired");
@@ -149,7 +150,7 @@ namespace IFS.Web.Controllers {
                     return this.StatusCode(401, "This resource is protected by a password");
                 }
 
-                if (uploadedFile.Metadata.DownloadSecurity.Verify(password) == false) {
+                if (uploadedFile.Metadata.DownloadSecurity?.Verify(password) == false) {
                     await this.MakeBadPasswordDelayTask();
                     this.HttpContext.RecordFail2BanFailure();
                     return this.StatusCode(401, "This resource is protected by a password");

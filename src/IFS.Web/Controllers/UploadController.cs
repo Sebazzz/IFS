@@ -86,7 +86,7 @@ namespace IFS.Web.Controllers {
                 return this.BadRequest();
             }
 
-            UploadedFile uploadedFile = await uploadedFileRepository.GetFile(id);
+            UploadedFile? uploadedFile = await uploadedFileRepository.GetFile(id);
             if (uploadedFile == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file '{0}'", id);
                 return this.NotFound("A system error occurred - unable to find just uploaded file");
@@ -122,7 +122,7 @@ namespace IFS.Web.Controllers {
                 return this.BadRequest();
             }
 
-            UploadProgress current = this._uploadProgressManager.GetProgress(trackerId);
+            UploadProgress? current = this._uploadProgressManager.GetProgress(trackerId);
             if (current == null) {
                 this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find upload by id {0}", trackerId);
 

@@ -9,7 +9,7 @@ namespace IFS.Web.Models {
     using Core.Upload;
 
     public interface IContactInformationModel {
-        ContactInformation Sender { get; set; }
+        ContactInformation? Sender { get; set; }
         bool IsSenderInformationPrefilled { get; set; }
     }
 }

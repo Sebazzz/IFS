@@ -18,8 +18,8 @@ namespace IFS.Web.Core.Upload {
     using System.Linq;
 
     public interface IUploadedFileRepository {
-        Task<UploadedFile> GetFile(FileIdentifier id);
-        Task<UploadedFile> GetFileReservation(FileIdentifier id);
+        Task<UploadedFile?> GetFile(FileIdentifier id);
+        Task<UploadedFile?> GetFileReservation(FileIdentifier id);
 
         Task<IList<UploadedFile>> GetFiles();
         void Delete(FileIdentifier id);
@@ -39,7 +39,7 @@ namespace IFS.Web.Core.Upload {
             this._fileWriter = fileWriter;
         }
 
-        public async Task<UploadedFile> GetFile(FileIdentifier id) {
+        public async Task<UploadedFile?> GetFile(FileIdentifier id) {
             IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
             if (!metadataFile.Exists) {
                 return null;
@@ -51,12 +51,17 @@ namespace IFS.Web.Core.Upload {
                 return null;
             }
 
-            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+            StoredMetadata? metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+
+            if (metadata == null)
+            {
+                return null;
+            }
 
             return new UploadedFile(id, dataFile, metadata);
         }
 
-        public async Task<UploadedFile> GetFileReservation(FileIdentifier id) {
+        public async Task<UploadedFile?> GetFileReservation(FileIdentifier id) {
             IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
             if (!metadataFile.Exists) {
                 return null;
@@ -68,19 +73,29 @@ namespace IFS.Web.Core.Upload {
                 return null;
             }
 
-            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+            StoredMetadata? metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+
+            if (metadata == null)
+            {
+                return null;
+            }
 
             return new UploadedFile(id, dataFile, metadata);
         }
 
-        private async Task<UploadedFile> GetFileInternal(FileIdentifier id) {
+        private async Task<UploadedFile?> GetFileInternal(FileIdentifier id) {
             IFileInfo metadataFile = this._fileStore.GetMetadataFile(id);
             if (!metadataFile.Exists) {
                 return null;
             }
 
             IFileInfo dataFile = this._fileStore.GetDataFile(id);
-            StoredMetadata metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+            StoredMetadata? metadata = await this._metadataReader.GetMetadataAsync(metadataFile);
+
+            if (metadata == null)
+            {
+                return null;
+            }
 
             return new UploadedFile(id, dataFile, metadata);
         }
@@ -93,7 +108,7 @@ namespace IFS.Web.Core.Upload {
 
             List<UploadedFile> uploadedFiles = new List<UploadedFile>();
             foreach (FileIdentifier id in fileIds.Distinct()) {
-                UploadedFile file = await this.GetFileInternal(id).ConfigureAwait(false);
+                UploadedFile? file = await this.GetFileInternal(id).ConfigureAwait(false);
 
                 if (file != null) {
                     uploadedFiles.Add(file);

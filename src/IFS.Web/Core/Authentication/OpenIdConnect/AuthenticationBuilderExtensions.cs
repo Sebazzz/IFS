@@ -5,6 +5,8 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Text.Json;
+
 namespace IFS.Web.Core.Authentication.OpenIdConnect {
     using System;
     using System.Security.Claims;
@@ -55,7 +57,7 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
                 this._replacementClaimType = replacementClaimType;
             }
 
-            public override void Run(JObject userData, ClaimsIdentity identity, string issuer) {
+            public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer) {
                 if (this.ClaimType == this._replacementClaimType) {
                     return;
                 }
@@ -85,7 +87,7 @@ namespace IFS.Web.Core.Authentication.OpenIdConnect {
                 this._roleName = roleName;
             }
 
-            public override void Run(JObject userData, ClaimsIdentity identity, string issuer) {
+            public override void Run(JsonElement userData, ClaimsIdentity identity, string issuer) {
                 Claim originalClaim = identity.FindFirst(x => x.Type == this._roleMapping.ClaimType && x.Value == this._roleMapping.Value);
                 if (originalClaim == null) {
                     return;

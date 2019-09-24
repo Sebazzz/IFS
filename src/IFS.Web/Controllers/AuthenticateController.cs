@@ -96,7 +96,7 @@ namespace IFS.Web.Controllers {
             }
 
             // Validate password
-            bool isValid = this._authenticationProvider.IsValidPassphrase(model?.Passphrase);
+            bool isValid = this._authenticationProvider.IsValidPassphrase(model.Passphrase);
 
             if (!isValid) {
                 this.HttpContext.RecordFail2BanFailure();

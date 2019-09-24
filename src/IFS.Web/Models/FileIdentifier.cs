@@ -109,11 +109,11 @@ namespace IFS.Web.Models {
         /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
         /// </returns>
         /// <param name="obj">Another object to compare to. </param>
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (ReferenceEquals(null, obj)) {
                 return false;
             }
-            return obj is FileIdentifier && this.Equals((FileIdentifier)obj);
+            return obj is FileIdentifier identifier && this.Equals(identifier);
         }
 
         /// <summary>
