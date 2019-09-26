@@ -5,6 +5,8 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Framework.Routing;
+
 namespace IFS.Web.Core.Upload.Http {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Routing;
@@ -20,7 +22,7 @@ namespace IFS.Web.Core.Upload.Http {
 
             const string routeName = "AsyncUploadHandler";
             endpoints.MapMethods(routeTemplate, new []{ "PUT", "POST" }, uploadHandler.ExecuteAsync)
-                .WithMetadata(new EndpointNameMetadata(routeName), new RouteNameMetadata(routeName));
+                     .WithName(routeName);
         }
     }
 }
