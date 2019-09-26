@@ -100,6 +100,7 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpPost]
+        [Route("upload/frame/{fileIdentifier}", Name = "AfterUploadCompletionFrame")]
         public IActionResult Frame(FileIdentifier id, UploadErrorsModel model) {
             if (model?.Errors != null) {
                 foreach (string modelError in model.Errors) {

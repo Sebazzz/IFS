@@ -1,4 +1,7 @@
-﻿namespace IFS.Web.Core.Upload.Http {
+﻿using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace IFS.Web.Core.Upload.Http {
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -19,7 +22,6 @@
         private readonly IUploadManager _uploadManager;
         private readonly IUploadProgressManager _uploadProgressManager;
         private readonly IOptions<FileStoreOptions> _fileStoreOptions;
-        private readonly LinkGenerator _linkGenerator;
 
         private readonly ILogger<UploadHandler> _logger;
 
@@ -27,7 +29,6 @@
             this._uploadManager = uploadManager;
             this._fileStoreOptions = fileStoreOptions;
             this._logger = logger;
-            this._linkGenerator = linkGenerator;
             this._uploadProgressManager = uploadProgressManager;
         }
 
@@ -74,19 +75,12 @@
             await ReExecuteAsync(context);
         }
 
-        private static async Task ReExecuteAsync(HttpContext context)
+        private static Task ReExecuteAsync(HttpContext context)
         {
-            RequestDelegate? reExecutionPoint = ReExecuteMiddleware.GetReExecutionPoint(context);
-
-            if (reExecutionPoint == null)
-            {
-                throw new InvalidOperationException($"No ReExecution point defined. Please use the {nameof(ApplicationBuilderExtensions.UseReExecution)} method to register middleware before the 'UseRouting' call");
-            }
-
-            await reExecutionPoint.Invoke(context);
+            return context.GetEndpoint().RequestDelegate.Invoke(context);
         }
 
-        private void PrepForReExecute(HttpContext context, UploadErrorsModel uploadErrorsModel) {
+        private static void PrepForReExecute(HttpContext context, UploadErrorsModel uploadErrorsModel) {
             // Clear request
             context.Request.Method = "POST";
             context.Request.Body = Stream.Null;
@@ -100,16 +94,44 @@
                 context.Request.QueryString = new QueryString();
             }
 
+            // Reset the request in its most basic form
             context.Request.ContentType = "text/plain";
-
-            // Set route data and path
-            var routeData = new {
-                id = context.GetRouteValue("fileIdentifier")
-            };
-            
             context.Request.PathBase = "/";
-            context.Request.Path = this._linkGenerator.GetPathByAction("Frame", "Upload", routeData);
-            context.SetEndpoint(null);
+            context.Request.Path =  "/";
+
+            // Set endpoint and associated routing data
+            const string continuationEndpoint = "AfterUploadCompletionFrame";
+            IEndpointAddressScheme<string> svc = context.RequestServices.GetRequiredService<IEndpointAddressScheme<string>>();
+            IEnumerable<Endpoint> endpoints = svc.FindEndpoints(continuationEndpoint);
+
+            bool hasSetEndpoint = false;
+            foreach (Endpoint endpoint in endpoints) {
+                if (hasSetEndpoint)
+                {
+                    throw new InvalidOperationException($"Multiple endpoints {continuationEndpoint}");
+                }
+
+                // Prepare routing values MVC uses for view lookups
+                ControllerActionDescriptor? actionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
+                if (actionDescriptor != null)
+                {
+                    RouteData routeData = context.GetRouteData();
+
+                    foreach (KeyValuePair<string, string> routeValue in actionDescriptor.RouteValues)
+                    {
+                        routeData.Values[routeValue.Key] = routeValue.Value;
+                    }
+                }
+
+                // Set to endpoint to use later
+                context.SetEndpoint(endpoint);
+                hasSetEndpoint = true;
+            }
+
+            if (!hasSetEndpoint)
+            {
+                throw new InvalidOperationException($"Unable to find continuation endpoint {continuationEndpoint}");
+            }
         }
 
         private static string GetBoundary(MediaTypeHeaderValue contentType) {

@@ -22,10 +22,5 @@ namespace IFS.Web.Core.Upload.Http {
             endpoints.MapMethods(routeTemplate, new []{ "PUT", "POST" }, uploadHandler.ExecuteAsync)
                 .WithMetadata(new EndpointNameMetadata(routeName), new RouteNameMetadata(routeName));
         }
-
-        public static void UseReExecution(this IApplicationBuilder applicationBuilder)
-        {
-            applicationBuilder.UseMiddleware<ReExecuteMiddleware>();
-        }
     }
 }

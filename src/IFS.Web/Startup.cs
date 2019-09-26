@@ -127,7 +127,6 @@ namespace IFS.Web
                 app.UseHsts();
             }
 
-            app.UseReExecution();
             app.UseRouting();
 
             app.UseStaticFiles();
