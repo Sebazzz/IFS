@@ -115,18 +115,18 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpGet]
-        [Route("upload/tracker/{trackerId}/progress", Name = "UploadTrackerApi")]
+        [Route("upload/tracker/{fileIdentifier}/progress", Name = "UploadTrackerApi")]
         [PreventHttpCache]
-        public IActionResult TrackerApi(FileIdentifier trackerId) {
+        public IActionResult TrackerApi(FileIdentifier fileIdentifier) {
             if (!this.ModelState.IsValid) {
                 return this.BadRequest();
             }
 
-            UploadProgress? current = this._uploadProgressManager.GetProgress(trackerId);
+            UploadProgress? current = this._uploadProgressManager.GetProgress(fileIdentifier);
             if (current == null) {
-                this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find upload by id {0}", trackerId);
+                this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find upload by id {0}", fileIdentifier);
 
-                return this.NotFound("Cannot find upload with id: " + trackerId);
+                return this.NotFound("Cannot find upload with id: " + fileIdentifier);
             }
 
             UploadProgressModel model = new UploadProgressModel {
@@ -141,12 +141,12 @@ namespace IFS.Web.Controllers {
         }
 
         [HttpGet]
-        [Route("upload/tracker/{trackerId}", Name = "UploadTracker")]
+        [Route("upload/tracker/{fileIdentifier}", Name = "UploadTracker")]
         [PreventHttpCache]
-        public IActionResult Tracker(FileIdentifier trackerId) {
+        public IActionResult Tracker(FileIdentifier fileIdentifier) {
             UploadFileInProgressModel model = new UploadFileInProgressModel {
-                FileIdentifier = trackerId,
-                FileName = this._uploadProgressManager.GetProgress(trackerId)?.FileName
+                FileIdentifier = fileIdentifier,
+                FileName = this._uploadProgressManager.GetProgress(fileIdentifier)?.FileName
             };
 
             return this.PartialView(model);

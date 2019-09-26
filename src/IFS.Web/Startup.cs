@@ -7,6 +7,7 @@
 
 using IFS.Web.Framework.Middleware.Fail2Ban;
 using IFS.Web.Framework.Services;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.Extensions.Hosting;
 
 namespace IFS.Web
@@ -25,7 +26,6 @@ namespace IFS.Web
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
@@ -46,7 +46,6 @@ namespace IFS.Web
             services.AddRouting(routing =>
             {
                 routing.LowercaseUrls = true;
-
             });
 
             services.AddDataProtection();
@@ -56,8 +55,9 @@ namespace IFS.Web
                 .AddMvcOptions(opts =>
                 {
                     //opts.InputFormatterExceptionPolicy = InputFormatterExceptionPolicy.AllExceptions;
-                    opts.EnableEndpointRouting = false;
                 });
+
+            services.AddControllersWithViews();
 
             services.AddAuthorization(opt =>
             {
@@ -104,6 +104,9 @@ namespace IFS.Web
             services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();
 
             services.AddUploadHandler();
+
+            // TODO: Get rid of this service, see aspnet/AspNetCore/issues/14442
+            services.AddSingleton<IPolicyEvaluator, HttpContextPolicyEvaluator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -124,8 +127,13 @@ namespace IFS.Web
                 app.UseHsts();
             }
 
+            app.UseReExecution();
+            app.UseRouting();
+
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseFail2BanRecording();
 
             // Hangfire
@@ -141,22 +149,13 @@ namespace IFS.Web
 
             app.UseHangfireServer();
 
-            // MVC and API
-            app.UseMvc(
-                routes =>
-                {
-                    // Async uploads - need to map this here as MVC won't generate routes to other IRouter
-                    routes.MapUploadHandler("upload/handler/{fileIdentifier}");
-
-                    routes.MapAreaRoute(
-                        name: "areaRoute",
-                        areaName: "Administration",
-                        template: "administration/{controller=Home}/{action=Index}/{id?}");
-
-                    routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
-                });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapUploadHandler("upload/handler/{fileIdentifier}");
+                endpoints.MapAreaControllerRoute("areaRoute", "Administration", "administration/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+            });
 
             // Configure hangfire jobs (not sure where to do this else)
             RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(

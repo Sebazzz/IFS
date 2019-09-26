@@ -5,6 +5,8 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Core.Authorization;
+
 namespace IFS.Web.Core.Authentication {
     using System.Diagnostics;
     using System.Security.Claims;
@@ -17,9 +19,7 @@ namespace IFS.Web.Core.Authentication {
 
     public class RestrictedUploadRequirement : AuthorizationHandler<RestrictedUploadRequirement>, IAuthorizationRequirement {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RestrictedUploadRequirement requirement) {
-            AuthorizationFilterContext? filterContext = context.Resource as AuthorizationFilterContext;
-
-            Debug.Assert(filterContext != null, "Unknown resource");
+            Debug.Assert(context.Resource is RouteEndpoint endpoint, "Unknown resource");
 
             ClaimsPrincipal user = context.User;
             string? allowedFileIdentifier = user.FindFirst(x => x.Type == KnownClaims.RestrictionId)?.Value;
@@ -29,7 +29,7 @@ namespace IFS.Web.Core.Authentication {
                 return Task.CompletedTask;
             }
 
-            HttpContext httpContext = filterContext.HttpContext;
+            HttpContext httpContext = HttpContextPolicyEvaluator.PolicyEvaluationHttpContext;
             RouteData routeData = httpContext.GetRouteData();
 
             string? requestFileIdentifier = (routeData.Values["fileIdentifier"] ?? routeData.Values["id"])?.ToString();

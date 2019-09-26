@@ -24,7 +24,7 @@
 </div>
 
 @{
-    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { trackerId = Model.FileIdentifier.ToString() });
+    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { fileIdentifier = Model.FileIdentifier.ToString() });
 }
 
 <script>

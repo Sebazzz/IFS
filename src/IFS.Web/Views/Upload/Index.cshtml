@@ -91,7 +91,7 @@
 @section scripts {
     <script>
         window.uploadParameters = {
-            trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { trackerId = Model.FileIdentifier }))',
+            trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { fileIdentifier = Model.FileIdentifier }))',
             names: {
                 suggestedFileSize: '@Html.NameFor(x => x.SuggestedFileSize)'
             },

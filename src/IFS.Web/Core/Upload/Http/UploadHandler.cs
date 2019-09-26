@@ -2,16 +2,12 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Humanizer;
-
-    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.Extensions.Primitives;
@@ -23,13 +19,15 @@
         private readonly IUploadManager _uploadManager;
         private readonly IUploadProgressManager _uploadProgressManager;
         private readonly IOptions<FileStoreOptions> _fileStoreOptions;
+        private readonly LinkGenerator _linkGenerator;
 
         private readonly ILogger<UploadHandler> _logger;
 
-        public UploadHandler(IUploadManager uploadManager, IUploadProgressManager uploadProgressManager, IOptions<FileStoreOptions> fileStoreOptions, ILogger<UploadHandler> logger) {
+        public UploadHandler(IUploadManager uploadManager, IUploadProgressManager uploadProgressManager, IOptions<FileStoreOptions> fileStoreOptions, ILogger<UploadHandler> logger, LinkGenerator linkGenerator) {
             this._uploadManager = uploadManager;
             this._fileStoreOptions = fileStoreOptions;
             this._logger = logger;
+            this._linkGenerator = linkGenerator;
             this._uploadProgressManager = uploadProgressManager;
         }
 
@@ -56,7 +54,7 @@
             // Delegate actual request parsing
             // ... after the request "completes" we re-execute to send the final response to the browser
             try {
-                using (context.RequestAborted.Register(context.Abort)) {
+                await using (context.RequestAborted.Register(context.Abort)) {
                     await this._uploadManager.StoreAsync(identifier, reader, context.RequestAborted);
                 }
 
@@ -76,15 +74,19 @@
             await ReExecuteAsync(context);
         }
 
-        private static async Task ReExecuteAsync(HttpContext context) {
-            IRouter router = context.GetRouteData().Routers[0];
+        private static async Task ReExecuteAsync(HttpContext context)
+        {
+            RequestDelegate? reExecutionPoint = ReExecuteMiddleware.GetReExecutionPoint(context);
 
-            RouterMiddleware routerMiddleware = new RouterMiddleware(_ => Task.CompletedTask, context.RequestServices.GetRequiredService<ILoggerFactory>(), router);
+            if (reExecutionPoint == null)
+            {
+                throw new InvalidOperationException($"No ReExecution point defined. Please use the {nameof(ApplicationBuilderExtensions.UseReExecution)} method to register middleware before the 'UseRouting' call");
+            }
 
-            await routerMiddleware.Invoke(context);
+            await reExecutionPoint.Invoke(context);
         }
 
-        private static void PrepForReExecute(HttpContext context, UploadErrorsModel uploadErrorsModel) {
+        private void PrepForReExecute(HttpContext context, UploadErrorsModel uploadErrorsModel) {
             // Clear request
             context.Request.Method = "POST";
             context.Request.Body = Stream.Null;
@@ -100,23 +102,14 @@
 
             context.Request.ContentType = "text/plain";
 
-            // Set route data
+            // Set route data and path
             var routeData = new {
-                controller = "Upload",
-                action = "Frame",
                 id = context.GetRouteValue("fileIdentifier")
             };
-
-            foreach (IRouter router in context.GetRouteData().Routers.Reverse()) {
-                VirtualPathContext virtualPathContext = new VirtualPathContext(context, new RouteValueDictionary(), new RouteValueDictionary(routeData));
-                VirtualPathData data = router.GetVirtualPath(virtualPathContext);
-
-                if (data != null) {
-                    context.Request.Path = new PathString(data.VirtualPath);
-                   
-                    return;
-                }
-            }
+            
+            context.Request.PathBase = "/";
+            context.Request.Path = this._linkGenerator.GetPathByAction("Frame", "Upload", routeData);
+            context.SetEndpoint(null);
         }
 
         private static string GetBoundary(MediaTypeHeaderValue contentType) {

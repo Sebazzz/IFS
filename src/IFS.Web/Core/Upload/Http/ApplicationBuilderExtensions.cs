@@ -6,10 +6,8 @@
 // ******************************************************************************
 
 namespace IFS.Web.Core.Upload.Http {
-    using System.Collections.Generic;
-
+    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Routing;
-    using Microsoft.AspNetCore.Routing.Constraints;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class ApplicationBuilderExtensions {
@@ -17,29 +15,17 @@ namespace IFS.Web.Core.Upload.Http {
             serviceCollection.AddScoped<UploadHandler>();
         }
 
-        public static void MapUploadHandler(this IRouteBuilder routeBuilder, string routeTemplate) {
+        public static void MapUploadHandler(this IEndpointRouteBuilder endpoints, string routeTemplate) {
             SharedUploadRouteHandler uploadHandler = new SharedUploadRouteHandler();
-            RouteHandler routeHandler = new RouteHandler(uploadHandler.ExecuteAsync);
 
-            Route route = 
-                new Route(
-                    target: routeHandler,
-                    routeName: "AsyncUploadHandler",
-                    routeTemplate: routeTemplate,
-                    defaults: new RouteValueDictionary(),
-                    constraints: new Dictionary<string, object> {
-                        ["httpMethod"] = new HttpMethodRouteConstraint("POST", "PUT")
-                    },
-                    dataTokens: new RouteValueDictionary(),
-                    inlineConstraintResolver: new NullInlineConstraintResolver());
-
-            routeBuilder.Routes.Add(route);
+            const string routeName = "AsyncUploadHandler";
+            endpoints.MapMethods(routeTemplate, new []{ "PUT", "POST" }, uploadHandler.ExecuteAsync)
+                .WithMetadata(new EndpointNameMetadata(routeName), new RouteNameMetadata(routeName));
         }
 
-        private sealed class NullInlineConstraintResolver : IInlineConstraintResolver {
-            public IRouteConstraint ResolveConstraint(string inlineConstraint) {
-                throw new System.NotImplementedException();
-            }
+        public static void UseReExecution(this IApplicationBuilder applicationBuilder)
+        {
+            applicationBuilder.UseMiddleware<ReExecuteMiddleware>();
         }
     }
 }
