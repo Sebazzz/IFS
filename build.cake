@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Compression&version=0.2.2
+#addin nuget:?package=Cake.Compression&version=0.2.4
 #addin nuget:?package=SharpZipLib&version=1.1.0
 
 //////////////////////////////////////////////////////////////////////
@@ -72,12 +72,12 @@ void CheckToolVersion(string name, string executable, string argument, Version w
 	
 Task("Check-Node-Version")
 	.Does(() => {
-	CheckToolVersion("node.js", "node", "--version", new Version(8,9,0));
+	CheckToolVersion("node.js", "node", "--version", new Version(10,16,0));
 });
 
 Task("Check-Yarn-Version")
 	.Does(() => {
-	CheckToolVersion("yarn package manager", "yarn", "--version", new Version(1,5,1) /*Minimum supported on appveyor*/);
+	CheckToolVersion("yarn package manager", "yarn", "--version", new Version(1,16,0) /*Minimum supported on appveyor*/);
 });
 
 Task("Restore-NuGet-Packages")
