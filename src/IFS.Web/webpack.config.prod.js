@@ -9,7 +9,6 @@ module.exports = {
         minimizer: [
             // Minification
             new TerserPlugin({
-                parallel: true,
                 terserOptions: {
                     compress: {
                         dead_code: true,
