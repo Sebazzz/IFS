@@ -5,6 +5,7 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Diagnostics;
 using IFS.Web.Framework.Middleware.Fail2Ban;
 using IFS.Web.Framework.Services;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -51,11 +52,7 @@ namespace IFS.Web
             services.AddDataProtection();
 
             services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddMvcOptions(opts =>
-                {
-                    //opts.InputFormatterExceptionPolicy = InputFormatterExceptionPolicy.AllExceptions;
-                });
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddControllersWithViews();
 
@@ -117,6 +114,28 @@ namespace IFS.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseWhen(
+                    ctx => ctx.Request.Path.StartsWithSegments("/build"),
+                    spaApp =>
+                    {
+                        spaApp.UseSpa(spa =>
+                        {
+                            const int port = 8080;
+
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "node.exe",
+                                Arguments = $"dev-server.js --port={port}",
+                                WorkingDirectory = env.ContentRootPath,
+                                UseShellExecute = true,
+                                WindowStyle = ProcessWindowStyle.Minimized
+                            });
+
+                            spa.UseProxyToSpaDevelopmentServer($"http://localhost:{port}/");
+                        });
+                    }
+                );
             }
             else
             {
