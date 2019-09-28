@@ -17,7 +17,7 @@ namespace IFS.Web.Core.Authorization
 {
     public class HttpContextPolicyEvaluator : IPolicyEvaluator
     {
-        private static readonly AsyncLocal<HttpContext?> PolicyEvaluationHttpContextHolder= new AsyncLocal<HttpContext>();
+        private static readonly AsyncLocal<HttpContext?> PolicyEvaluationHttpContextHolder = new AsyncLocal<HttpContext?>();
         private readonly IPolicyEvaluator _defaultPolicyEvaluator;
 
         public static HttpContext PolicyEvaluationHttpContext => PolicyEvaluationHttpContextHolder.Value ?? throw new InvalidOperationException("This value is currently not available.");

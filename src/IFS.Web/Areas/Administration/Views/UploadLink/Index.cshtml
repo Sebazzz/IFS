@@ -38,8 +38,8 @@
 @section scripts {
     <script>
         window.app.contactInformationPersistence.initialize(
-            '@Html.IdFor(x => x.Sender.Name)',
-            '@Html.IdFor(x => x.Sender.EmailAddress)'
+            '@Html.IdFor(x => x.Sender!.Name)',
+            '@Html.IdFor(x => x.Sender!.EmailAddress)'
         );
     </script>
 }

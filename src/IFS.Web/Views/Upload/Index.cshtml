@@ -21,7 +21,7 @@
         </p>
 
         if (Model.Sender != null) {
-             string name = String.IsNullOrEmpty(Model.Sender.Name) ? Model.Sender.EmailAddress : Model.Sender.Name;
+             string? name = String.IsNullOrEmpty(Model.Sender.Name) ? Model.Sender.EmailAddress : Model.Sender.Name;
              bool nameOnly = !String.IsNullOrEmpty(Model.Sender.EmailAddress);
 
              <p>
@@ -96,8 +96,8 @@
                 suggestedFileSize: '@Html.NameFor(x => x.SuggestedFileSize)'
             },
             ids: {
-                nameField: '@Html.IdFor(x => x.Sender.Name)',
-                emailAddressField: '@Html.IdFor(x => x.Sender.EmailAddress)'
+                nameField: '@Html.IdFor(x => x.Sender!.Name)',
+                emailAddressField: '@Html.IdFor(x => x.Sender!.EmailAddress)'
             }
         };
     </script>

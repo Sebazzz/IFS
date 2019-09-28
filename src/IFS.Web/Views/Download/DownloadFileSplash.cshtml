@@ -20,7 +20,7 @@
 </p>
 
 @if (Model.Metadata.Sender != null) {
-    string name = String.IsNullOrEmpty(Model.Metadata.Sender.Name) ? Model.Metadata.Sender.EmailAddress : Model.Metadata.Sender.Name;
+    string? name = String.IsNullOrEmpty(Model.Metadata.Sender!.Name) ? Model.Metadata.Sender!.EmailAddress : Model.Metadata.Sender!.Name;
     bool nameOnly = !String.IsNullOrEmpty(Model.Metadata.Sender.EmailAddress);
 
     <p>

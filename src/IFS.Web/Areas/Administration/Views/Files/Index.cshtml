@@ -54,10 +54,10 @@
                 </td>
                 <td>
                     @{
-                        ContactInformation sender = file.Metadata.Sender;
+                        ContactInformation? sender = file.Metadata.Sender;
 
                         if (sender != null) {
-                            string name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
+                            string? name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
                             bool nameOnly = !String.IsNullOrEmpty(sender.EmailAddress);
 
                             if (nameOnly) {
@@ -96,10 +96,10 @@
                 </td>
                 <td>
                     @{
-                        ContactInformation sender = file.Metadata.Sender;
+                        ContactInformation? sender = file.Metadata.Sender;
 
                         if (sender != null) {
-                            string name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
+                            string? name = String.IsNullOrEmpty(sender.Name) ? sender.EmailAddress : sender.Name;
                             bool nameOnly = String.IsNullOrEmpty(sender.EmailAddress);
 
                             if (nameOnly) {
