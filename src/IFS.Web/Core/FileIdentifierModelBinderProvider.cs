@@ -5,14 +5,14 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Core {
-    using System;
-    using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-    using Models;
-
     internal sealed class FileIdentifierModelBinderProvider : IModelBinderProvider {
         public IModelBinder GetBinder(ModelBinderProviderContext context) {
             if (context.Metadata.ModelType == typeof(FileIdentifier)) {

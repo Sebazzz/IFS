@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Framework.Views.TagHelpers {
-    using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
+namespace IFS.Web.Framework.Views.TagHelpers {
     /// <summary>
     /// Workaround tag helper to render no-value attribute "readonly" conditionally, see: https://stackoverflow.com/q/55837409/646215
     /// </summary>

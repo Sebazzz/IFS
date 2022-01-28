@@ -6,12 +6,11 @@
 // ******************************************************************************
 
 using IFS.Web.Framework.Routing;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IFS.Web.Core.Upload.Http {
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Routing;
-    using Microsoft.Extensions.DependencyInjection;
-
     public static class ApplicationBuilderExtensions {
         public static void AddUploadHandler(this IServiceCollection serviceCollection) {
             serviceCollection.AddScoped<UploadHandler>();

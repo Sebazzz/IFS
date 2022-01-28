@@ -5,23 +5,23 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.ModelFactory;
+using IFS.Web.Core.Upload;
+using IFS.Web.Framework.Filters;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Areas.Administration.Controllers {
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.ModelFactory;
-    using Core.Upload;
-    using Framework.Filters;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
-    using Web.Models;
-
     [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [Area(nameof(Administration))]
     public class UploadLinkController : Controller {

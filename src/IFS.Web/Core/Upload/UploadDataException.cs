@@ -4,9 +4,9 @@
 //  File:           : UploadDataException.cs
 //  Project         : IFS.Web
 // ******************************************************************************
-namespace IFS.Web.Core.Upload {
-    using System;
+using System;
 
+namespace IFS.Web.Core.Upload {
     public class UploadCryptoException : Exception {
         public UploadCryptoException() {}
         public UploadCryptoException(string message) : base(message) {}

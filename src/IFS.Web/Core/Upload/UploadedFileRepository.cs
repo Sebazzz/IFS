@@ -5,18 +5,18 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+
+using IFS.Web.Models;
+using System.Linq;
+
 namespace IFS.Web.Core.Upload {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
-
-    using Models;
-    using System.Linq;
-
     public interface IUploadedFileRepository {
         Task<UploadedFile?> GetFile(FileIdentifier id);
         Task<UploadedFile?> GetFileReservation(FileIdentifier id);

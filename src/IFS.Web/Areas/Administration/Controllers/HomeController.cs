@@ -5,12 +5,12 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using IFS.Web.Core;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace IFS.Web.Areas.Administration.Controllers {
-    using Core;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [Area(nameof(Administration))]
     public sealed class HomeController : Controller {

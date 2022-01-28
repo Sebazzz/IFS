@@ -5,11 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Authentication.Static {
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
+namespace IFS.Web.Core.Authentication.Static {
     internal static class AuthenticationBuilderExtensions {
         public static AuthenticationBuilder AddCookie(this AuthenticationBuilder authBuilder, string authenticationScheme, PathString loginPath) {
             return authBuilder.AddCookie(authenticationScheme, 

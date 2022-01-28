@@ -5,14 +5,14 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Framework.Filters {
-    using Core.Authentication;
-    using Microsoft.AspNetCore.Mvc.Abstractions;
-    using Microsoft.AspNetCore.Mvc.ActionConstraints;
-    using Microsoft.AspNetCore.Routing;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
+using IFS.Web.Core.Authentication;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
+namespace IFS.Web.Framework.Filters {
     public abstract class AuthenticationActionMethodSelectorAttribute : ActionMethodSelectorAttribute {
         public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action) {
             AuthenticationOptions authOptions = routeContext.HttpContext.RequestServices.GetRequiredService<IOptions<AuthenticationOptions>>().Value;

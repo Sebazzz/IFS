@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Upload {
-    using System;
+using System;
 
+namespace IFS.Web.Core.Upload {
     public class UploadFailedException : Exception {
         public UploadFailedException() { }
         public UploadFailedException(string message) : base(message) { }

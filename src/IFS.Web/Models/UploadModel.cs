@@ -5,17 +5,17 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Upload;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace IFS.Web.Models {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    using Core;
-    using Core.Upload;
-
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Rendering;
-
     public class UploadLinkModel : UploadModelBase {
         
     }

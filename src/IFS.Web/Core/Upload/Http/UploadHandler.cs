@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
+using Humanizer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
+
+using IFS.Web.Models;
 
 namespace IFS.Web.Core.Upload.Http {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using Humanizer;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Routing;
-    using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Microsoft.Extensions.Primitives;
-    using Microsoft.Net.Http.Headers;
-
-    using Models;
-
     public sealed class UploadHandler {
         private readonly IUploadManager _uploadManager;
         private readonly IUploadProgressManager _uploadProgressManager;

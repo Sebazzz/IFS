@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core {
-    using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
+namespace IFS.Web.Core {
     public static class LogEvents {
         public static readonly EventId NewUpload = new EventId(0001, nameof(NewUpload));
         public static readonly EventId UploadExpired = new EventId(0002, nameof(UploadExpired));

@@ -5,13 +5,13 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Collections.Generic;
+
+using Microsoft.Extensions.FileProviders;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Core.Upload {
-    using System.Collections.Generic;
-
-    using Microsoft.Extensions.FileProviders;
-
-    using Models;
-
     public interface IFileStore {
         IFileInfo GetDataFile(FileIdentifier id);
         IFileInfo GetMetadataFile(FileIdentifier id);

@@ -5,15 +5,14 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+
 namespace IFS.Web.Core.Upload {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
-
-
     public interface IMetadataReader {
         Task<StoredMetadata?> GetMetadataAsync(IFileInfo file);
     }

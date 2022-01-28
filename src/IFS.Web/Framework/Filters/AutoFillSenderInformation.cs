@@ -6,14 +6,13 @@
 // ******************************************************************************
 
 using IFS.Web.Core.Upload;
+using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using IFS.Web.Models;
 
 namespace IFS.Web.Framework.Filters {
-    using System;
-    using System.Security.Claims;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Models;
-
     public sealed class AutoFillSenderInformationAttribute : ActionFilterAttribute {
         public override void OnActionExecuted(ActionExecutedContext context) {
             // Note we execute this on action end, the user can tamper with the HTML and override it.

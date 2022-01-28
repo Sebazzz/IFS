@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core {
-    using System;
-    using System.Linq;
+using System;
+using System.Linq;
 
+namespace IFS.Web.Core {
     public static class DirectDownloadClientDetector {
         public static bool IsDirectDownloadClient(string userAgent) {
             string[] patterns = {"WGet", "Curl", "WebClient"};

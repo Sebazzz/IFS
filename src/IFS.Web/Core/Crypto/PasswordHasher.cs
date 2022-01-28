@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Crypto {
-    using System.Text;
-    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Text;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
+namespace IFS.Web.Core.Crypto {
     internal static class PasswordHasher {
         public static string HashPassword(string password, string securityToken) {
             byte[] salt = Encoding.ASCII.GetBytes(securityToken);

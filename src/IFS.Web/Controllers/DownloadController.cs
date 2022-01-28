@@ -7,21 +7,20 @@
 
 using IFS.Web.Framework.Filters;
 using IFS.Web.Framework.Middleware.Fail2Ban;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Crypto;
+using IFS.Web.Core.Download;
+using IFS.Web.Core.Upload;
+using IFS.Web.Core.Upload.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using IFS.Web.Models;
 
 namespace IFS.Web.Controllers {
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.Crypto;
-    using Core.Download;
-    using Core.Upload;
-    using Core.Upload.Http;
-    using Microsoft.AspNetCore.Http.Features;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-
-    using Models;
-
     public sealed class DownloadController : Controller {
         private readonly IUploadedFileRepository _uploadedFileRepository;
         private readonly IFileAccessLogger _fileAccessLogger;

@@ -5,12 +5,12 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Controllers {
-    using Microsoft.AspNetCore.Diagnostics;
-    using Microsoft.AspNetCore.Mvc;
-
-    using Models;
-
     public sealed class ErrorController : Controller {
         [Route("error/http-500")]
         public IActionResult Error() {

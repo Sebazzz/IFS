@@ -6,17 +6,16 @@
 // ******************************************************************************
 
 using System.Text.Json;
+using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 
 namespace IFS.Web.Core.Authentication.OpenIdConnect {
-    using System;
-    using System.Security.Claims;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json.Linq;
-
     internal static class AuthenticationBuilderExtensions {
         public static AuthenticationBuilder AddOpenIdConnectFromSettings(this AuthenticationBuilder authBuilder, string authenticationScheme, string mappedAuthenticationScheme, string suffix, IConfiguration configuration) {
             OpenIdConnectSettings openIdConnectSettings = configuration.GetSection("Authentication").GetSection("OpenIdConnect").Get<OpenIdConnectSettings>();

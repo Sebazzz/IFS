@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core {
-    using System.Security.Claims;
+using System.Security.Claims;
 
+namespace IFS.Web.Core {
     public static class KnownPolicies {
         public const string Upload = nameof(Upload);
         public const string Administration = nameof(Administration);

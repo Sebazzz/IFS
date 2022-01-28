@@ -5,12 +5,12 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Threading;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Core.Upload {
-    using System;
-    using System.Threading;
-
-    using Models;
-
     public interface IUploadFileLock {
         /// <summary>
         /// Acquires a system-wide lock on the file identifiers

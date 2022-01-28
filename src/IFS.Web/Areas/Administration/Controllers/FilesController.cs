@@ -5,20 +5,20 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Upload;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using IFS.Web.Areas.Administration.Models;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Areas.Administration.Controllers {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.Upload;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
-    using Models;
-
-    using Web.Models;
-
     [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [Area(nameof(Administration))]
     public sealed class FilesController : Controller {

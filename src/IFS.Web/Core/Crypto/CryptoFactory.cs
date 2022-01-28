@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Crypto {
-    using System.Security.Cryptography;
-    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
+namespace IFS.Web.Core.Crypto {
     internal static class CryptoFactory {
         public const int KeySize = 128;
         public const int KeyByteSize = KeySize / 8;

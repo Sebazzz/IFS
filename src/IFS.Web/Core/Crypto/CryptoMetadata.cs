@@ -5,11 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Crypto {
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
+namespace IFS.Web.Core.Crypto {
     internal static class CryptoMetadata {
         public static void WriteMetadata(Stream outputStream, Aes algorithm) {
             using BinaryWriter bw = new BinaryWriter(outputStream, Encoding.UTF8, true);

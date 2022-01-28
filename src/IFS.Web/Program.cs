@@ -6,14 +6,13 @@
 // ******************************************************************************
 
 using Microsoft.Extensions.Hosting;
+using System.IO;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace IFS.Web {
-    using System.IO;
-    using Microsoft.AspNetCore;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Logging;
-
     public sealed class Program {
         public static void Main(string[] args) {
             IWebHost host = 

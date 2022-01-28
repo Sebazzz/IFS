@@ -5,11 +5,11 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using Microsoft.Extensions.FileProviders;
+
+using IFS.Web.Core.Upload;
+
 namespace IFS.Tests.Support {
-    using Microsoft.Extensions.FileProviders;
-
-    using Web.Core.Upload;
-
     public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
         private readonly IFileProvider _fileProvider;
 

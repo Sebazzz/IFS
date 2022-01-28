@@ -1,6 +1,6 @@
-﻿namespace IFS.Web.Core.Upload {
-    using System;
+﻿using System;
 
+namespace IFS.Web.Core.Upload {
     public class UploadProgress {
         public long Current { get; set; }
         public long Total { get; set; }

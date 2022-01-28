@@ -5,11 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Collections.Generic;
+
+using IFS.Web.Core.Upload;
+
 namespace IFS.Web.Areas.Administration.Models {
-    using System.Collections.Generic;
-
-    using Core.Upload;
-
     public class FilesOverviewModel {
         public IList<UploadedFile> Files { get;}
 

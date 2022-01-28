@@ -5,14 +5,14 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Diagnostics;
+using System.IO;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+
 namespace IFS.Web.Core.Upload {
-    using System.Diagnostics;
-    using System.IO;
-
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Options;
-
     public interface IFileStoreFileProviderFactory {
         IFileProvider GetFileProvider();
     }

@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Crypto {
-    using System;
-    using Microsoft.AspNetCore.DataProtection;
+using System;
+using Microsoft.AspNetCore.DataProtection;
 
+namespace IFS.Web.Core.Crypto {
     public interface ITransitPasswordProtector {
         string Protect(string password);
         string Unprotect(string protectedPassword);

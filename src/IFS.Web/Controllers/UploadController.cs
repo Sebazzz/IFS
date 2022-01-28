@@ -1,4 +1,20 @@
-﻿
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.ModelFactory;
+using IFS.Web.Core.Upload;
+using IFS.Web.Framework.Filters;
+using Humanizer;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using IFS.Web.Models;
+
 // ******************************************************************************
 //  © 2016 Sebastiaan Dammann - damsteen.nl
 // 
@@ -7,23 +23,6 @@
 // ******************************************************************************
 
 namespace IFS.Web.Controllers {
-    using System;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.ModelFactory;
-    using Core.Upload;
-    using Framework.Filters;
-    using Humanizer;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-
-    using Models;
-
     [Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     public sealed class UploadController : Controller {
         private readonly IUploadedFileRepository _uploadedFileRepository;

@@ -5,26 +5,26 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using IFS.Web.Core.Crypto;
+using Humanizer;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Core.Upload {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Crypto;
-    using Humanizer;
-    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-    using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Net.Http.Headers;
-
-    using Models;
-
     public interface IUploadManager {
         Task StoreAsync(FileIdentifier id, MultipartReader reader, CancellationToken cancellationToken);
     }

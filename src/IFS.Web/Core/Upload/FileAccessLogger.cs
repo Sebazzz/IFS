@@ -5,12 +5,12 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Upload {
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading.Tasks;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace IFS.Web.Core.Upload {
     public interface IFileAccessLogger {
         Task LogFileAccessAsync(UploadedFile uploadedFile, string ipAddress);
     }

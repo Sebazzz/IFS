@@ -5,13 +5,13 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Runtime.InteropServices;
+using System.Threading;
+
+using Hangfire.Annotations;
+
 namespace IFS.Web.Models {
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Threading;
-
-    using Hangfire.Annotations;
-
     /// <summary>
     /// Represents the identifier of an uploaded file
     /// </summary>

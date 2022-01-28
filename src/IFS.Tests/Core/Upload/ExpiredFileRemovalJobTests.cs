@@ -5,24 +5,24 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Hangfire;
+
+using NSubstitute;
+
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
+
+using IFS.Tests.Support;
+
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
+
 namespace IFS.Tests.Core.Upload {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Hangfire;
-
-    using NSubstitute;
-
-    using NUnit.Framework;
-    using NUnit.Framework.Constraints;
-
-    using Support;
-
-    using Web.Core.Upload;
-    using Web.Models;
-
     [TestFixture]
     public sealed class ExpiredFileRemovalJobTests {
         [Test]

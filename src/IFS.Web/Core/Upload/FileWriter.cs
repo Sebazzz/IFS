@@ -1,9 +1,9 @@
-﻿namespace IFS.Web.Core.Upload {
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
-    using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders;
 
+namespace IFS.Web.Core.Upload {
     public interface IFileWriter {
         Stream OpenWriteStream(IFileInfo fileInfo);
         void Delete(IFileInfo fileInfo);

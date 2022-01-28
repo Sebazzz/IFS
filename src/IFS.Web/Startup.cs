@@ -10,27 +10,26 @@ using IFS.Web.Framework.Middleware.Fail2Ban;
 using IFS.Web.Framework.Services;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.Extensions.Hosting;
+using System;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Authentication;
+using IFS.Web.Core.Authorization;
+using IFS.Web.Core.Crypto;
+using IFS.Web.Core.Upload;
+using IFS.Web.Core.Upload.Http;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace IFS.Web
 {
-    using System;
-
-    using Core;
-    using Core.Authentication;
-    using Core.Authorization;
-    using Core.Crypto;
-    using Core.Upload;
-    using Core.Upload.Http;
-    using Hangfire;
-    using Hangfire.Dashboard;
-    using Hangfire.MemoryStorage;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-
     public sealed class Startup
     {
         public Startup(IConfiguration env)

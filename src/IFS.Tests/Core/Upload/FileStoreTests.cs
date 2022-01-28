@@ -5,20 +5,20 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using System;
+
+using Microsoft.Extensions.FileProviders;
+
+using NSubstitute;
+
+using NUnit.Framework;
+
+using IFS.Tests.Support;
+
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
+
 namespace IFS.Tests.Core.Upload {
-    using System;
-
-    using Microsoft.Extensions.FileProviders;
-
-    using NSubstitute;
-
-    using NUnit.Framework;
-
-    using Support;
-
-    using Web.Core.Upload;
-    using Web.Models;
-
     [TestFixture]
     public sealed class FileStoreTests {
         [Test]

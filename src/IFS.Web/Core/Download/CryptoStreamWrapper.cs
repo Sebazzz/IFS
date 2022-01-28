@@ -4,15 +4,15 @@
 //  File:           : CryptoStreamWrapper.cs
 //  Project         : IFS.Web
 // ******************************************************************************
-namespace IFS.Web.Core.Download {
-    using System;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Crypto;
-    using Upload;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
+using IFS.Web.Core.Crypto;
+using IFS.Web.Core.Upload;
 
+namespace IFS.Web.Core.Download {
     /// <summary>
     /// Wraps the crypto stream to keep both algorithm and cryptostream alive
     /// </summary>

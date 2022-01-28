@@ -5,15 +5,15 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using Hangfire;
+
+using Microsoft.Extensions.Logging;
+
 namespace IFS.Web.Core.Upload {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    using Hangfire;
-
-    using Microsoft.Extensions.Logging;
-
     public sealed class ExpiredFileRemovalJob {
         private readonly ILogger<ExpiredFileRemovalJob> _logger;
         private readonly IUploadedFileRepository _uploadedFileRepository;

@@ -5,11 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Razor.TagHelpers;
+
 namespace IFS.Web.Framework.Views.TagHelpers {
-    using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Razor.TagHelpers;
-
     [HtmlTargetElement("markdown", TagStructure = TagStructure.NormalOrSelfClosing)]
     public sealed class MarkdownTagHelper : TagHelper {
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {

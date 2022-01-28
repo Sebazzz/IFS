@@ -7,23 +7,22 @@
 
 using IFS.Web.Framework.Filters;
 using IFS.Web.Framework.Middleware.Fail2Ban;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Authentication;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+using IFS.Web.Areas.Administration.Models;
 
 namespace IFS.Web.Areas.Administration.Controllers {
-    using System;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.Authentication;
-
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-
-    using Models;
-
     [Area(nameof(Administration))]
     [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
     [AllowAnonymous]

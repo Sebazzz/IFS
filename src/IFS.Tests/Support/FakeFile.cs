@@ -5,13 +5,13 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using System;
+using System.IO;
+using System.Text;
+
+using Microsoft.Extensions.FileProviders;
+
 namespace IFS.Tests.Support {
-    using System;
-    using System.IO;
-    using System.Text;
-
-    using Microsoft.Extensions.FileProviders;
-
     public sealed class FakeFile : IFileInfo {
         private readonly string _contents;
 

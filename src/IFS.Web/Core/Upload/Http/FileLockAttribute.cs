@@ -5,17 +5,17 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Linq;
+using System.Threading;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+
+using IFS.Web.Models;
+
 namespace IFS.Web.Core.Upload.Http {
-    using System;
-    using System.Linq;
-    using System.Threading;
-
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.Extensions.DependencyInjection;
-
-    using Models;
-
     /// <summary>
     /// Acquires a file lock for the duration of the action method
     /// </summary>

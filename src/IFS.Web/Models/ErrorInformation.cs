@@ -5,11 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+
+using Microsoft.AspNetCore.Http;
+
 namespace IFS.Web.Models {
-    using System;
-
-    using Microsoft.AspNetCore.Http;
-
     public class ErrorInformation {
         public string? OriginalPath { get; set; }
 

@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Authentication {
-    using Microsoft.Extensions.Options;
-    using Static;
+using Microsoft.Extensions.Options;
+using IFS.Web.Core.Authentication.Static;
 
+namespace IFS.Web.Core.Authentication {
     public class AuthenticationProvider : IAuthenticationProvider, IAdministrationAuthenticationProvider {
         private readonly StaticAuthenticationOptions _options;
 

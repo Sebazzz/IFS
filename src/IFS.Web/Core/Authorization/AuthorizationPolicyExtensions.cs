@@ -1,8 +1,8 @@
-﻿namespace IFS.Web.Core.Authorization {
-    using Authentication;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.Extensions.Configuration;
+﻿using IFS.Web.Core.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
+namespace IFS.Web.Core.Authorization {
     internal static class AuthorizationPolicyExtensions {
         public static void AddUploadPolicy(this AuthorizationOptions authorizationOptions, IConfiguration configuration) {
             AuthenticationOptions authOptions = configuration.GetSection("Authentication").Get<AuthenticationOptions>();

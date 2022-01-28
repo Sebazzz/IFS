@@ -7,24 +7,23 @@
 
 using IFS.Web.Framework.Filters;
 using IFS.Web.Framework.Middleware.Fail2Ban;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+using IFS.Web.Core;
+using IFS.Web.Core.Authentication;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+
+using IFS.Web.Models;
 
 namespace IFS.Web.Controllers {
-    using System;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-
-    using Core;
-    using Core.Authentication;
-
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
-
-    using Models;
-
     // Force authentication, or we will never redirect
     [Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
     [AllowAnonymous]

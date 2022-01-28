@@ -5,10 +5,10 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Framework.Views.TagHelpers {
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
+namespace IFS.Web.Framework.Views.TagHelpers {
     [HtmlTargetElement("input", Attributes = PlaceHolderForAttribute)]
     public sealed class PlaceHolderForTagHelper : TagHelper {
         private const string PlaceHolderForAttribute = "placeholder-for";

@@ -5,17 +5,17 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System;
+using System.Globalization;
+
+using Humanizer;
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+using IFS.Web.Models;
+using IFS.Web.Core.Upload;
+
 namespace IFS.Web.Core.ModelFactory {
-    using System;
-    using System.Globalization;
-
-    using Humanizer;
-
-    using Microsoft.AspNetCore.Mvc.Rendering;
-
-    using Models;
-    using Upload;
-
     internal static class UploadModelFactory {
         private static TModel Create<TModel>() where TModel : UploadModelBase,new() {
             SelectListItem CreateItem(TimeSpan timespan) => new SelectListItem {

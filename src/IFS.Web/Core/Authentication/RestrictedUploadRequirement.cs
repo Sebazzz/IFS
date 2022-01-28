@@ -6,17 +6,16 @@
 // ******************************************************************************
 
 using IFS.Web.Core.Authorization;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 
 namespace IFS.Web.Core.Authentication {
-    using System.Diagnostics;
-    using System.Security.Claims;
-    using System.Threading.Tasks;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.AspNetCore.Routing;
-
     public class RestrictedUploadRequirement : AuthorizationHandler<RestrictedUploadRequirement>, IAuthorizationRequirement {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RestrictedUploadRequirement requirement) {
             Debug.Assert(context.Resource is RouteEndpoint endpoint, "Unknown resource");

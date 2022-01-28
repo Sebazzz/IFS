@@ -5,21 +5,21 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+
+using NSubstitute;
+
+using NUnit.Framework;
+
+using IFS.Tests.Support;
+
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
+
 namespace IFS.Tests.Core.Upload {
-    using System.Threading.Tasks;
-
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Logging;
-
-    using NSubstitute;
-
-    using NUnit.Framework;
-
-    using Support;
-
-    using Web.Core.Upload;
-    using Web.Models;
-
     [TestFixture]
     public class UploadedFileRepositoryTests {
         [Test]

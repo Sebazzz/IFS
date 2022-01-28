@@ -5,17 +5,17 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
+using System.ComponentModel.DataAnnotations;
+
+using Humanizer;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+using IFS.Web.Core.Upload;
+
 namespace IFS.Web.Core {
-    using System.ComponentModel.DataAnnotations;
-
-    using Humanizer;
-
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Options;
-
-    using Upload;
-
     public sealed class FileSizeValidationAttribute : ValidationAttribute {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext) {
             if (!(value is IFormFile file)) {

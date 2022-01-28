@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Models {
-    using Core.Upload;
+using IFS.Web.Core.Upload;
 
+namespace IFS.Web.Models {
     public interface IContactInformationModel {
         ContactInformation? Sender { get; set; }
         bool IsSenderInformationPrefilled { get; set; }

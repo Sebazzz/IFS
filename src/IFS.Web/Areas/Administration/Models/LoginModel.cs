@@ -5,9 +5,9 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Areas.Administration.Models {
-    using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
+namespace IFS.Web.Areas.Administration.Models {
     public sealed class LoginModel {
         public string? ReturnUrl { get; set; }
 

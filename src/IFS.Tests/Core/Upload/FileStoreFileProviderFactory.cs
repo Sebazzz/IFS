@@ -5,19 +5,19 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
+using System.IO;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+
+using NSubstitute;
+
+using NUnit.Framework;
+
+using IFS.Web.Core.Upload;
+
 namespace IFS.Tests.Core.Upload {
-    using System.IO;
-
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Options;
-
-    using NSubstitute;
-
-    using NUnit.Framework;
-
-    using Web.Core.Upload;
-
     [TestFixture]
     public sealed class FileStoreFileProviderFactoryTests {
         [SetUp]
