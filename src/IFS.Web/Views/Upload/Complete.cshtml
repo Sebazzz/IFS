@@ -1,7 +1,7 @@
 ﻿@using System.Text.Encodings.Web
 @model IFS.Web.Core.Upload.UploadedFile
 @{
-    ViewBag.Title = $"Upload complete: {Model.Metadata.OriginalFileName}";
+    ViewBag.Title = $"Upload complete: {Model!.Metadata.OriginalFileName}";
 }
 
 <ifs-page-title>@ViewBag.Title</ifs-page-title>
@@ -11,7 +11,7 @@
 </div>
 
 @{
-    string downloadLink = this.Url.RouteUrl("DownloadFile", new {id = Model.Id}, this.Context.Request.Scheme);
+    string downloadLink = this.Url.RouteUrl("DownloadFile", new {id = Model.Id}, this.Context.Request.Scheme)!;
 }
 
 <p>

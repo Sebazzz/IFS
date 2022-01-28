@@ -45,7 +45,7 @@ public sealed class AuthenticateController : Controller {
     [StaticAuthenticationAction]
     [ActionName("Login")]
     public IActionResult LoginStatic(string returnUrl) {
-        if (this.User.Identity.IsAuthenticated) {
+        if (this.User.Identity is { IsAuthenticated: true }) {
             return this.RedirectToAction("Index", "Upload");
         }
 
@@ -58,7 +58,7 @@ public sealed class AuthenticateController : Controller {
     [OpenIdAuthenticationAction]
     [ActionName("Login")]
     public IActionResult LoginOpenId(string returnUrl) {
-        if (this.User.Identity.IsAuthenticated) {
+        if (this.User.Identity is { IsAuthenticated: true }) {
             return this.RedirectToAction("Index", "Upload");
         }
 
@@ -76,8 +76,8 @@ public sealed class AuthenticateController : Controller {
     [ValidateAntiForgeryToken]
     [OpenIdAuthenticationAction]
     [ActionName("Login")]
-    public async Task LoginOpenId(string returnUrl, IFormCollection form) {
-        await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, new OpenIdConnectChallengeProperties {
+    public Task LoginOpenId(string returnUrl, IFormCollection form) {
+        return this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, new OpenIdConnectChallengeProperties {
             Prompt = "Sign in to upload files",
             RedirectUri = returnUrl
         });
@@ -122,7 +122,7 @@ public sealed class AuthenticateController : Controller {
         this.HttpContext.RecordFail2BanSuccess();
         await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
-        string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
+        string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload")! : model.ReturnUrl;
         return this.Redirect(returnUrl);
     }
 }

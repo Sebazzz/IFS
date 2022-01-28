@@ -5,7 +5,7 @@
 <div class="form-group">
     <label asp-for="Sender!.Name">Your name</label>
     
-    <input asp-for="Sender!.Name" class="form-control" is-readonly="@Model.IsSenderInformationPrefilled" />
+    <input asp-for="Sender!.Name" class="form-control" is-readonly="@Model!.IsSenderInformationPrefilled" />
 </div>
 
 <div class="form-group">

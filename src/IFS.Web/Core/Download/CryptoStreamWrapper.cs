@@ -58,11 +58,11 @@ internal sealed class CryptoStreamWrapper : Stream {
 
     #region Delegated members
 
-    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object? state) {
+    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) {
         return this._cryptoStream.BeginRead(buffer, offset, count, callback, state);
     }
 
-    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object? state) {
+    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state) {
         return this._cryptoStream.BeginWrite(buffer, offset, count, callback, state);
     }
 

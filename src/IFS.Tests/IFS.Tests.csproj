@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Common.props" />
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,6 +10,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

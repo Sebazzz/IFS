@@ -9,7 +9,7 @@
 <ifs-page-title>@ViewBag.Title</ifs-page-title>
 
 @{
-    var sortedFiles = Model.Files.OrderBy(x => x.Metadata.OriginalFileName);
+    var sortedFiles = Model!.Files.OrderBy(x => x.Metadata.OriginalFileName);
 }
 
 

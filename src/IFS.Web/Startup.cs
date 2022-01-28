@@ -50,8 +50,7 @@ public sealed class Startup
 
         services.AddDataProtection();
 
-        services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()))
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+        services.AddMvc(mvc => mvc.ModelBinderProviders.Insert(0, new FileIdentifierModelBinderProvider()));
 
         services.AddControllersWithViews();
 
@@ -70,6 +69,8 @@ public sealed class Startup
             config.UseColouredConsoleLogProvider();
             config.UseMemoryStorage();
         });
+
+        services.AddHangfireServer();
 
         services.AddTransient<ExpiredFileRemovalJob>();
 
@@ -164,8 +165,6 @@ public sealed class Startup
                 }
             });
 
-        app.UseHangfireServer();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapUploadHandler("upload/handler/{fileIdentifier}");
@@ -205,7 +204,7 @@ public sealed class Startup
                 return false;
             }
 
-            return ctx.User.Identity.Name == auth.UserName;
+            return ctx.User.Identity?.Name == auth.UserName;
         }
     }
 }

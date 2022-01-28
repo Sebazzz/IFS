@@ -5,7 +5,7 @@
     <h2>
         Upload in progress...
         
-        @if (Model.FileName != null) {
+        @if (Model!.FileName != null) {
             <small>Uploading file @Model.FileName</small>
         }
     </h2>
@@ -24,7 +24,7 @@
 </div>
 
 @{
-    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { fileIdentifier = Model.FileIdentifier.ToString() });
+    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { fileIdentifier = Model.FileIdentifier.ToString() })!;
 }
 
 <script>

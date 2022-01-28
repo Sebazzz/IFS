@@ -41,8 +41,7 @@ public class HttpContextPolicyEvaluator : IPolicyEvaluator
         }
     }
 
-    public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy, AuthenticateResult authenticationResult, HttpContext context,
-        object resource)
+    public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy, AuthenticateResult authenticationResult, HttpContext context, object? resource)
     {
         try
         {

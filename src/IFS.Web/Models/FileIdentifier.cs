@@ -21,7 +21,7 @@ public struct FileIdentifier : IEquatable<FileIdentifier> {
     private static int Mask = ~1;
 
     private readonly Guid _id;
-    private string _stringRepresentation;
+    private string? _stringRepresentation;
 
     private FileIdentifier(Guid id) : this() {
         this._id = id;

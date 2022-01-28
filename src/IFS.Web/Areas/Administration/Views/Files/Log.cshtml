@@ -3,7 +3,7 @@
 @model IFS.Web.Core.Upload.UploadedFile
 
 @{
-    ViewBag.Title = $"Access log of {Model.Metadata.OriginalFileName}";
+    ViewBag.Title = $"Access log of {Model!.Metadata.OriginalFileName}";
 
     var accessLog = Model.Metadata.Access;
 }

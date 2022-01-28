@@ -11,7 +11,7 @@
 <div id="upload-root">
     <ifs-page-title>@ViewBag.Title</ifs-page-title>
 
-    @if (Model.IsReservation == false) {
+    @if (Model!.IsReservation == false) {
         <p>
             Need to share a file over the internet? Upload it here. You will receive a unique url that you can send via e-mail or instant messaging to anyone who needs to download the file.
         </p>
@@ -91,7 +91,7 @@
 @section scripts {
     <script>
         window.uploadParameters = {
-            trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { fileIdentifier = Model.FileIdentifier }))',
+            trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { fileIdentifier = Model.FileIdentifier })!)',
             names: {
                 suggestedFileSize: '@Html.NameFor(x => x.SuggestedFileSize)'
             },

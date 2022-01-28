@@ -19,7 +19,7 @@ internal static class CryptoFactory {
     }
 
     public static Aes CreateCrypto(string password, byte[]? iv) {
-        Aes crypto = new AesManaged();
+        Aes crypto = Aes.Create();
 
         if (iv != null) {
             crypto.IV = iv;

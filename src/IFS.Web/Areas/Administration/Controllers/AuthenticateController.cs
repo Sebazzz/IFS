@@ -42,7 +42,7 @@ public sealed class AuthenticateController : Controller {
     [StaticAuthenticationAction]
     [ActionName("Login")]
     public async Task<IActionResult> LoginStatic(string returnUrl) {
-        if (this.User.Identity.IsAuthenticated && this.User.Identity.Name == KnownPolicies.Upload) {
+        if (this.User.Identity is { IsAuthenticated: true, Name: KnownPolicies.Upload }) {
             await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
 
             return this.RedirectToAction("Index");
@@ -54,9 +54,9 @@ public sealed class AuthenticateController : Controller {
     [OpenIdAuthenticationAction]
     [ActionName("Login")]
     public async Task<IActionResult> LoginOpenId(string returnUrl) {
-        if (this.User.Identity.IsAuthenticated) {
+        if (this.User.Identity is { IsAuthenticated: true }) {
             if (this.User.IsInRole(KnownRoles.Administrator)) {
-                return this.Redirect(returnUrl ?? this.Url.Action("Index", "Home"));
+                return this.Redirect(returnUrl ?? this.Url.Action("Index", "Home")!);
             }
 
             await this.HttpContext.SignOutAsync(KnownAuthenticationScheme.PassphraseScheme);
@@ -71,8 +71,8 @@ public sealed class AuthenticateController : Controller {
     [ValidateAntiForgeryToken]
     [OpenIdAuthenticationAction]
     [ActionName("Login")]
-    public async Task LoginOpenId(string returnUrl, IFormCollection form) {
-        await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, new OpenIdConnectChallengeProperties {
+    public Task LoginOpenId(string returnUrl, IFormCollection form) {
+        return this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, new OpenIdConnectChallengeProperties {
             Prompt = "Sign in to administrate",
             RedirectUri = returnUrl
         });
@@ -90,7 +90,7 @@ public sealed class AuthenticateController : Controller {
     [ValidateAntiForgeryToken]
     [StaticAuthenticationAction]
     [Fail2BanModelState(nameof(LoginModel.Password))]
-    public async Task<IActionResult> Login(LoginModel model) {
+    public async Task<IActionResult> Login(LoginModel? model) {
         if (model == null) {
             return this.View();
         }
@@ -109,7 +109,7 @@ public sealed class AuthenticateController : Controller {
 
         ClaimsIdentity userIdentity = new ClaimsIdentity(KnownAuthenticationScheme.AdministrationScheme);
         userIdentity.AddClaims(new[] {
-            new Claim(ClaimTypes.Name, model.UserName, ClaimValueTypes.String, "https://ifs")
+            new Claim(ClaimTypes.Name, model.UserName!, ClaimValueTypes.String, "https://ifs")
         });
 
         ClaimsPrincipal userPrincipal = new ClaimsPrincipal(userIdentity);
@@ -123,7 +123,7 @@ public sealed class AuthenticateController : Controller {
         this.HttpContext.RecordFail2BanSuccess();
         await this.HttpContext.SignInAsync(KnownAuthenticationScheme.AdministrationScheme, userPrincipal, authenticationOptions);
 
-        string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
+        string returnUrl = String.IsNullOrEmpty(model.ReturnUrl) ? this.Url.Action("Index", "Upload")! : model.ReturnUrl;
 
         return this.Redirect(returnUrl);
     }

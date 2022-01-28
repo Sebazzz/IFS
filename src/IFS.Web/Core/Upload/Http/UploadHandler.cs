@@ -75,10 +75,7 @@ public sealed class UploadHandler {
         await ReExecuteAsync(context);
     }
 
-    private static Task ReExecuteAsync(HttpContext context)
-    {
-        return context.GetEndpoint().RequestDelegate.Invoke(context);
-    }
+    private static Task ReExecuteAsync(HttpContext context) => context.GetEndpoint()?.RequestDelegate?.Invoke(context) ?? Task.CompletedTask;
 
     private static void PrepForReExecute(HttpContext context, UploadErrorsModel uploadErrorsModel) {
         // Clear request
@@ -117,7 +114,7 @@ public sealed class UploadHandler {
             {
                 RouteData routeData = context.GetRouteData();
 
-                foreach (KeyValuePair<string, string> routeValue in actionDescriptor.RouteValues)
+                foreach (KeyValuePair<string, string?> routeValue in actionDescriptor.RouteValues)
                 {
                     routeData.Values[routeValue.Key] = routeValue.Value;
                 }

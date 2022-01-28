@@ -1,6 +1,6 @@
 ﻿@model UploadModel
 
-<input asp-for="Expiration" type="hidden" value="@Model.Expiration.ToString("O")" />
+<input asp-for="Expiration" type="hidden" value="@Model!.Expiration.ToString("O")" />
 
 <div class="ordered-form__part ordered-form__part--last">
     <hr />

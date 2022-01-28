@@ -210,7 +210,7 @@ public class UploadManager : IUploadManager {
                 return;
 
             default:
-                this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown form field '{1}'", uploadContext.Identifier, contentDisposition.Name);
+                this._logger.LogWarning(LogEvents.UploadIncomplete, "{Identifier}: Unknown form field '{Field}'", uploadContext.Identifier, contentDisposition.Name);
                 break;
         }
 
@@ -224,7 +224,7 @@ public class UploadManager : IUploadManager {
             bool needToValidate = !String.IsNullOrEmpty(passwordSetting.Password) && passwordSetting.Enable == true;
 
             if (needToValidate && uploadContext.HasUploadedFile) {
-                this._logger.LogError(LogEvents.UploadPasswordAfterFileUpload, "{0}: The upload password is set after the file is uploaded. The file is not encrypted. Terminating upload.");
+                this._logger.LogError(LogEvents.UploadPasswordAfterFileUpload, "{Identifier}: The upload password is set after the file is uploaded. The file is not encrypted. Terminating upload.", uploadContext.Identifier);
 
                 throw new UploadCryptoArgumentOrderException("File uploaded before password has been set");
             }
