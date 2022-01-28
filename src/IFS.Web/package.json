@@ -2,7 +2,9 @@
   "name": "ifs",
   "version": "1.0.0",
   "description": "Internet File System - privately hosted file upload & sharing service",
-  "sideEffects": [ "*.css" ],
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "start": "webpack",
     "build": "webpack",
@@ -15,9 +17,9 @@
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "bootstrap": "4.4.1",
-    "jquery": "3.4.1",
-    "jquery-validation": "1.19.1",
-    "jquery-validation-unobtrusive": "3.2.11",
+    "jquery": "3.6.0",
+    "jquery-validation": "1.19.3",
+    "jquery-validation-unobtrusive": "3.2.12",
     "popper.js": "^1.16.1"
   },
   "devDependencies": {
