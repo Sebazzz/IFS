@@ -6,10 +6,10 @@
 // ******************************************************************************
 using System;
 
-namespace IFS.Web.Core.Upload {
-    public class UploadCryptoException : Exception {
-        public UploadCryptoException() {}
-        public UploadCryptoException(string message) : base(message) {}
-        public UploadCryptoException(string message, Exception innerException) : base(message, innerException) {}
-    }
+namespace IFS.Web.Core.Upload;
+
+public class UploadCryptoException : Exception {
+    public UploadCryptoException() {}
+    public UploadCryptoException(string message) : base(message) {}
+    public UploadCryptoException(string message, Exception innerException) : base(message, innerException) {}
 }

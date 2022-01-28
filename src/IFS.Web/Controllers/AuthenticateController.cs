@@ -23,106 +23,106 @@ using Microsoft.Extensions.Options;
 
 using IFS.Web.Models;
 
-namespace IFS.Web.Controllers {
-    // Force authentication, or we will never redirect
-    [Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
-    [AllowAnonymous]
-    public sealed class AuthenticateController : Controller {
-        private readonly IAuthenticationProvider _authenticationProvider;
-        private readonly IOptions<Core.Authentication.AuthenticationOptions> _authenticateOptions;
+namespace IFS.Web.Controllers;
 
-        public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<Core.Authentication.AuthenticationOptions> authenticateOptions) {
-            this._authenticationProvider = authenticationProvider;
-            this._authenticateOptions = authenticateOptions;
+// Force authentication, or we will never redirect
+[Authorize(KnownPolicies.Upload, AuthenticationSchemes = KnownAuthenticationScheme.PassphraseScheme)]
+[AllowAnonymous]
+public sealed class AuthenticateController : Controller {
+    private readonly IAuthenticationProvider _authenticationProvider;
+    private readonly IOptions<Core.Authentication.AuthenticationOptions> _authenticateOptions;
+
+    public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<Core.Authentication.AuthenticationOptions> authenticateOptions) {
+        this._authenticationProvider = authenticationProvider;
+        this._authenticateOptions = authenticateOptions;
+    }
+
+    public IActionResult Index() {
+        return this.RedirectToAction("Login");
+    }
+
+    [Fail2BanModelState(nameof(LoginModel.Passphrase))]
+    [StaticAuthenticationAction]
+    [ActionName("Login")]
+    public IActionResult LoginStatic(string returnUrl) {
+        if (this.User.Identity.IsAuthenticated) {
+            return this.RedirectToAction("Index", "Upload");
         }
 
-        public IActionResult Index() {
-            return this.RedirectToAction("Login");
+        LoginModel loginModel = new LoginModel();
+        this.SetHelpText(loginModel);
+
+        return this.View(loginModel);
+    }
+
+    [OpenIdAuthenticationAction]
+    [ActionName("Login")]
+    public IActionResult LoginOpenId(string returnUrl) {
+        if (this.User.Identity.IsAuthenticated) {
+            return this.RedirectToAction("Index", "Upload");
         }
 
-        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
-        [StaticAuthenticationAction]
-        [ActionName("Login")]
-        public IActionResult LoginStatic(string returnUrl) {
-            if (this.User.Identity.IsAuthenticated) {
-                return this.RedirectToAction("Index", "Upload");
-            }
+        LoginModel loginModel = new LoginModel();
+        this.SetHelpText(loginModel);
 
-            LoginModel loginModel = new LoginModel();
-            this.SetHelpText(loginModel);
+        return this.View("LoginOpenId", loginModel);
+    }
 
-            return this.View(loginModel);
+    private void SetHelpText(LoginModel loginModel) {
+        loginModel.HelpText = this._authenticateOptions.Value.LoginHelpText;
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [OpenIdAuthenticationAction]
+    [ActionName("Login")]
+    public async Task LoginOpenId(string returnUrl, IFormCollection form) {
+        await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, new OpenIdConnectChallengeProperties {
+            Prompt = "Sign in to upload files",
+            RedirectUri = returnUrl
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Fail2BanModelState(nameof(LoginModel.Passphrase))]
+    [StaticAuthenticationAction]
+    [ActionName("Login")]
+    public async Task<IActionResult> LoginStatic(LoginModel model) {
+        // Due to MVC model binding, model will never be null here
+        if (!this.ModelState.IsValid) {
+            this.SetHelpText(model);
+            return this.View(model);
         }
 
-        [OpenIdAuthenticationAction]
-        [ActionName("Login")]
-        public IActionResult LoginOpenId(string returnUrl) {
-            if (this.User.Identity.IsAuthenticated) {
-                return this.RedirectToAction("Index", "Upload");
-            }
+        // Validate password
+        bool isValid = this._authenticationProvider.IsValidPassphrase(model.Passphrase);
 
-            LoginModel loginModel = new LoginModel();
-            this.SetHelpText(loginModel);
-
-            return this.View("LoginOpenId", loginModel);
+        if (!isValid) {
+            this.HttpContext.RecordFail2BanFailure();
+            this.SetHelpText(model);
+            this.ModelState.AddModelError(nameof(model.Passphrase), "Invalid passphrase. Please try again.");
+            return this.View(model);
         }
 
-        private void SetHelpText(LoginModel loginModel) {
-            loginModel.HelpText = this._authenticateOptions.Value.LoginHelpText;
-        }
+        // Create log-in
+        ClaimsIdentity userIdentity = new ClaimsIdentity(KnownAuthenticationScheme.PassphraseScheme);
+        userIdentity.AddClaims(new[] {
+            new Claim(ClaimTypes.Name, KnownPolicies.Upload, ClaimValueTypes.String, "https://ifs")
+        });
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [OpenIdAuthenticationAction]
-        [ActionName("Login")]
-        public async Task LoginOpenId(string returnUrl, IFormCollection form) {
-            await this.HttpContext.ChallengeAsync(KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, new OpenIdConnectChallengeProperties {
-                Prompt = "Sign in to upload files",
-                RedirectUri = returnUrl
-            });
-        }
+        ClaimsPrincipal userPrincipal = new ClaimsPrincipal(userIdentity);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Fail2BanModelState(nameof(LoginModel.Passphrase))]
-        [StaticAuthenticationAction]
-        [ActionName("Login")]
-        public async Task<IActionResult> LoginStatic(LoginModel model) {
-            // Due to MVC model binding, model will never be null here
-            if (!this.ModelState.IsValid) {
-                this.SetHelpText(model);
-                return this.View(model);
-            }
+        AuthenticationProperties authenticationOptions = new AuthenticationProperties {
+            AllowRefresh = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+            IsPersistent = false
+        };
 
-            // Validate password
-            bool isValid = this._authenticationProvider.IsValidPassphrase(model.Passphrase);
+        this.HttpContext.RecordFail2BanSuccess();
+        await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
 
-            if (!isValid) {
-                this.HttpContext.RecordFail2BanFailure();
-                this.SetHelpText(model);
-                this.ModelState.AddModelError(nameof(model.Passphrase), "Invalid passphrase. Please try again.");
-                return this.View(model);
-            }
-
-            // Create log-in
-            ClaimsIdentity userIdentity = new ClaimsIdentity(KnownAuthenticationScheme.PassphraseScheme);
-            userIdentity.AddClaims(new[] {
-                new Claim(ClaimTypes.Name, KnownPolicies.Upload, ClaimValueTypes.String, "https://ifs")
-            });
-
-            ClaimsPrincipal userPrincipal = new ClaimsPrincipal(userIdentity);
-
-            AuthenticationProperties authenticationOptions = new AuthenticationProperties {
-                AllowRefresh = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
-                IsPersistent = false
-            };
-
-            this.HttpContext.RecordFail2BanSuccess();
-            await this.HttpContext.SignInAsync(KnownAuthenticationScheme.PassphraseScheme, userPrincipal, authenticationOptions);
-
-            string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
-            return this.Redirect(returnUrl);
-        }
+        string returnUrl = String.IsNullOrEmpty(model?.ReturnUrl) ? this.Url.Action("Index", "Upload") : model.ReturnUrl;
+        return this.Redirect(returnUrl);
     }
 }

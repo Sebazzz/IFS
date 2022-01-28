@@ -7,13 +7,13 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace IFS.Web.Models {
-    public sealed class LoginModel {
-        public string? ReturnUrl { get; set; }
+namespace IFS.Web.Models;
 
-        [DataType(DataType.Password)]
-        public string? Passphrase { get; set; }
+public sealed class LoginModel {
+    public string? ReturnUrl { get; set; }
 
-        public string? HelpText { get; set; }
-    }
+    [DataType(DataType.Password)]
+    public string? Passphrase { get; set; }
+
+    public string? HelpText { get; set; }
 }

@@ -24,6 +24,14 @@
     <!--<NoWarn>NU1605;NU1603;$(NoWarn)</NoWarn>-->
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Remove="appsettings.local.json" />
     <None Include="appsettings.local.json" />

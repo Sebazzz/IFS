@@ -7,10 +7,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace IFS.Web.Controllers {
-    public sealed class HomeController : Controller {
-        public IActionResult Index() {
-            return this.RedirectToAction("Index", "Upload");
-        }
+namespace IFS.Web.Controllers;
+
+public sealed class HomeController : Controller {
+    public IActionResult Index() {
+        return this.RedirectToAction("Index", "Upload");
     }
 }

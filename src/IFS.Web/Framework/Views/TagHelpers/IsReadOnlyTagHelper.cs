@@ -7,21 +7,21 @@
 
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace IFS.Web.Framework.Views.TagHelpers {
-    /// <summary>
-    /// Workaround tag helper to render no-value attribute "readonly" conditionally, see: https://stackoverflow.com/q/55837409/646215
-    /// </summary>
-    [HtmlTargetElement("input", Attributes = IsReadOnlyAttribute)]
-    public sealed class IsReadOnlyTagHelper : TagHelper {
-        private const string IsReadOnlyAttribute = "is-readonly";
+namespace IFS.Web.Framework.Views.TagHelpers;
 
-        [HtmlAttributeName(IsReadOnlyAttribute)]
-        public bool IsReadOnly { get; set; }
+/// <summary>
+/// Workaround tag helper to render no-value attribute "readonly" conditionally, see: https://stackoverflow.com/q/55837409/646215
+/// </summary>
+[HtmlTargetElement("input", Attributes = IsReadOnlyAttribute)]
+public sealed class IsReadOnlyTagHelper : TagHelper {
+    private const string IsReadOnlyAttribute = "is-readonly";
 
-        public override void Process(TagHelperContext context, TagHelperOutput output) {
-            if (this.IsReadOnly) {
-                output.Attributes.SetAttribute("readonly", null);
-            }
+    [HtmlAttributeName(IsReadOnlyAttribute)]
+    public bool IsReadOnly { get; set; }
+
+    public override void Process(TagHelperContext context, TagHelperOutput output) {
+        if (this.IsReadOnly) {
+            output.Attributes.SetAttribute("readonly", null);
         }
     }
 }

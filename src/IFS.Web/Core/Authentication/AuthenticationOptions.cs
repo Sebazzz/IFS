@@ -7,14 +7,13 @@
 using IFS.Web.Core.Authentication.OpenIdConnect;
 using IFS.Web.Core.Authentication.Static;
 
-namespace IFS.Web.Core.Authentication {
-    #nullable disable
-    public sealed class AuthenticationOptions {
-        public StaticAuthenticationOptions Static { get; set; }
+namespace IFS.Web.Core.Authentication;
+#nullable disable
+public sealed class AuthenticationOptions {
+    public StaticAuthenticationOptions Static { get; set; }
 
-        public OpenIdConnectSettings OpenIdConnect { get; set; }
+    public OpenIdConnectSettings OpenIdConnect { get; set; }
 
-    #nullable enable
-        public string? LoginHelpText { get; set; }
-    }
+#nullable enable
+    public string? LoginHelpText { get; set; }
 }

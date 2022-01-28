@@ -12,29 +12,29 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace IFS.Web {
-    public sealed class Program {
-        public static void Main(string[] args) {
-            IWebHost host = 
-                WebHost.CreateDefaultBuilder(args)
+namespace IFS.Web;
+
+public sealed class Program {
+    public static void Main(string[] args) {
+        IWebHost host = 
+            WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(x => x.AddJsonFile("appsettings.local.json", true))
                 .CaptureStartupErrors(true)
                 .ConfigureLogging((wc,logging) => {
-                      var env = wc.HostingEnvironment;
-                      var config = wc.Configuration;
+                    var env = wc.HostingEnvironment;
+                    var config = wc.Configuration;
 
-                      logging.AddConfiguration(config.GetSection("Logging"));
-                      logging.AddConsole();
+                    logging.AddConfiguration(config.GetSection("Logging"));
+                    logging.AddConsole();
 
-                      if (env.IsDevelopment()) {
-                          logging.AddDebug();
-                      }
+                    if (env.IsDevelopment()) {
+                        logging.AddDebug();
+                    }
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .Build();
 
-            host.Run();
-        }
+        host.Run();
     }
 }

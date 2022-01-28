@@ -5,13 +5,11 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Upload
-{
+namespace IFS.Web.Core.Upload;
 #nullable disable
-    public class FileStoreOptions
-    {
-        public string StorageDirectory { get; set; }
+public class FileStoreOptions
+{
+    public string StorageDirectory { get; set; }
 
-        public int MaximumFileSize { get; set; }
-    }
+    public int MaximumFileSize { get; set; }
 }

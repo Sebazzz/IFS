@@ -12,37 +12,37 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using IFS.Web.Models;
 
-namespace IFS.Web.Core {
-    internal sealed class FileIdentifierModelBinderProvider : IModelBinderProvider {
-        public IModelBinder GetBinder(ModelBinderProviderContext context) {
-            if (context.Metadata.ModelType == typeof(FileIdentifier)) {
-                return new ModelBinder();
-            }
+namespace IFS.Web.Core;
 
-            return null!;
+internal sealed class FileIdentifierModelBinderProvider : IModelBinderProvider {
+    public IModelBinder GetBinder(ModelBinderProviderContext context) {
+        if (context.Metadata.ModelType == typeof(FileIdentifier)) {
+            return new ModelBinder();
         }
 
-        private sealed class ModelBinder : IModelBinder {
-            public Task BindModelAsync(ModelBindingContext bindingContext) {
-                ValueProviderResult value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+        return null!;
+    }
 
-                string stringValue = value.FirstValue;
-                if (String.IsNullOrEmpty(stringValue)) {
-                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, "Empty file identifier");
-                } else {
-                    try {
-                        FileIdentifier id = FileIdentifier.FromString(stringValue);
+    private sealed class ModelBinder : IModelBinder {
+        public Task BindModelAsync(ModelBindingContext bindingContext) {
+            ValueProviderResult value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-                        bindingContext.Model = id;
-                        bindingContext.Result = ModelBindingResult.Success(id);
-                    }
-                    catch (ArgumentException ex) {
-                        bindingContext.ModelState.AddModelError(bindingContext.ModelName, ex.Message);
-                    }
+            string stringValue = value.FirstValue;
+            if (String.IsNullOrEmpty(stringValue)) {
+                bindingContext.ModelState.AddModelError(bindingContext.ModelName, "Empty file identifier");
+            } else {
+                try {
+                    FileIdentifier id = FileIdentifier.FromString(stringValue);
+
+                    bindingContext.Model = id;
+                    bindingContext.Result = ModelBindingResult.Success(id);
                 }
-
-                return Task.CompletedTask;
+                catch (ArgumentException ex) {
+                    bindingContext.ModelState.AddModelError(bindingContext.ModelName, ex.Message);
+                }
             }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -11,32 +11,32 @@ using Microsoft.Extensions.FileProviders;
 
 using IFS.Web.Models;
 
-namespace IFS.Web.Core.Upload {
-    public interface IFileStore {
-        IFileInfo GetDataFile(FileIdentifier id);
-        IFileInfo GetMetadataFile(FileIdentifier id);
-        IEnumerable<IFileInfo> GetFiles();
+namespace IFS.Web.Core.Upload;
+
+public interface IFileStore {
+    IFileInfo GetDataFile(FileIdentifier id);
+    IFileInfo GetMetadataFile(FileIdentifier id);
+    IEnumerable<IFileInfo> GetFiles();
+}
+
+public sealed class FileStore : IFileStore {
+    private readonly IFileProvider _fileProvider;
+
+    public FileStore(IFileStoreFileProviderFactory fileProviderFactory) {
+        this._fileProvider = fileProviderFactory.GetFileProvider();
     }
 
-    public sealed class FileStore : IFileStore {
-        private readonly IFileProvider _fileProvider;
+    public IFileInfo GetDataFile(FileIdentifier id) => this.GetFile($"{id}.dat");
 
-        public FileStore(IFileStoreFileProviderFactory fileProviderFactory) {
-            this._fileProvider = fileProviderFactory.GetFileProvider();
-        }
+    private IFileInfo GetFile(string name) {
+        IFileInfo fileInfo = this._fileProvider.GetFileInfo(name);
 
-        public IFileInfo GetDataFile(FileIdentifier id) => this.GetFile($"{id}.dat");
+        return fileInfo;
+    }
 
-        private IFileInfo GetFile(string name) {
-            IFileInfo fileInfo = this._fileProvider.GetFileInfo(name);
+    public IFileInfo GetMetadataFile(FileIdentifier id) => this.GetFile($"{id}.metadata");
 
-            return fileInfo;
-        }
-
-        public IFileInfo GetMetadataFile(FileIdentifier id) => this.GetFile($"{id}.metadata");
-
-        public IEnumerable<IFileInfo> GetFiles() {
-            return this._fileProvider.GetDirectoryContents("");
-        }
+    public IEnumerable<IFileInfo> GetFiles() {
+        return this._fileProvider.GetDirectoryContents("");
     }
 }

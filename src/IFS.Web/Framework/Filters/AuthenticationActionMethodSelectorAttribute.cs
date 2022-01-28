@@ -12,26 +12,26 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace IFS.Web.Framework.Filters {
-    public abstract class AuthenticationActionMethodSelectorAttribute : ActionMethodSelectorAttribute {
-        public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action) {
-            AuthenticationOptions authOptions = routeContext.HttpContext.RequestServices.GetRequiredService<IOptions<AuthenticationOptions>>().Value;
+namespace IFS.Web.Framework.Filters;
 
-            return this.IsValidForRequest(authOptions);
-        }
+public abstract class AuthenticationActionMethodSelectorAttribute : ActionMethodSelectorAttribute {
+    public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action) {
+        AuthenticationOptions authOptions = routeContext.HttpContext.RequestServices.GetRequiredService<IOptions<AuthenticationOptions>>().Value;
 
-        protected abstract bool IsValidForRequest(AuthenticationOptions authOptions);
+        return this.IsValidForRequest(authOptions);
     }
 
-    public sealed class OpenIdAuthenticationActionAttribute : AuthenticationActionMethodSelectorAttribute {
-        protected override bool IsValidForRequest(AuthenticationOptions authOptions) {
-            return authOptions.OpenIdConnect?.Enable == true;
-        }
-    }
+    protected abstract bool IsValidForRequest(AuthenticationOptions authOptions);
+}
 
-    public sealed class StaticAuthenticationActionAttribute : AuthenticationActionMethodSelectorAttribute {
-        protected override bool IsValidForRequest(AuthenticationOptions authOptions) {
-            return authOptions.OpenIdConnect?.Enable != true;
-        }
+public sealed class OpenIdAuthenticationActionAttribute : AuthenticationActionMethodSelectorAttribute {
+    protected override bool IsValidForRequest(AuthenticationOptions authOptions) {
+        return authOptions.OpenIdConnect?.Enable == true;
+    }
+}
+
+public sealed class StaticAuthenticationActionAttribute : AuthenticationActionMethodSelectorAttribute {
+    protected override bool IsValidForRequest(AuthenticationOptions authOptions) {
+        return authOptions.OpenIdConnect?.Enable != true;
     }
 }

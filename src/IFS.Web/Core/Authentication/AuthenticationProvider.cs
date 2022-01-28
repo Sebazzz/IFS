@@ -8,35 +8,35 @@
 using Microsoft.Extensions.Options;
 using IFS.Web.Core.Authentication.Static;
 
-namespace IFS.Web.Core.Authentication {
-    public class AuthenticationProvider : IAuthenticationProvider, IAdministrationAuthenticationProvider {
-        private readonly StaticAuthenticationOptions _options;
+namespace IFS.Web.Core.Authentication;
 
-        public AuthenticationProvider(IOptions<AuthenticationOptions> options) {
-            this._options = options.Value.Static;
-        }
+public class AuthenticationProvider : IAuthenticationProvider, IAdministrationAuthenticationProvider {
+    private readonly StaticAuthenticationOptions _options;
 
-        public bool IsValidPassphrase(string? passphrase) {
-            return this._options?.Passphrase == passphrase;
-        }
-
-        public bool IsValidCredentials(string? userName, string? password) {
-            var options = this._options?.Administration;
-
-            if (options == null) {
-                return false;
-            }
-
-            return userName == options.UserName &&
-                   password == options.Password;
-        }
+    public AuthenticationProvider(IOptions<AuthenticationOptions> options) {
+        this._options = options.Value.Static;
     }
 
-    public interface IAuthenticationProvider {
-        bool IsValidPassphrase(string? passphrase);
+    public bool IsValidPassphrase(string? passphrase) {
+        return this._options?.Passphrase == passphrase;
     }
 
-    public interface IAdministrationAuthenticationProvider {
-        bool IsValidCredentials(string? userName, string? password);
+    public bool IsValidCredentials(string? userName, string? password) {
+        var options = this._options?.Administration;
+
+        if (options == null) {
+            return false;
+        }
+
+        return userName == options.UserName &&
+               password == options.Password;
     }
+}
+
+public interface IAuthenticationProvider {
+    bool IsValidPassphrase(string? passphrase);
+}
+
+public interface IAdministrationAuthenticationProvider {
+    bool IsValidCredentials(string? userName, string? password);
 }

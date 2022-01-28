@@ -7,27 +7,27 @@
 
 using System.Security.Claims;
 
-namespace IFS.Web.Core {
-    public static class KnownPolicies {
-        public const string Upload = nameof(Upload);
-        public const string Administration = nameof(Administration);
-    }
+namespace IFS.Web.Core;
 
-    public static class KnownAuthenticationScheme {
-        public const string PassphraseScheme= nameof(PassphraseScheme);
-        public const string AdministrationScheme = nameof(AdministrationScheme);
+public static class KnownPolicies {
+    public const string Upload = nameof(Upload);
+    public const string Administration = nameof(Administration);
+}
 
-        public static class OpenIdConnect {
-            public const string PassphraseScheme = nameof(OpenIdConnect) + nameof(PassphraseScheme);
-            public const string AdministrationScheme =  nameof(OpenIdConnect) +nameof(AdministrationScheme);
-        }
-    }
+public static class KnownAuthenticationScheme {
+    public const string PassphraseScheme= nameof(PassphraseScheme);
+    public const string AdministrationScheme = nameof(AdministrationScheme);
 
-    public static class KnownRoles {
-        public const string Administrator = nameof(Administrator);
+    public static class OpenIdConnect {
+        public const string PassphraseScheme = nameof(OpenIdConnect) + nameof(PassphraseScheme);
+        public const string AdministrationScheme =  nameof(OpenIdConnect) +nameof(AdministrationScheme);
     }
+}
 
-    public static class KnownClaims {
-        public const string RestrictionId = ClaimTypes.PrimarySid;
-    }
+public static class KnownRoles {
+    public const string Administrator = nameof(Administrator);
+}
+
+public static class KnownClaims {
+    public const string RestrictionId = ClaimTypes.PrimarySid;
 }

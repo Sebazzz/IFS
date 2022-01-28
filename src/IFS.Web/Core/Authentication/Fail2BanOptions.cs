@@ -7,12 +7,11 @@
 
 using System;
 
-namespace IFS.Web.Core.Authentication
-{
-    public class Fail2BanOptions
-    {
-        public TimeSpan DebounceTime { get; set; } = TimeSpan.FromMinutes(10);
+namespace IFS.Web.Core.Authentication;
 
-        public int MaximumAttempts { get; set; } = 10;
-    }
+public class Fail2BanOptions
+{
+    public TimeSpan DebounceTime { get; set; } = TimeSpan.FromMinutes(10);
+
+    public int MaximumAttempts { get; set; } = 10;
 }

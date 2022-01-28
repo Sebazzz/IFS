@@ -9,10 +9,9 @@ using System;
 using IFS.Web.Core.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IFS.Web.Framework
+namespace IFS.Web.Framework;
+
+internal static class ServiceCollectionExtensions
 {
-    internal static class ServiceCollectionExtensions
-    {
-        public static IFail2Ban GetFail2Ban(this IServiceProvider services) => services.GetRequiredService<IFail2Ban>();
-    }
+    public static IFail2Ban GetFail2Ban(this IServiceProvider services) => services.GetRequiredService<IFail2Ban>();
 }

@@ -19,55 +19,55 @@ using IFS.Tests.Support;
 using IFS.Web.Core.Upload;
 using IFS.Web.Models;
 
-namespace IFS.Tests.Core.Upload {
-    [TestFixture]
-    public class UploadedFileRepositoryTests {
-        [Test]
-        public async Task UploadedFileRepository_MetadataFileMissing_GetFile_ReturnsNull() {
-            // Given
-            IFileStore fileStore = Substitute.For<IFileStore>();
-            fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
+namespace IFS.Tests.Core.Upload;
 
-            // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
-            UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
+[TestFixture]
+public class UploadedFileRepositoryTests {
+    [Test]
+    public async Task UploadedFileRepository_MetadataFileMissing_GetFile_ReturnsNull() {
+        // Given
+        IFileStore fileStore = Substitute.For<IFileStore>();
+        fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
 
-            // Then
-            Assert.That(returnedValue, Is.Null);
-        }
+        // When
+        IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
+        UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
-        [Test]
-        public async Task UploadedFileRepository_DataFileMissing_GetFile_ReturnsNull() {
-            // Given
-            IFileStore fileStore = Substitute.For<IFileStore>();
-            fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
-            fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
+        // Then
+        Assert.That(returnedValue, Is.Null);
+    }
 
-            // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
-            UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
+    [Test]
+    public async Task UploadedFileRepository_DataFileMissing_GetFile_ReturnsNull() {
+        // Given
+        IFileStore fileStore = Substitute.For<IFileStore>();
+        fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
+        fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new NotFoundFileInfo("_"));
 
-            // Then
-            Assert.That(returnedValue, Is.Null);
-        }
+        // When
+        IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, null, FakeLogger.Get<UploadedFileRepository>());
+        UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
 
-        [Test]
-        public async Task UploadedFileRepository_Success_ReturnsFileWithMetadata() {
-            // Given
-            IFileStore fileStore = Substitute.For<IFileStore>();
-            IMetadataReader metadataReader = new MetadataReader(Substitute.For<ILogger<MetadataReader>>());
+        // Then
+        Assert.That(returnedValue, Is.Null);
+    }
 
-            var metadataString = (new StoredMetadata {OriginalFileName = "TestFile.txt"}).Serialize();
-            fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile(contents: metadataString));
+    [Test]
+    public async Task UploadedFileRepository_Success_ReturnsFileWithMetadata() {
+        // Given
+        IFileStore fileStore = Substitute.For<IFileStore>();
+        IMetadataReader metadataReader = new MetadataReader(Substitute.For<ILogger<MetadataReader>>());
 
-            fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
+        var metadataString = (new StoredMetadata {OriginalFileName = "TestFile.txt"}).Serialize();
+        fileStore.GetMetadataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile(contents: metadataString));
 
-            // When
-            IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, metadataReader, FakeLogger.Get<UploadedFileRepository>());
-            UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
+        fileStore.GetDataFile(Arg.Any<FileIdentifier>()).Returns(new FakeFile());
 
-            // Then
-            Assert.That(returnedValue.Metadata.OriginalFileName, Is.EqualTo("TestFile.txt"));
-        }
+        // When
+        IUploadedFileRepository testObject = new UploadedFileRepository(fileStore, null, metadataReader, FakeLogger.Get<UploadedFileRepository>());
+        UploadedFile returnedValue = await testObject.GetFile(FileIdentifier.CreateNew());
+
+        // Then
+        Assert.That(returnedValue.Metadata.OriginalFileName, Is.EqualTo("TestFile.txt"));
     }
 }

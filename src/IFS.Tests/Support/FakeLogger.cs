@@ -11,14 +11,14 @@ using Microsoft.Extensions.Logging;
 
 using NSubstitute;
 
-namespace IFS.Tests.Support {
-    public static class FakeLogger {
-        public static ILogger<T> Get<T>() {
-            ILogger<T> fakeLogger = Substitute.For<ILogger<T>>();
+namespace IFS.Tests.Support;
 
-            fakeLogger.BeginScope(Arg.Any<string>()).Returns(Substitute.For<IDisposable>());
+public static class FakeLogger {
+    public static ILogger<T> Get<T>() {
+        ILogger<T> fakeLogger = Substitute.For<ILogger<T>>();
 
-            return fakeLogger;
-        }
+        fakeLogger.BeginScope(Arg.Any<string>()).Returns(Substitute.For<IDisposable>());
+
+        return fakeLogger;
     }
 }

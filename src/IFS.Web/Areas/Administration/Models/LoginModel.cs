@@ -7,17 +7,17 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace IFS.Web.Areas.Administration.Models {
-    public sealed class LoginModel {
-        public string? ReturnUrl { get; set; }
+namespace IFS.Web.Areas.Administration.Models;
 
-        [Required]
-        [Display(Name = "User name")]
-        public string? UserName { get; set; }
+public sealed class LoginModel {
+    public string? ReturnUrl { get; set; }
 
-        [Required]
-        [Display]
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
-    }
+    [Required]
+    [Display(Name = "User name")]
+    public string? UserName { get; set; }
+
+    [Required]
+    [Display]
+    [DataType(DataType.Password)]
+    public string? Password { get; set; }
 }

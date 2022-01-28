@@ -7,11 +7,11 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace IFS.Web.Models {
-    public class DownloadPasswordModel {
-        [Required]
-        [DataType(DataType.Password)]
-        [StringLength(1204)] // DoS protection
-        public string? Password { get; set; }
-    }
+namespace IFS.Web.Models;
+
+public class DownloadPasswordModel {
+    [Required]
+    [DataType(DataType.Password)]
+    [StringLength(1204)] // DoS protection
+    public string? Password { get; set; }
 }

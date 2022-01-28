@@ -9,25 +9,25 @@ using System;
 
 using Microsoft.AspNetCore.Http;
 
-namespace IFS.Web.Models {
-    public class ErrorInformation {
-        public string? OriginalPath { get; set; }
+namespace IFS.Web.Models;
 
-        public string? QueryString { get; set; }
+public class ErrorInformation {
+    public string? OriginalPath { get; set; }
 
-        public string? GetUrl(HttpRequest request) {
-            if (String.IsNullOrEmpty(this.OriginalPath)) {
-                return null;
-            }
+    public string? QueryString { get; set; }
 
-            UriBuilder uriBuilder = new UriBuilder() {
-                Scheme = request.Scheme,
-                Host = request.Host.Host,
-                Path = this.OriginalPath,
-                Query = this.QueryString ?? String.Empty
-            };
-
-            return uriBuilder.ToString();
+    public string? GetUrl(HttpRequest request) {
+        if (String.IsNullOrEmpty(this.OriginalPath)) {
+            return null;
         }
+
+        UriBuilder uriBuilder = new UriBuilder() {
+            Scheme = request.Scheme,
+            Host = request.Host.Host,
+            Path = this.OriginalPath,
+            Query = this.QueryString ?? String.Empty
+        };
+
+        return uriBuilder.ToString();
     }
 }

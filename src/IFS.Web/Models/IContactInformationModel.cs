@@ -7,9 +7,9 @@
 
 using IFS.Web.Core.Upload;
 
-namespace IFS.Web.Models {
-    public interface IContactInformationModel {
-        ContactInformation? Sender { get; set; }
-        bool IsSenderInformationPrefilled { get; set; }
-    }
+namespace IFS.Web.Models;
+
+public interface IContactInformationModel {
+    ContactInformation? Sender { get; set; }
+    bool IsSenderInformationPrefilled { get; set; }
 }

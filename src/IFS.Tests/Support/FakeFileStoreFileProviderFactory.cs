@@ -9,14 +9,14 @@ using Microsoft.Extensions.FileProviders;
 
 using IFS.Web.Core.Upload;
 
-namespace IFS.Tests.Support {
-    public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
-        private readonly IFileProvider _fileProvider;
+namespace IFS.Tests.Support;
 
-        public FakeFileStoreFileProviderFactory(IFileProvider fileProvider) {
-            this._fileProvider = fileProvider;
-        }
+public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
+    private readonly IFileProvider _fileProvider;
 
-        public IFileProvider GetFileProvider() => this._fileProvider;
+    public FakeFileStoreFileProviderFactory(IFileProvider fileProvider) {
+        this._fileProvider = fileProvider;
     }
+
+    public IFileProvider GetFileProvider() => this._fileProvider;
 }

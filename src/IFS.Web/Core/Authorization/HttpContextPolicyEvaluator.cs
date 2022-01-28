@@ -13,47 +13,46 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 
-namespace IFS.Web.Core.Authorization
+namespace IFS.Web.Core.Authorization;
+
+public class HttpContextPolicyEvaluator : IPolicyEvaluator
 {
-    public class HttpContextPolicyEvaluator : IPolicyEvaluator
+    private static readonly AsyncLocal<HttpContext?> PolicyEvaluationHttpContextHolder = new();
+    private readonly IPolicyEvaluator _defaultPolicyEvaluator;
+
+    public static HttpContext PolicyEvaluationHttpContext => PolicyEvaluationHttpContextHolder.Value ?? throw new InvalidOperationException("This value is currently not available.");
+
+    public HttpContextPolicyEvaluator(IAuthorizationService authorizationService)
     {
-        private static readonly AsyncLocal<HttpContext?> PolicyEvaluationHttpContextHolder = new AsyncLocal<HttpContext?>();
-        private readonly IPolicyEvaluator _defaultPolicyEvaluator;
+        this._defaultPolicyEvaluator = new PolicyEvaluator(authorizationService);
+    }
 
-        public static HttpContext PolicyEvaluationHttpContext => PolicyEvaluationHttpContextHolder.Value ?? throw new InvalidOperationException("This value is currently not available.");
-
-        public HttpContextPolicyEvaluator(IAuthorizationService authorizationService)
+    public Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
+    {
+        try
         {
-            this._defaultPolicyEvaluator = new PolicyEvaluator(authorizationService);
+            PolicyEvaluationHttpContextHolder.Value = context;
+
+            return this._defaultPolicyEvaluator.AuthenticateAsync(policy, context);
         }
-
-        public Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
+        finally
         {
-            try
-            {
-                PolicyEvaluationHttpContextHolder.Value = context;
-
-                return this._defaultPolicyEvaluator.AuthenticateAsync(policy, context);
-            }
-            finally
-            {
-                PolicyEvaluationHttpContextHolder.Value = null;
-            }
+            PolicyEvaluationHttpContextHolder.Value = null;
         }
+    }
 
-        public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy, AuthenticateResult authenticationResult, HttpContext context,
-            object resource)
+    public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy, AuthenticateResult authenticationResult, HttpContext context,
+        object resource)
+    {
+        try
         {
-            try
-            {
-                PolicyEvaluationHttpContextHolder.Value = context;
+            PolicyEvaluationHttpContextHolder.Value = context;
 
-                return this._defaultPolicyEvaluator.AuthorizeAsync(policy, authenticationResult, context, resource);
-            }
-            finally
-            {
-                PolicyEvaluationHttpContextHolder.Value = null;
-            }
+            return this._defaultPolicyEvaluator.AuthorizeAsync(policy, authenticationResult, context, resource);
+        }
+        finally
+        {
+            PolicyEvaluationHttpContextHolder.Value = null;
         }
     }
 }

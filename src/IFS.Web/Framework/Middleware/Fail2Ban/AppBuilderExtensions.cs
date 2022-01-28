@@ -7,13 +7,12 @@
 
 using Microsoft.AspNetCore.Builder;
 
-namespace IFS.Web.Framework.Middleware.Fail2Ban
+namespace IFS.Web.Framework.Middleware.Fail2Ban;
+
+internal static class AppBuilderExtensions
 {
-    internal static class AppBuilderExtensions
+    public static void UseFail2BanRecording(this IApplicationBuilder app)
     {
-        public static void UseFail2BanRecording(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<Fail2BanRecordMiddleware>();
-        }
+        app.UseMiddleware<Fail2BanRecordMiddleware>();
     }
 }

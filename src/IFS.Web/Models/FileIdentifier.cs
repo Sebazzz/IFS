@@ -11,193 +11,193 @@ using System.Threading;
 
 using Hangfire.Annotations;
 
-namespace IFS.Web.Models {
-    /// <summary>
-    /// Represents the identifier of an uploaded file
-    /// </summary>
-    [StructLayout(LayoutKind.Auto)]
-    public struct FileIdentifier : IEquatable<FileIdentifier> {
-        private static int Mask = ~1;
+namespace IFS.Web.Models;
 
-        private readonly Guid _id;
-        private string _stringRepresentation;
+/// <summary>
+/// Represents the identifier of an uploaded file
+/// </summary>
+[StructLayout(LayoutKind.Auto)]
+public struct FileIdentifier : IEquatable<FileIdentifier> {
+    private static int Mask = ~1;
 
-        private FileIdentifier(Guid id) : this() {
-            this._id = id;
-        }
+    private readonly Guid _id;
+    private string _stringRepresentation;
 
-        private FileIdentifier(string stringRepresentation) : this() {
-            ValidateStringRepresentation(stringRepresentation);
+    private FileIdentifier(Guid id) : this() {
+        this._id = id;
+    }
 
-            this._stringRepresentation = stringRepresentation;
-        }
+    private FileIdentifier(string stringRepresentation) : this() {
+        ValidateStringRepresentation(stringRepresentation);
 
-        private static void ValidateStringRepresentation(string stringRepresentation) {
-            if (stringRepresentation == null) throw new ArgumentNullException(nameof(stringRepresentation));
+        this._stringRepresentation = stringRepresentation;
+    }
 
-            foreach (char ch in stringRepresentation) {
-                if (Array.IndexOf(Chars, ch) == -1) {
-                    throw new ArgumentException($"Unexpected character '{ch}' in input", nameof(stringRepresentation));
-                }
+    private static void ValidateStringRepresentation(string stringRepresentation) {
+        if (stringRepresentation == null) throw new ArgumentNullException(nameof(stringRepresentation));
+
+        foreach (char ch in stringRepresentation) {
+            if (Array.IndexOf(Chars, ch) == -1) {
+                throw new ArgumentException($"Unexpected character '{ch}' in input", nameof(stringRepresentation));
             }
         }
+    }
 
-        public static bool IsValid([NotNull] string str) {
-            if (str == null) throw new ArgumentNullException(nameof(str));
+    public static bool IsValid([NotNull] string str) {
+        if (str == null) throw new ArgumentNullException(nameof(str));
 
-            foreach (char ch in str) {
-                if (Array.IndexOf(Chars, ch) == -1) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Parses a <see cref="FileIdentifier"/> from a string
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static FileIdentifier FromString(string str) {
-            return new FileIdentifier(str);
-        }
-
-        /// <summary>
-        /// Creates a new log message id
-        /// </summary>
-        /// <returns></returns>
-        public static FileIdentifier CreateNew() {
-            Interlocked.Increment(ref Mask);
-            return new FileIdentifier(Guid.NewGuid());
-        }
-
-
-        /// <summary>
-        /// Returns the string representation of this file identifier
-        /// </summary>
-        public override string ToString() {
-            return this._stringRepresentation ?? (this._stringRepresentation = MakeStringRepresentation(this._id));
-        }
-
-        /// <summary>
-        /// Indicates whether the current object is equal to another object of the same type.
-        /// </summary>
-        /// <returns>
-        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
-        /// </returns>
-        /// <param name="other">An object to compare with this object.</param>
-        public bool Equals(FileIdentifier other) {
-            if (this._stringRepresentation == null && other._stringRepresentation == null) {
-                return other._id == this._id;
-            }
-
-            if (this._stringRepresentation == null) {
-                string thisStr = MakeStringRepresentation(this._id);
-                string otherStr = other._stringRepresentation;
-
-                return string.Equals(thisStr, otherStr, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return string.Equals(this._stringRepresentation, other._stringRepresentation, StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// Indicates whether this instance and a specified object are equal.
-        /// </summary>
-        /// <returns>
-        /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
-        /// </returns>
-        /// <param name="obj">Another object to compare to. </param>
-        public override bool Equals(object? obj) {
-            if (ReferenceEquals(null, obj)) {
+        foreach (char ch in str) {
+            if (Array.IndexOf(Chars, ch) == -1) {
                 return false;
             }
-            return obj is FileIdentifier identifier && this.Equals(identifier);
         }
 
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <returns>
-        /// A 32-bit signed integer that is the hash code for this instance.
-        /// </returns>
-        public override int GetHashCode() {
-            string strVal = this.ToString();
-            return StringComparer.OrdinalIgnoreCase.GetHashCode(strVal);
+        return true;
+    }
+
+    /// <summary>
+    /// Parses a <see cref="FileIdentifier"/> from a string
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static FileIdentifier FromString(string str) {
+        return new FileIdentifier(str);
+    }
+
+    /// <summary>
+    /// Creates a new log message id
+    /// </summary>
+    /// <returns></returns>
+    public static FileIdentifier CreateNew() {
+        Interlocked.Increment(ref Mask);
+        return new FileIdentifier(Guid.NewGuid());
+    }
+
+
+    /// <summary>
+    /// Returns the string representation of this file identifier
+    /// </summary>
+    public override string ToString() {
+        return this._stringRepresentation ?? (this._stringRepresentation = MakeStringRepresentation(this._id));
+    }
+
+    /// <summary>
+    /// Indicates whether the current object is equal to another object of the same type.
+    /// </summary>
+    /// <returns>
+    /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+    /// </returns>
+    /// <param name="other">An object to compare with this object.</param>
+    public bool Equals(FileIdentifier other) {
+        if (this._stringRepresentation == null && other._stringRepresentation == null) {
+            return other._id == this._id;
         }
 
-        /// <summary>
-        /// Checks equality of the given parameters
-        /// </summary>
-        public static bool operator ==(FileIdentifier left, FileIdentifier right) {
-            return left.Equals(right);
+        if (this._stringRepresentation == null) {
+            string thisStr = MakeStringRepresentation(this._id);
+            string otherStr = other._stringRepresentation;
+
+            return string.Equals(thisStr, otherStr, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Checks inequality of the given parameters
-        /// </summary>
-        public static bool operator !=(FileIdentifier left, FileIdentifier right) {
-            return !left.Equals(right);
+        return string.Equals(this._stringRepresentation, other._stringRepresentation, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Indicates whether this instance and a specified object are equal.
+    /// </summary>
+    /// <returns>
+    /// true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise, false.
+    /// </returns>
+    /// <param name="obj">Another object to compare to. </param>
+    public override bool Equals(object? obj) {
+        if (ReferenceEquals(null, obj)) {
+            return false;
         }
+        return obj is FileIdentifier identifier && this.Equals(identifier);
+    }
 
-        private static readonly char[] Chars = {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '2', '3', '4', '5', '6', '7', '8', '9'
-        };
+    /// <summary>
+    /// Returns the hash code for this instance.
+    /// </summary>
+    /// <returns>
+    /// A 32-bit signed integer that is the hash code for this instance.
+    /// </returns>
+    public override int GetHashCode() {
+        string strVal = this.ToString();
+        return StringComparer.OrdinalIgnoreCase.GetHashCode(strVal);
+    }
 
-        private static unsafe string MakeStringRepresentation(Guid id) {
-            // Convert Guid to bytes
-            GuidBuffer buffer = new GuidBuffer(id);
-            byte* bytes = buffer.buffer;
+    /// <summary>
+    /// Checks equality of the given parameters
+    /// </summary>
+    public static bool operator ==(FileIdentifier left, FileIdentifier right) {
+        return left.Equals(right);
+    }
 
-            // Target string
-            int size = sizeof(Guid) * 2;
-            char* result = stackalloc char[size + 1 /* \0 terminator */];
-            char* start = result;
+    /// <summary>
+    /// Checks inequality of the given parameters
+    /// </summary>
+    public static bool operator !=(FileIdentifier left, FileIdentifier right) {
+        return !left.Equals(right);
+    }
 
-            for (int i = 0; i < sizeof(Guid); i++) {
-                byte src = *bytes;
-                int carry = 0;
+    private static readonly char[] Chars = {
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        '2', '3', '4', '5', '6', '7', '8', '9'
+    };
 
-                {
-                    int index = src % Chars.Length;
+    private static unsafe string MakeStringRepresentation(Guid id) {
+        // Convert Guid to bytes
+        GuidBuffer buffer = new GuidBuffer(id);
+        byte* bytes = buffer.buffer;
 
-                    char current = Chars[index];
+        // Target string
+        int size = sizeof(Guid) * 2;
+        char* result = stackalloc char[size + 1 /* \0 terminator */];
+        char* start = result;
 
-                    *result = current;
-                    result++;
+        for (int i = 0; i < sizeof(Guid); i++) {
+            byte src = *bytes;
+            int carry = 0;
 
-                    carry = ((src - index) / Chars.Length) - 1;
-                }
+            {
+                int index = src % Chars.Length;
 
-                if (carry > 0) {
-                    int index = carry % Chars.Length;
+                char current = Chars[index];
 
-                    char current = Chars[index];
+                *result = current;
+                result++;
 
-                    *result = current;
-                    result++;
-                }
-
-                bytes++;
+                carry = ((src - index) / Chars.Length) - 1;
             }
 
-            return new string(start);
+            if (carry > 0) {
+                int index = carry % Chars.Length;
+
+                char current = Chars[index];
+
+                *result = current;
+                result++;
+            }
+
+            bytes++;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
-        unsafe struct GuidBuffer {
-            [FieldOffset(0)]
-            public fixed byte buffer[16];
+        return new string(start);
+    }
 
-            [FieldOffset(0)]
-            public Guid Guid;
+    [StructLayout(LayoutKind.Explicit)]
+    unsafe struct GuidBuffer {
+        [FieldOffset(0)]
+        public fixed byte buffer[16];
 
-            public GuidBuffer(Guid guid) : this() {
-                this.Guid = guid;
-            }
+        [FieldOffset(0)]
+        public Guid Guid;
+
+        public GuidBuffer(Guid guid) : this() {
+            this.Guid = guid;
         }
     }
 }
