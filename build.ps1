@@ -103,7 +103,7 @@ if($FoundDotNetCliVersion -lt $DotNetVersion -or
 
 $DotNetRoot = Get-Command dotnet -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source | Split-Path -Parent
 
-$env:DOTNET_ROOT=1
+$env:DOTNET_ROOT=$DotNetRoot
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 

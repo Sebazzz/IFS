@@ -1,22 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>IFS.Web</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>IFS.Web</PackageId>
     <RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
-    <RuntimeFrameworkVersion>3.1.0</RuntimeFrameworkVersion>
 
     <LangVersion>latest</LangVersion>
-  	<Version>2.0.0</Version>
-  	<AssemblyVersion>22.0.0.0</AssemblyVersion>
-	  <Authors>Sebastiaan Dammann</Authors>
-	  <Company>Damsteen.nl</Company>
-	  <Product>IFS</Product>
-	  <Description>Internet File System: Small scale upload</Description>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>22.0.0.0</AssemblyVersion>
+    <Authors>Sebastiaan Dammann</Authors>
+    <Company>Damsteen.nl</Company>
+    <Product>IFS</Product>
+    <Description>Internet File System: Small scale upload</Description>
 
     <Nullable>Enable</Nullable>
   </PropertyGroup>
@@ -44,27 +43,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hangfire.Core" Version="1.7.9" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.9" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.28" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
-    <PackageReference Include="Humanizer.Core" Version="2.7.9" />
-    <PackageReference Include="Markdig" Version="0.18.3" />
+    <PackageReference Include="Humanizer.Core" Version="2.13.14" />
+    <PackageReference Include="Markdig" Version="0.27.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.2" />
-
-    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.1" />
   </ItemGroup>
-
-  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" Condition="'false'=='true'">
-    <!-- Do not run this task. Webpack may change the files causing havoc in the build process as msbuild won't be able to find files it through it would find. -->
-    <Exec Command="npm install" />
-    <Exec Command="npm run-script build" />
-  </Target>
-
 </Project>
