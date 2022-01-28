@@ -1,8 +1,6 @@
 ﻿/// <binding />
 const TerserPlugin = require('terser-webpack-plugin');
 
-const webpack = require('webpack');
-
 module.exports = {
     stats: {chunkModules: true},
     optimization: {
@@ -24,7 +22,7 @@ module.exports = {
                     output: {
                         beautify: false,
                     },
-                    ecma: 5,
+                    ecma: 5
                 }
             })
         ]
