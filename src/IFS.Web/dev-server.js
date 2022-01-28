@@ -111,6 +111,7 @@ function args_port() {
 if (require.main === module) {
     const server = http.createServer(app);
     const port = args_port() || process.env.port || 8080;
+
     server.listen(port, () => console.log('Listening on %j', server.address()));
     server.mutex = mutex;
 }

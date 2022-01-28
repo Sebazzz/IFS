@@ -2,7 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const targetDir = path.resolve(__dirname, 'wwwroot/build');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const globals = new webpack.ProvidePlugin({
     $: 'jquery',
@@ -12,19 +12,23 @@ const globals = new webpack.ProvidePlugin({
 });
 
 // Extract compiled CSS into a seperate file
-const extractCss = new ExtractTextPlugin({
-    filename: 'site.css'
+const extractCss = new MiniCssExtractPlugin({
+    filename: '[name].css'
 });
+
+if (process.env.NODE_ENV) {
+    module.exports.mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+}
 
 module.exports =  {
     devtool: 'inline-source-map',
     entry: {
-        'site.js': ['./js/site.js'],
+        'site': ['./js/site.js'],
 
          // pages
-        'shared/error.js': './js/pages/shared/error.js',
-        'upload/tracker.js': './js/pages/upload/tracker.js',
-        'upload/index.js': './js/pages/upload/index.js'
+        'shared/error': './js/pages/shared/error.js',
+        'upload/tracker': './js/pages/upload/tracker.js',
+        'upload/index': './js/pages/upload/index.js'
     },
     plugins: [
         globals,
@@ -35,15 +39,15 @@ module.exports =  {
             cacheGroups: {
 				'lib.js': {
 					test: /node_modules/,
-					chunks: "initial",
-					name: "lib.js",
+					chunks: 'initial',
+					name: 'lib',
 					enforce: true
 				}
             },
         },
     },
     output: {
-        filename: '[name]',
+        filename: '[name].js',
         chunkFilename: '[name]',
         path: targetDir,
         publicPath: '/build/'
@@ -56,22 +60,17 @@ module.exports =  {
             },
             {
                 test: /\.css$/,
-                use: extractCss.extract({
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                sourceMap: true,
-                            }
+                use: [
+                    process.env.NODE_ENV === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true
                         }
-                    ],
-                    fallback: 'style-loader'
-                })
+                    }
+                ]
             }
         ]
     }
 };
 
-if (process.env.NODE_ENV) {
-    module.exports.mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-}

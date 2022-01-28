@@ -1,5 +1,6 @@
-#addin nuget:?package=Cake.Compression&version=0.2.4
-#addin nuget:?package=SharpZipLib&version=1.1.0
+#addin nuget:?package=Cake.Compression&version=0.2.6
+#addin nuget:?package=Cake.GitVersioning&version=3.4.255
+#addin nuget:?package=SharpZipLib&version=1.3.3
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -82,7 +83,7 @@ Task("Check-Yarn-Version")
 
 Task("Restore-NuGet-Packages")
     .Does(() => {
-    DotNetCoreRestore(new DotNetCoreRestoreSettings {
+    DotNetRestore(new DotNetRestoreSettings {
 		IgnoreFailedSources = true,
 		ForceEvaluate = true,
 		NoCache = true
@@ -121,26 +122,32 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .IsDependentOn("Restore-Node-Packages")
     .Does(() => {
-        DotNetCoreBuild($"./IFS.sln");
+        DotNetBuild($"./IFS.sln");
 });
 
 Task("Run")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreRun($"IFS.Web.csproj", null, new DotNetCoreRunSettings { WorkingDirectory = "./src/IFS.Web" });
+        DotNetRun($"IFS.Web.csproj", null, new DotNetRunSettings { WorkingDirectory = "./src/IFS.Web" });
 });
+
+string GetVersionString() {
+	var version = GitVersioningGetVersion();
+	
+	return version.SemVer1;
+}
 
 Action<string,string> PublishSelfContained = (string platform, string folder) => {
 	Information("Publishing self-contained for platform {0}", platform);
 
-	var settings = new DotNetCorePublishSettings
+	var settings = new DotNetPublishSettings
 			 {
 				 Configuration = configuration,
 				 OutputDirectory = publishDir + Directory(folder ?? platform),
 				 Runtime = platform
 			 };
 	
-        DotNetCorePublish($"./src/IFS.Web/IFS.Web.csproj", settings);
+        DotNetPublish($"./src/IFS.Web/IFS.Web.csproj", settings);
 };
 
 Task("Run-Webpack")
@@ -162,10 +169,16 @@ Task("Publish-Common")
     .IsDependentOn("Rebuild")
 	.IsDependentOn("Run-Webpack");
 	
-Task("Publish-Win10")
-	.Description("Publish for Windows 10 / Windows Server 2016")
+Task("Publish-Windows-Core")
     .IsDependentOn("Publish-Common")
     .Does(() => PublishSelfContained("win10-x64", null));
+
+Task("Publish-Windows")
+    .IsDependentOn("Publish-Windows-Core")
+	.Description("Publish for Windows 10 / Windows Server 2016+")
+    .Does(() => {
+       ZipCompress(publishDir + Directory("win10-x64/"), publishDir + File($"ifs-{GetVersionString()}-win10-x64.zip"));
+	});
 
 Task("Publish-Linux-Core")
 	.Description("Internal task - do not use")
@@ -176,17 +189,17 @@ Task("Publish-Linux")
     .IsDependentOn("Publish-Linux-Core")
 	.Description("Publish for Linux x64 (Ubuntu, Debian)")
     .Does(() => {
-       GZipCompress(publishDir + Directory("linux-x64/"), publishDir + File("ifs-linux-x64.tar.gz"));
+       GZipCompress(publishDir + Directory("linux-x64/"), publishDir + File($"ifs-{GetVersionString()}-linux-x64.tar.gz"));
 	});
 	
 Task("Publish")
-    .IsDependentOn("Publish-Win10")
+    .IsDependentOn("Publish-Windows")
     .IsDependentOn("Publish-Linux");
 	
 Task("Test")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreTest();
+        DotNetTest("./IFS.sln", new() { NoBuild = true });
 });
 
 

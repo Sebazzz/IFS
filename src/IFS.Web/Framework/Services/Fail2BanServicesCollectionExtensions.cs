@@ -9,17 +9,16 @@ using IFS.Web.Core.Authentication;
 using IFS.Web.Framework.Middleware.Fail2Ban;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IFS.Web.Framework.Services
+namespace IFS.Web.Framework.Services;
+
+internal static class Fail2BanServicesCollectionExtensions
 {
-    internal static class Fail2BanServicesCollectionExtensions
+    public static void AddFail2Ban(this IServiceCollection services)
     {
-        public static void AddFail2Ban(this IServiceCollection services)
-        {
-            services.AddOptions<Fail2BanOptions>("Fail2Ban");
+        services.AddOptions<Fail2BanOptions>("Fail2Ban");
 
-            services.AddSingleton<IFail2Ban, Fail2Ban>();
+        services.AddSingleton<IFail2Ban, Fail2Ban>();
 
-            services.AddSingleton<Fail2BanRecordMiddleware>();
-        }
+        services.AddSingleton<Fail2BanRecordMiddleware>();
     }
 }

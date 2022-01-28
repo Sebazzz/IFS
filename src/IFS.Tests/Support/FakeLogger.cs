@@ -5,20 +5,20 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
-namespace IFS.Tests.Support {
-    using System;
+using System;
 
-    using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
-    using NSubstitute;
+using NSubstitute;
 
-    public static class FakeLogger {
-        public static ILogger<T> Get<T>() {
-            ILogger<T> fakeLogger = Substitute.For<ILogger<T>>();
+namespace IFS.Tests.Support;
 
-            fakeLogger.BeginScope(Arg.Any<string>()).Returns(Substitute.For<IDisposable>());
+public static class FakeLogger {
+    public static ILogger<T> Get<T>() {
+        ILogger<T> fakeLogger = Substitute.For<ILogger<T>>();
 
-            return fakeLogger;
-        }
+        fakeLogger.BeginScope(Arg.Any<string>()).Returns(Substitute.For<IDisposable>());
+
+        return fakeLogger;
     }
 }

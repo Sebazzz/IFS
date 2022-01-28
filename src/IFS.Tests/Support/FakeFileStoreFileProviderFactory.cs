@@ -5,18 +5,18 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
-namespace IFS.Tests.Support {
-    using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders;
 
-    using Web.Core.Upload;
+using IFS.Web.Core.Upload;
 
-    public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
-        private readonly IFileProvider _fileProvider;
+namespace IFS.Tests.Support;
 
-        public FakeFileStoreFileProviderFactory(IFileProvider fileProvider) {
-            this._fileProvider = fileProvider;
-        }
+public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
+    private readonly IFileProvider _fileProvider;
 
-        public IFileProvider GetFileProvider() => this._fileProvider;
+    public FakeFileStoreFileProviderFactory(IFileProvider fileProvider) {
+        this._fileProvider = fileProvider;
     }
+
+    public IFileProvider GetFileProvider() => this._fileProvider;
 }

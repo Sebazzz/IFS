@@ -1,5 +1,5 @@
 /// <binding />
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const isProduction = process.env.NODE_ENV === 'production',
       envFile = isProduction ? './webpack.config.prod.js' : './webpack.config.dev.js';

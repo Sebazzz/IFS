@@ -1,37 +1,40 @@
 {
-    "name": "ifs",
-    "version": "1.0.0",
-    "description": "Internet File System - privately hosted file upload & sharing service",
-    "scripts": {
-        "start": "webpack",
-        "build": "webpack",
-        "webpack-stats": "webpack --json > webpack-stats.json",
-        "watch": "webpack --watch"
-    },
-    "author": "",
-    "license": "MIT",
-    "private": true,
-    "dependencies": {
-        "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
-        "bootstrap": "4.4.1",
-        "jquery": "3.4.1",
-        "jquery-validation": "1.19.1",
-        "jquery-validation-unobtrusive": "3.2.11",
-        "popper.js": "^1.16.1"
-    },
-    "devDependencies": {
-        "css-loader": "3.4.2",
-        "extract-text-webpack-plugin": "^4.0.0-beta.0",
-        "file-loader": "5.1.0",
-        "style-loader": "1.1.3",
-        "terser-webpack-plugin": "^2.3.5",
-        "url-loader": "3.0.0",
-        "webpack": "4.42.0",
-        "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.10.3",
-        "webpack-merge": "4.2.2"
-    },
-    "optionalDependencies": {
-        "windows-mutex": "^0.4.1"
-    }
+  "name": "ifs",
+  "version": "1.0.0",
+  "description": "Internet File System - privately hosted file upload & sharing service",
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "start": "webpack",
+    "build": "webpack",
+    "webpack-stats": "webpack --json > webpack-stats.json",
+    "watch": "webpack --watch"
+  },
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "bootstrap": "4.4.1",
+    "jquery": "3.6.0",
+    "jquery-validation": "1.19.3",
+    "jquery-validation-unobtrusive": "3.2.12",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {
+    "css-loader": "6.5.1",
+    "file-loader": "6.2.0",
+    "mini-css-extract-plugin": "2.5.3",
+    "style-loader": "3.3.1",
+    "terser-webpack-plugin": "^5.3.0",
+    "url-loader": "4.1.1",
+    "webpack": "5.67.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "5.8.0"
+  },
+  "optionalDependencies": {
+    "windows-mutex": "^0.4.1"
+  }
 }

@@ -5,32 +5,32 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Upload {
-    using System.Diagnostics;
-    using System.IO;
+using System.Diagnostics;
+using System.IO;
 
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.FileProviders;
-    using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
-    public interface IFileStoreFileProviderFactory {
-        IFileProvider GetFileProvider();
+namespace IFS.Web.Core.Upload;
+
+public interface IFileStoreFileProviderFactory {
+    IFileProvider GetFileProvider();
+}
+
+public class FileStoreFileProviderFactory : IFileStoreFileProviderFactory {
+    private readonly IWebHostEnvironment _hostingEnvironment;
+    private readonly FileStoreOptions _fileStoreOptions;
+
+    public FileStoreFileProviderFactory(IWebHostEnvironment hostingEnvironment, IOptions<FileStoreOptions> fileStoreOptions) {
+        this._hostingEnvironment = hostingEnvironment;
+        this._fileStoreOptions = fileStoreOptions.Value;
     }
 
-    public class FileStoreFileProviderFactory : IFileStoreFileProviderFactory {
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly FileStoreOptions _fileStoreOptions;
+    public IFileProvider GetFileProvider() {
+        string path = Path.Combine(this._hostingEnvironment.ContentRootPath, this._fileStoreOptions.StorageDirectory);
+        Debug.Assert(Path.IsPathRooted(path));
 
-        public FileStoreFileProviderFactory(IWebHostEnvironment hostingEnvironment, IOptions<FileStoreOptions> fileStoreOptions) {
-            this._hostingEnvironment = hostingEnvironment;
-            this._fileStoreOptions = fileStoreOptions.Value;
-        }
-
-        public IFileProvider GetFileProvider() {
-            string path = Path.Combine(this._hostingEnvironment.ContentRootPath, this._fileStoreOptions.StorageDirectory);
-            Debug.Assert(Path.IsPathRooted(path));
-
-            return new PhysicalFileProvider(path);
-        }
+        return new PhysicalFileProvider(path);
     }
 }

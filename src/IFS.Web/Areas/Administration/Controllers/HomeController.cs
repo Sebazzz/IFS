@@ -5,17 +5,17 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Areas.Administration.Controllers {
-    using Core;
+using IFS.Web.Core;
 
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-    [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
-    [Area(nameof(Administration))]
-    public sealed class HomeController : Controller {
-        public IActionResult Index() {
-            return this.RedirectToAction("Index", "Files");
-        }
+namespace IFS.Web.Areas.Administration.Controllers;
+
+[Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
+[Area(nameof(Administration))]
+public sealed class HomeController : Controller {
+    public IActionResult Index() {
+        return this.RedirectToAction("Index", "Files");
     }
 }

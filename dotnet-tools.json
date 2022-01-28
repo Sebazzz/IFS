@@ -2,8 +2,12 @@
     "isRoot": true,
     "tools": {
         "dotnet-format": {
-            "version": "3.1.37601",
+            "version": "5.1.250801",
             "commands": ["dotnet-format"]
+        },
+        "nbgv": {
+            "version": "3.4.255",
+            "commands": ["nbgv"]
         }
     }
 }

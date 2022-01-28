@@ -5,38 +5,38 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Upload {
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
-    using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders;
 
-    using Models;
+using IFS.Web.Models;
 
-    public interface IFileStore {
-        IFileInfo GetDataFile(FileIdentifier id);
-        IFileInfo GetMetadataFile(FileIdentifier id);
-        IEnumerable<IFileInfo> GetFiles();
+namespace IFS.Web.Core.Upload;
+
+public interface IFileStore {
+    IFileInfo GetDataFile(FileIdentifier id);
+    IFileInfo GetMetadataFile(FileIdentifier id);
+    IEnumerable<IFileInfo> GetFiles();
+}
+
+public sealed class FileStore : IFileStore {
+    private readonly IFileProvider _fileProvider;
+
+    public FileStore(IFileStoreFileProviderFactory fileProviderFactory) {
+        this._fileProvider = fileProviderFactory.GetFileProvider();
     }
 
-    public sealed class FileStore : IFileStore {
-        private readonly IFileProvider _fileProvider;
+    public IFileInfo GetDataFile(FileIdentifier id) => this.GetFile($"{id}.dat");
 
-        public FileStore(IFileStoreFileProviderFactory fileProviderFactory) {
-            this._fileProvider = fileProviderFactory.GetFileProvider();
-        }
+    private IFileInfo GetFile(string name) {
+        IFileInfo fileInfo = this._fileProvider.GetFileInfo(name);
 
-        public IFileInfo GetDataFile(FileIdentifier id) => this.GetFile($"{id}.dat");
+        return fileInfo;
+    }
 
-        private IFileInfo GetFile(string name) {
-            IFileInfo fileInfo = this._fileProvider.GetFileInfo(name);
+    public IFileInfo GetMetadataFile(FileIdentifier id) => this.GetFile($"{id}.metadata");
 
-            return fileInfo;
-        }
-
-        public IFileInfo GetMetadataFile(FileIdentifier id) => this.GetFile($"{id}.metadata");
-
-        public IEnumerable<IFileInfo> GetFiles() {
-            return this._fileProvider.GetDirectoryContents("");
-        }
+    public IEnumerable<IFileInfo> GetFiles() {
+        return this._fileProvider.GetDirectoryContents("");
     }
 }

@@ -5,31 +5,31 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Authentication {
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.Extensions.Configuration;
-    using OpenIdConnect;
-    using Static;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
+using IFS.Web.Core.Authentication.OpenIdConnect;
+using IFS.Web.Core.Authentication.Static;
 
-    internal static class AuthenticationBuilderExtensions {
-        public static AuthenticationBuilder AddFromSettings(this AuthenticationBuilder authBuilder, IConfiguration configuration) {
-            AuthenticationOptions authOptions = configuration.GetSection("Authentication").Get<AuthenticationOptions>();
+namespace IFS.Web.Core.Authentication;
 
-            if (authOptions.OpenIdConnect?.Enable == true) {
-                authBuilder.AddOpenIdConnectFromSettings(
-                                KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, 
-                                KnownAuthenticationScheme.PassphraseScheme,
-                                "upload",
-                                configuration)
-                           .AddOpenIdConnectFromSettings(
-                               KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, 
-                               KnownAuthenticationScheme.AdministrationScheme, 
-                               "admin",
-                               configuration);
-            }
+internal static class AuthenticationBuilderExtensions {
+    public static AuthenticationBuilder AddFromSettings(this AuthenticationBuilder authBuilder, IConfiguration configuration) {
+        AuthenticationOptions authOptions = configuration.GetSection("Authentication").Get<AuthenticationOptions>();
 
-            return authBuilder.AddCookie(KnownAuthenticationScheme.PassphraseScheme, "/authenticate/login")
-                              .AddCookie(KnownAuthenticationScheme.AdministrationScheme, "/administration/authenticate/login");
+        if (authOptions.OpenIdConnect?.Enable == true) {
+            authBuilder.AddOpenIdConnectFromSettings(
+                    KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, 
+                    KnownAuthenticationScheme.PassphraseScheme,
+                    "upload",
+                    configuration)
+                .AddOpenIdConnectFromSettings(
+                    KnownAuthenticationScheme.OpenIdConnect.AdministrationScheme, 
+                    KnownAuthenticationScheme.AdministrationScheme, 
+                    "admin",
+                    configuration);
         }
+
+        return authBuilder.AddCookie(KnownAuthenticationScheme.PassphraseScheme, "/authenticate/login")
+            .AddCookie(KnownAuthenticationScheme.AdministrationScheme, "/administration/authenticate/login");
     }
 }

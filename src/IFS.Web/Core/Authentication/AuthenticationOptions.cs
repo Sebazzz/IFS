@@ -4,17 +4,16 @@
 //  File:           : AuthenticationOptions.cs
 //  Project         : IFS.Web
 // ******************************************************************************
-namespace IFS.Web.Core.Authentication {
-    using OpenIdConnect;
-    using Static;
+using IFS.Web.Core.Authentication.OpenIdConnect;
+using IFS.Web.Core.Authentication.Static;
 
-    #nullable disable
-    public sealed class AuthenticationOptions {
-        public StaticAuthenticationOptions Static { get; set; }
+namespace IFS.Web.Core.Authentication;
+#nullable disable
+public sealed class AuthenticationOptions {
+    public StaticAuthenticationOptions Static { get; set; }
 
-        public OpenIdConnectSettings OpenIdConnect { get; set; }
+    public OpenIdConnectSettings OpenIdConnect { get; set; }
 
-    #nullable enable
-        public string? LoginHelpText { get; set; }
-    }
+#nullable enable
+    public string? LoginHelpText { get; set; }
 }

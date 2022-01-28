@@ -5,14 +5,14 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Core.Download {
-    using System.IO;
-    using Upload;
+using System.IO;
+using IFS.Web.Core.Upload;
 
-    internal static class DownloadStreamFactory {
-        public static Stream GetDownloadStream(UploadedFile file, string? password)
-        {
-            return password == null ? file.GetStream() : CryptoStreamWrapper.Create(file, password);
-        }
+namespace IFS.Web.Core.Download;
+
+internal static class DownloadStreamFactory {
+    public static Stream GetDownloadStream(UploadedFile file, string? password)
+    {
+        return password == null ? file.GetStream() : CryptoStreamWrapper.Create(file, password);
     }
 }

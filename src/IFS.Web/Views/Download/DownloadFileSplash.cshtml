@@ -3,11 +3,11 @@
 @using Microsoft.AspNetCore.Http.Extensions
 @model IFS.Web.Core.Upload.UploadedFile
 @{
-    ViewBag.Title = $"Download started: {Model.Metadata.OriginalFileName}";
+    ViewBag.Title = $"Download started: {Model!.Metadata.OriginalFileName}";
 }
 
 @{
-    string downloadLink = this.Url.RouteUrl("DownloadFileRaw", new { id = Model.Id }, this.Context.Request.Scheme);
+    string downloadLink = this.Url.RouteUrl("DownloadFileRaw", new { id = Model.Id }, this.Context.Request.Scheme)!;
     var size = Model.Size.Bytes();
 
     string directDownloadUrl = Model.IsPasswordProtected ? this.Context.Request.GetDisplayUrl() : downloadLink;

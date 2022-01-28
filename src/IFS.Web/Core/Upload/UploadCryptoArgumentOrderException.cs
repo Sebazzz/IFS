@@ -4,12 +4,12 @@
 //  File:           : UploadCryptoArgumentOrderException.cs
 //  Project         : IFS.Web
 // ******************************************************************************
-namespace IFS.Web.Core.Upload {
-    using System;
+using System;
 
-    public class UploadCryptoArgumentOrderException : UploadCryptoException {
-        public UploadCryptoArgumentOrderException() {}
-        public UploadCryptoArgumentOrderException(string message) : base(message) {}
-        public UploadCryptoArgumentOrderException(string message, Exception innerException) : base(message, innerException) {}
-    }
+namespace IFS.Web.Core.Upload;
+
+public class UploadCryptoArgumentOrderException : UploadCryptoException {
+    public UploadCryptoArgumentOrderException() {}
+    public UploadCryptoArgumentOrderException(string message) : base(message) {}
+    public UploadCryptoArgumentOrderException(string message, Exception innerException) : base(message, innerException) {}
 }

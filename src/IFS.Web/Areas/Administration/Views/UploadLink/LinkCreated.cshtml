@@ -8,14 +8,14 @@
 <ifs-page-title>@ViewBag.Title</ifs-page-title>
 
 <p>
-    Your upload link has been created and is valid until @Model.Expiration.ToString("f"). You can share the upload
+    Your upload link has been created and is valid until @Model!.Expiration.ToString("f"). You can share the upload
     link with another party which can use it to upload one file.
 </p>
 
 
 @{
-    string uploadLink = this.Url.RouteUrl("UploadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme);
-    string downloadLink = this.Url.RouteUrl("DownloadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme);
+    string uploadLink = this.Url.RouteUrl("UploadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme)!;
+    string downloadLink = this.Url.RouteUrl("DownloadFile", new { id = Model.FileIdentifier }, this.Context.Request.Scheme)!;
 }
 
 <p>

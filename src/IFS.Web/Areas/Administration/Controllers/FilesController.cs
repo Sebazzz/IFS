@@ -5,53 +5,53 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Areas.Administration.Controllers {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-    using Core;
-    using Core.Upload;
+using IFS.Web.Core;
+using IFS.Web.Core.Upload;
 
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-    using Models;
+using IFS.Web.Areas.Administration.Models;
 
-    using Web.Models;
+using IFS.Web.Models;
 
-    [Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
-    [Area(nameof(Administration))]
-    public sealed class FilesController : Controller {
-        private readonly IUploadedFileRepository _uploadedFileRepository;
+namespace IFS.Web.Areas.Administration.Controllers;
 
-        public FilesController(IUploadedFileRepository uploadedFileRepository) {
-            this._uploadedFileRepository = uploadedFileRepository;
+[Authorize(KnownPolicies.Administration, AuthenticationSchemes = KnownAuthenticationScheme.AdministrationScheme)]
+[Area(nameof(Administration))]
+public sealed class FilesController : Controller {
+    private readonly IUploadedFileRepository _uploadedFileRepository;
+
+    public FilesController(IUploadedFileRepository uploadedFileRepository) {
+        this._uploadedFileRepository = uploadedFileRepository;
+    }
+
+    // GET: /<controller>/
+    public async Task<IActionResult> Index() {
+        IList<UploadedFile> allFiles = await this._uploadedFileRepository.GetFiles();
+
+        FilesOverviewModel model = new FilesOverviewModel(allFiles);
+        return this.View(model);
+    }
+
+    public async Task<IActionResult> Log(FileIdentifier id) {
+        UploadedFile? file = await this._uploadedFileRepository.GetFile(id);
+
+        if (file == null) {
+            return this.NotFound();
         }
 
-        // GET: /<controller>/
-        public async Task<IActionResult> Index() {
-            IList<UploadedFile> allFiles = await this._uploadedFileRepository.GetFiles();
+        return this.View(file);
+    }
 
-            FilesOverviewModel model = new FilesOverviewModel(allFiles);
-            return this.View(model);
-        }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Delete(FileIdentifier id) {
+        this._uploadedFileRepository.Delete(id);
 
-        public async Task<IActionResult> Log(FileIdentifier id) {
-            UploadedFile? file = await this._uploadedFileRepository.GetFile(id);
-
-            if (file == null) {
-                return this.NotFound();
-            }
-
-            return this.View(file);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(FileIdentifier id) {
-            this._uploadedFileRepository.Delete(id);
-
-            return this.RedirectToAction("Index");
-        }
+        return this.RedirectToAction("Index");
     }
 }

@@ -5,59 +5,59 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
-namespace IFS.Tests.Core.Upload {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-    using Hangfire;
+using Hangfire;
 
-    using NSubstitute;
+using NSubstitute;
 
-    using NUnit.Framework;
-    using NUnit.Framework.Constraints;
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
-    using Support;
+using IFS.Tests.Support;
 
-    using Web.Core.Upload;
-    using Web.Models;
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
 
-    [TestFixture]
-    public sealed class ExpiredFileRemovalJobTests {
-        [Test]
-        [Ignore("Possible bug in NSubstitute")]
-        public async Task ExpiredFileRemovalJob_RemovesObsoleteFiles() {
-            // Given
-            List<UploadedFile> files = new List<UploadedFile>();
+namespace IFS.Tests.Core.Upload;
 
-            var job = GetTestObject(files);
+[TestFixture]
+public sealed class ExpiredFileRemovalJobTests {
+    [Test]
+    [Ignore("Possible bug in NSubstitute")]
+    public async Task ExpiredFileRemovalJob_RemovesObsoleteFiles() {
+        // Given
+        List<UploadedFile> files = new List<UploadedFile>();
 
-            files.Add(new UploadedFile(FileIdentifier.FromString("a"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(1)}));
-            files.Add(new UploadedFile(FileIdentifier.FromString("b"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(-1) }));
-            files.Add(new UploadedFile(FileIdentifier.FromString("c"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddMilliseconds(-1) }));
+        var job = GetTestObject(files);
 
-            // When
-            await job.Execute(new JobCancellationToken(false));
+        files.Add(new UploadedFile(FileIdentifier.FromString("a"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(1)}));
+        files.Add(new UploadedFile(FileIdentifier.FromString("b"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(-1) }));
+        files.Add(new UploadedFile(FileIdentifier.FromString("c"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddMilliseconds(-1) }));
 
-            // Then
-            Assert.That(files, ContainsFileIdentifier(FileIdentifier.FromString("a")));
-            Assert.That(files, Has.Count.EqualTo(1));
-        }
+        // When
+        await job.Execute(new JobCancellationToken(false));
 
-        private static ExpiredFileRemovalJob GetTestObject(List<UploadedFile> files) {
-            IUploadedFileRepository repository = Substitute.For<IUploadedFileRepository>();
+        // Then
+        Assert.That(files, ContainsFileIdentifier(FileIdentifier.FromString("a")));
+        Assert.That(files, Has.Count.EqualTo(1));
+    }
 
-            repository.GetFiles().Returns(Task.FromResult<IList<UploadedFile>>(files.ToList()));
-            repository.When(r => r.Delete(Arg.Any<FileIdentifier>()))
-                .Do(c => files.RemoveAll(f => c.Arg<FileIdentifier>().Equals(f.Id)));
+    private static ExpiredFileRemovalJob GetTestObject(List<UploadedFile> files) {
+        IUploadedFileRepository repository = Substitute.For<IUploadedFileRepository>();
 
-            return new ExpiredFileRemovalJob(repository, FakeLogger.Get<ExpiredFileRemovalJob>());
-        }
+        repository.GetFiles().Returns(Task.FromResult<IList<UploadedFile>>(files.ToList()));
+        repository.When(r => r.Delete(Arg.Any<FileIdentifier>()))
+            .Do(c => files.RemoveAll(f => c.Arg<FileIdentifier>().Equals(f.Id)));
+
+        return new ExpiredFileRemovalJob(repository, FakeLogger.Get<ExpiredFileRemovalJob>());
+    }
 
 
-        private static IConstraint ContainsFileIdentifier(FileIdentifier id) {
-            return new SomeItemsConstraint(Has.Property("Id").EqualTo(id));
-        }
+    private static IConstraint ContainsFileIdentifier(FileIdentifier id) {
+        return new SomeItemsConstraint(Has.Property("Id").EqualTo(id));
     }
 }

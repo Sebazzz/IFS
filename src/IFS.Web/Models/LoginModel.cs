@@ -5,15 +5,15 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-namespace IFS.Web.Models {
-    using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-    public sealed class LoginModel {
-        public string? ReturnUrl { get; set; }
+namespace IFS.Web.Models;
 
-        [DataType(DataType.Password)]
-        public string? Passphrase { get; set; }
+public sealed class LoginModel {
+    public string? ReturnUrl { get; set; }
 
-        public string? HelpText { get; set; }
-    }
+    [DataType(DataType.Password)]
+    public string? Passphrase { get; set; }
+
+    public string? HelpText { get; set; }
 }

@@ -8,16 +8,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace IFS.Web.Framework.Routing
+namespace IFS.Web.Framework.Routing;
+
+public static class EndpointRoutingExtensions
 {
-    public static class EndpointRoutingExtensions
+    public static IEndpointConventionBuilder WithName(this IEndpointConventionBuilder endpointBuilder,string endpointName)
     {
-        public static IEndpointConventionBuilder WithName(this IEndpointConventionBuilder endpointBuilder,string endpointName)
-        {
-            return endpointBuilder.WithMetadata(
-                        new EndpointNameMetadata(endpointName),
-                        new RouteNameMetadata(endpointName)
-                   );
-        }
+        return endpointBuilder.WithMetadata(
+            new EndpointNameMetadata(endpointName),
+            new RouteNameMetadata(endpointName)
+        );
     }
 }

@@ -5,59 +5,59 @@
 //  Project         : IFS.Tests
 // ******************************************************************************
 
-namespace IFS.Tests.Core.Upload {
-    using System;
+using System;
 
-    using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders;
 
-    using NSubstitute;
+using NSubstitute;
 
-    using NUnit.Framework;
+using NUnit.Framework;
 
-    using Support;
+using IFS.Tests.Support;
 
-    using Web.Core.Upload;
-    using Web.Models;
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
 
-    [TestFixture]
-    public sealed class FileStoreTests {
-        [Test]
-        public void FileStore_GetFiles_ReadsRootDirectory() {
-            // Given
-            IFileProvider fileProvider = Substitute.For<IFileProvider>();
-            IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
+namespace IFS.Tests.Core.Upload;
 
-            // When
-            store.GetFiles();
+[TestFixture]
+public sealed class FileStoreTests {
+    [Test]
+    public void FileStore_GetFiles_ReadsRootDirectory() {
+        // Given
+        IFileProvider fileProvider = Substitute.For<IFileProvider>();
+        IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
 
-            // Then
-            fileProvider.Received(1).GetDirectoryContents(String.Empty);
-        }
+        // When
+        store.GetFiles();
 
-        [Test]
-        public void FileStore_GetMetadataFile_ReadsCorrectFile() {
-            // Given
-            IFileProvider fileProvider = Substitute.For<IFileProvider>();
-            IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
+        // Then
+        fileProvider.Received(1).GetDirectoryContents(String.Empty);
+    }
 
-            // When
-            store.GetMetadataFile(FileIdentifier.FromString("aaaa"));
+    [Test]
+    public void FileStore_GetMetadataFile_ReadsCorrectFile() {
+        // Given
+        IFileProvider fileProvider = Substitute.For<IFileProvider>();
+        IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
 
-            // Then
-            fileProvider.Received(1).GetFileInfo("aaaa.metadata");
-        }
+        // When
+        store.GetMetadataFile(FileIdentifier.FromString("aaaa"));
 
-        [Test]
-        public void FileStore_GetDataFile_ReadsCorrectFile() {
-            // Given
-            IFileProvider fileProvider = Substitute.For<IFileProvider>();
-            IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
+        // Then
+        fileProvider.Received(1).GetFileInfo("aaaa.metadata");
+    }
 
-            // When
-            store.GetDataFile(FileIdentifier.FromString("aaaa"));
+    [Test]
+    public void FileStore_GetDataFile_ReadsCorrectFile() {
+        // Given
+        IFileProvider fileProvider = Substitute.For<IFileProvider>();
+        IFileStore store = new FileStore(new FakeFileStoreFileProviderFactory(fileProvider));
 
-            // Then
-            fileProvider.Received(1).GetFileInfo("aaaa.dat");
-        }
+        // When
+        store.GetDataFile(FileIdentifier.FromString("aaaa"));
+
+        // Then
+        fileProvider.Received(1).GetFileInfo("aaaa.dat");
     }
 }
