@@ -1,5 +1,5 @@
-#addin nuget:?package=Cake.Compression&version=0.2.4
-#addin nuget:?package=SharpZipLib&version=1.1.0
+#addin nuget:?package=Cake.Compression&version=0.2.6
+#addin nuget:?package=SharpZipLib&version=1.3.3
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -82,7 +82,7 @@ Task("Check-Yarn-Version")
 
 Task("Restore-NuGet-Packages")
     .Does(() => {
-    DotNetCoreRestore(new DotNetCoreRestoreSettings {
+    DotNetRestore(new DotNetRestoreSettings {
 		IgnoreFailedSources = true,
 		ForceEvaluate = true,
 		NoCache = true
@@ -121,26 +121,26 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .IsDependentOn("Restore-Node-Packages")
     .Does(() => {
-        DotNetCoreBuild($"./IFS.sln");
+        DotNetBuild($"./IFS.sln");
 });
 
 Task("Run")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreRun($"IFS.Web.csproj", null, new DotNetCoreRunSettings { WorkingDirectory = "./src/IFS.Web" });
+        DotNetRun($"IFS.Web.csproj", null, new DotNetRunSettings { WorkingDirectory = "./src/IFS.Web" });
 });
 
 Action<string,string> PublishSelfContained = (string platform, string folder) => {
 	Information("Publishing self-contained for platform {0}", platform);
 
-	var settings = new DotNetCorePublishSettings
+	var settings = new DotNetPublishSettings
 			 {
 				 Configuration = configuration,
 				 OutputDirectory = publishDir + Directory(folder ?? platform),
 				 Runtime = platform
 			 };
 	
-        DotNetCorePublish($"./src/IFS.Web/IFS.Web.csproj", settings);
+        DotNetPublish($"./src/IFS.Web/IFS.Web.csproj", settings);
 };
 
 Task("Run-Webpack")
@@ -186,7 +186,7 @@ Task("Publish")
 Task("Test")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreTest();
+        DotNetTest("./IFS.sln", new() { NoBuild = true });
 });
 
 

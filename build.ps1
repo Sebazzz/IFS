@@ -1,22 +1,26 @@
 $DotNetInstallerUri = 'https://dot.net/v1/dotnet-install.ps1';
 $DotNetUnixInstallerUri = 'https://dot.net/v1/dotnet-install.sh'
-$DotNetChannel = 'LTS'
-$PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
+$DotNetChannel = 'Current'
 
 [string] $CakeVersion = ''
-[string] $DotNetVersion= ''
-foreach($line in Get-Content "$PSScriptRoot\build.config")
-{
+[string] $DotNetVersion = ''
+foreach($line in Get-Content "$PSScriptRoot\build.config") {
   if ($line -like 'CAKE_VERSION=*') {
       $CakeVersion = $line.SubString(13)
-  }
-  elseif ($line -like 'DOTNET_VERSION=*') {
+  } elseif ($line -like 'DOTNET_VERSION=*') {
       $DotNetVersion =$line.SubString(15)
   }
 }
 
+if ($DotNetVersion -eq '') {
+  try {
+    $DotNetVersion =  $(Get-Content .\global.json -Raw | ConvertFrom-Json).sdk.version
+  } catch {
+    Write-Warning "Unable to get .NET SDK version from global.json"
+  }
+}
 
-if ([string]::IsNullOrEmpty($CakeVersion) -or [string]::IsNullOrEmpty($DotNetVersion)) {
+if ([String]::IsNullOrEmpty($CakeVersion) -or [String]::IsNullOrEmpty($DotNetVersion)) {
     'Failed to parse Cake / .NET Core SDK Version'
     exit 1
 }

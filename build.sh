@@ -17,6 +17,10 @@ TOOLS_DIR=$SCRIPT_DIR/tools
 CAKE_EXE=$TOOLS_DIR/dotnet-cake
 CAKE_PATH=$TOOLS_DIR/.store/cake.tool/$CAKE_VERSION
 
+if [ "$DOTNET_VERSION" = "" ]; then
+    DOTNET_VERSION=$(cat $SCRIPT_DIR/global.json | grep -o --perl-regex '(\d+\.)+(\d+)')
+fi
+
 if [ "$CAKE_VERSION" = "" ] || [ "$DOTNET_VERSION" = "" ]; then
     echo "An error occured while parsing Cake / .NET Core SDK version."
     exit 1
