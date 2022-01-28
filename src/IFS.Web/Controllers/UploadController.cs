@@ -101,7 +101,7 @@ public sealed class UploadController : Controller {
 
     [HttpPost]
     [Route("upload/frame/{fileIdentifier}", Name = "AfterUploadCompletionFrame")]
-    public IActionResult Frame(FileIdentifier id, UploadErrorsModel model) {
+    public IActionResult Frame(FileIdentifier fileIdentifier, UploadErrorsModel model) {
         if (model?.Errors != null) {
             foreach (string modelError in model.Errors) {
                 this.ModelState.AddModelError(modelError, modelError);
@@ -112,7 +112,7 @@ public sealed class UploadController : Controller {
             return this.View("FrameError", model);
         }
 
-        return this.View("FrameComplete", id);
+        return this.View("FrameComplete", fileIdentifier);
     }
 
     [HttpGet]
