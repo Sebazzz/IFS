@@ -101,9 +101,6 @@ public sealed class Startup
         services.AddSingleton<IFileStoreFileProviderFactory, FileStoreFileProviderFactory>();
 
         services.AddUploadHandler();
-
-        // TODO: Get rid of this service, see aspnet/AspNetCore/issues/14442
-        services.AddSingleton<IPolicyEvaluator, HttpContextPolicyEvaluator>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
