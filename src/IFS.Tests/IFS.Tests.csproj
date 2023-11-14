@@ -29,6 +29,8 @@
         <PackageReference Include="System.Net.NameResolution" Version="4.3.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0"/>
+
+        <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

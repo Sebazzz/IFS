@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace IFS.Web;
 
@@ -20,16 +21,14 @@ public sealed class Program
         var host = Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(wc => wc.UseStartup<Startup>().CaptureStartupErrors(true))
             .ConfigureAppConfiguration(x => x.AddJsonFile("appsettings.local.json", true))
-            .ConfigureLogging((wc, logging) =>
-            {
-                var env = wc.HostingEnvironment;
-                var config = wc.Configuration;
-
-                logging.AddConfiguration(config.GetSection("Logging"));
-                logging.AddConsole();
-
-                if (env.IsDevelopment()) logging.AddDebug();
-            })
+            .UseSerilog((context, svc, config) => 
+                config.ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(svc)
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("Application", "IFS")
+                    .WriteTo.Console()
+                    .WriteTo.Debug()
+            )
             .UseContentRoot(Directory.GetCurrentDirectory())
             .Build();
 
