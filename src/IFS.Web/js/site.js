@@ -5,7 +5,7 @@ import '../css/site.css';
 
 (function (app, storage) {
     app.contactInformationPersistence = {
-        initialize: function(nameFieldId, emailFieldId) {
+        initialize: function (nameFieldId, emailFieldId) {
             function initFromLocalStorage(key, id) {
                 if (!storage) {
                     return;
@@ -22,7 +22,7 @@ import '../css/site.css';
                     element.value = value;
                 }
 
-                element.addEventListener('change', function() {
+                element.addEventListener('change', function () {
                     value = element.value;
                     storage.setItem(key, value);
                 });
@@ -33,7 +33,7 @@ import '../css/site.css';
         }
     };
 
-    app.setTooltips = function(selector) {
+    app.setTooltips = function (selector) {
         $(selector).tooltip();
     };
 })(window.app = (window.app || {}), localStorage);

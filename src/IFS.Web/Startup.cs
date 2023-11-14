@@ -5,27 +5,24 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-using System.Diagnostics;
-using IFS.Web.Framework.Middleware.Fail2Ban;
-using IFS.Web.Framework.Services;
-using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.Extensions.Hosting;
 using System;
-
+using System.Diagnostics;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.MemoryStorage;
 using IFS.Web.Core;
 using IFS.Web.Core.Authentication;
 using IFS.Web.Core.Authorization;
 using IFS.Web.Core.Crypto;
 using IFS.Web.Core.Upload;
 using IFS.Web.Core.Upload.Http;
-using Hangfire;
-using Hangfire.Dashboard;
-using Hangfire.MemoryStorage;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+using IFS.Web.Framework.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace IFS.Web;
@@ -43,10 +40,7 @@ public sealed class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         // Add framework services.
-        services.AddRouting(routing =>
-        {
-            routing.LowercaseUrls = true;
-        });
+        services.AddRouting(routing => { routing.LowercaseUrls = true; });
 
         services.AddDataProtection();
 
@@ -153,11 +147,12 @@ public sealed class Startup
 
         // Hangfire
         app.UseHangfireDashboard(
-            pathMatch: "/administration/jobs",
-            options: new DashboardOptions
+            "/administration/jobs",
+            new DashboardOptions
             {
                 AppPath = "/administration/",
-                Authorization = new[] {
+                Authorization = new[]
+                {
                     new AdministratorDashboardFilter(app.ApplicationServices)
                 }
             });
@@ -165,7 +160,8 @@ public sealed class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapUploadHandler("upload/handler/{fileIdentifier}");
-            endpoints.MapAreaControllerRoute("areaRoute", "Administration", "administration/{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapAreaControllerRoute("areaRoute", "Administration",
+                "administration/{controller=Home}/{action=Index}/{id?}");
             endpoints.MapControllers();
             endpoints.MapDefaultControllerRoute();
         });
@@ -187,19 +183,14 @@ public sealed class Startup
 
         public bool Authorize(DashboardContext context)
         {
-            var auth = this._serviceProvider.GetRequiredService<IOptions<Core.Authentication.AuthenticationOptions>>().Value?.Static.Administration;
+            var auth = this._serviceProvider.GetRequiredService<IOptions<AuthenticationOptions>>().Value?.Static
+                .Administration;
 
-            if (auth == null)
-            {
-                return false;
-            }
+            if (auth == null) return false;
 
             var ctx = (context as AspNetCoreDashboardContext)?.HttpContext;
 
-            if (ctx == null)
-            {
-                return false;
-            }
+            if (ctx == null) return false;
 
             return ctx.User.Identity?.Name == auth.UserName;
         }

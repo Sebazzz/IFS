@@ -1,22 +1,26 @@
 ﻿// ******************************************************************************
 //  © 2016 Sebastiaan Dammann - damsteen.nl
 // 
-//  File:           : FaleFileStore.cs
+//  File:           : FakeFileStoreFileProviderFactory.cs
 //  Project         : IFS.Tests
 // ******************************************************************************
 
-using Microsoft.Extensions.FileProviders;
-
 using IFS.Web.Core.Upload;
+using Microsoft.Extensions.FileProviders;
 
 namespace IFS.Tests.Support;
 
-public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory {
+public sealed class FakeFileStoreFileProviderFactory : IFileStoreFileProviderFactory
+{
     private readonly IFileProvider _fileProvider;
 
-    public FakeFileStoreFileProviderFactory(IFileProvider fileProvider) {
+    public FakeFileStoreFileProviderFactory(IFileProvider fileProvider)
+    {
         this._fileProvider = fileProvider;
     }
 
-    public IFileProvider GetFileProvider() => this._fileProvider;
+    public IFileProvider GetFileProvider()
+    {
+        return this._fileProvider;
+    }
 }

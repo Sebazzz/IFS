@@ -6,25 +6,22 @@
 // ******************************************************************************
 
 using System.IO;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
-
-using NSubstitute;
-
-using NUnit.Framework;
-
 using IFS.Web.Core.Upload;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
+using NSubstitute;
+using NUnit.Framework;
 
 namespace IFS.Tests.Core.Upload;
 
 [TestFixture]
-public sealed class FileStoreFileProviderFactoryTests {
+public sealed class FileStoreFileProviderFactoryTests
+{
     [SetUp]
-    public void SetUp() {
-        string workerDir = TestContext.CurrentContext.WorkDirectory;
-        string testStoreDir = Path.Combine(workerDir, "TestStore");
+    public void SetUp()
+    {
+        var workerDir = TestContext.CurrentContext.WorkDirectory;
+        var testStoreDir = Path.Combine(workerDir, "TestStore");
 
         if (Directory.Exists(testStoreDir)) Directory.Delete(testStoreDir, true);
         Directory.CreateDirectory(testStoreDir);
@@ -33,26 +30,29 @@ public sealed class FileStoreFileProviderFactoryTests {
     }
 
     [TearDown]
-    public void TearDown() {
-        string workerDir = TestContext.CurrentContext.WorkDirectory;
-        string testStoreDir = Path.Combine(workerDir, "TestStore");
+    public void TearDown()
+    {
+        var workerDir = TestContext.CurrentContext.WorkDirectory;
+        var testStoreDir = Path.Combine(workerDir, "TestStore");
 
         if (Directory.Exists(testStoreDir)) Directory.Delete(testStoreDir, true);
     }
 
     [Test]
-    public void FileStoreFileProviderFactory_GetFileProvider_ReturnsPhysicalPathCombined() {
+    public void FileStoreFileProviderFactory_GetFileProvider_ReturnsPhysicalPathCombined()
+    {
         // Given
-        IWebHostEnvironment env = Substitute.For<IWebHostEnvironment>();
+        var env = Substitute.For<IWebHostEnvironment>();
         env.ContentRootPath.Returns(TestContext.CurrentContext.WorkDirectory);
 
-        IOptions<FileStoreOptions> options = new OptionsWrapper<FileStoreOptions>(new FileStoreOptions {
+        IOptions<FileStoreOptions> options = new OptionsWrapper<FileStoreOptions>(new FileStoreOptions
+        {
             StorageDirectory = "TestStore"
         });
 
         // When
         IFileStoreFileProviderFactory store = new FileStoreFileProviderFactory(env, options);
-        IFileProvider provider = store.GetFileProvider();
+        var provider = store.GetFileProvider();
 
         // Then
         Assert.That(provider.GetFileInfo("temp.txt").Exists, "provider.GetFileInfo('temp.txt').Exists");

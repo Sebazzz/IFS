@@ -1,4 +1,5 @@
 ﻿import * as $ from 'jquery';
+
 (function (global) {
     var $tracker = $('#uploadTracker'),
         $progress = $tracker.find('.progress .progress-bar'),
@@ -41,7 +42,7 @@
         }
 
         $.getJSON(global.scriptparams.uploadApi, {})
-            .done(function(data) {
+            .done(function (data) {
                 if (firstTime) {
                     $progress.stop();
 
@@ -52,11 +53,11 @@
 
                 global.setTimeout(triggerAjax, 250);
             })
-            .fail(function() {
+            .fail(function () {
                 if (firstTime) {
                     $textBlock.text('Waiting for progress information...');
 
-                    $progress.animate({ width: '0%' }, 100);
+                    $progress.animate({width: '0%'}, 100);
                 } else {
                     $textBlock.text('Error updating progress...');
                 }

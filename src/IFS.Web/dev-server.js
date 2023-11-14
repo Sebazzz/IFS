@@ -4,7 +4,7 @@ const
     express = require('express'),
     webpack = require('webpack');
 
-const Mutex = (function() {
+const Mutex = (function () {
     try {
         return require('windows-mutex');
     } catch (e) {
@@ -30,11 +30,11 @@ const Mutex = (function() {
         process.on('SIGINT', () => this.release());
     }
 
-    mutexConstructor.prototype.isActive = function() {
+    mutexConstructor.prototype.isActive = function () {
         return !!this.fakeMutex;
     };
 
-    mutexConstructor.prototype.release = function() {
+    mutexConstructor.prototype.release = function () {
         if (this.fakeMutex) {
             console.info('fakeMutex: releasing mutex %s', this.mutexPath);
 
@@ -82,16 +82,16 @@ const mutex = new Mutex.Mutex(mutexName);
 const app = express();
 
 //https://github.com/webpack/webpack-dev-server/issues/641#issuecomment-444055379
-(function() {
+(function () {
     const config = require(process.env.WEBPACK_CONFIG || './webpack.config');
 
     const compiler = webpack(config);
 
     app.use(require('webpack-dev-middleware')(compiler,
-            {
-                publicPath: config.output.publicPath,
-                writeToDisk: true
-            }));
+        {
+            publicPath: config.output.publicPath,
+            writeToDisk: true
+        }));
 })();
 
 function args_port() {

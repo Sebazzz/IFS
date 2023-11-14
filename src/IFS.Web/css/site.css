@@ -24,9 +24,9 @@ textarea {
 }
 
 @media screen and (min-width: 767px) {
-  #uploadTracker {
-      width: 50%;
-  }
+    #uploadTracker {
+        width: 50%;
+    }
 }
 
 .upload-control {
@@ -86,7 +86,7 @@ textarea {
 .alert.validation-summary-errors ul {
     margin-bottom: 0;
     list-style: none;
-    padding-left: 0; 
+    padding-left: 0;
 }
 
 /*

@@ -41,20 +41,20 @@
         var firstFile = (files || [])[0];
 
         if (firstFile && firstFile.size) {
-            $('input[name="'+uploadParameters.names.suggestedFileSize+'"]').val(firstFile.size);
+            $('input[name="' + uploadParameters.names.suggestedFileSize + '"]').val(firstFile.size);
         }
     });
 
-    (function() {
+    (function () {
         const pPasswordProtect = document.getElementById('pPasswordProtect'),
-              cbPasswordProtect = document.getElementById('cbPasswordProtect');
+            cbPasswordProtect = document.getElementById('cbPasswordProtect');
 
         let isFirstTimeShowingPanel = true;
 
         function setState() {
             const showPanel = cbPasswordProtect.checked,
-                  removeClazzName = showPanel ? 'hidden' : 'visible',
-                  addClazzName = showPanel ? 'visible' : 'hidden';
+                removeClazzName = showPanel ? 'hidden' : 'visible',
+                addClazzName = showPanel ? 'visible' : 'hidden';
 
             pPasswordProtect.classList.add(addClazzName);
             pPasswordProtect.classList.remove(removeClazzName);

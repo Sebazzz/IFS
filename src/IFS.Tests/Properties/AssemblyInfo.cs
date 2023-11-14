@@ -1,5 +1,11 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// ******************************************************************************
+//  © 2016 Sebastiaan Dammann - damsteen.nl
+// 
+//  File:           : AssemblyInfo.cs
+//  Project         : IFS.Tests
+// ******************************************************************************
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following

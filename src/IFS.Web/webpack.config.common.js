@@ -20,12 +20,12 @@ if (process.env.NODE_ENV) {
     module.exports.mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 }
 
-module.exports =  {
+module.exports = {
     devtool: 'inline-source-map',
     entry: {
         'site': ['./js/site.js'],
 
-         // pages
+        // pages
         'shared/error': './js/pages/shared/error.js',
         'upload/tracker': './js/pages/upload/tracker.js',
         'upload/index': './js/pages/upload/index.js'
@@ -37,12 +37,12 @@ module.exports =  {
     optimization: {
         splitChunks: {
             cacheGroups: {
-				'lib.js': {
-					test: /node_modules/,
-					chunks: 'initial',
-					name: 'lib',
-					enforce: true
-				}
+                'lib.js': {
+                    test: /node_modules/,
+                    chunks: 'initial',
+                    name: 'lib',
+                    enforce: true
+                }
             },
         },
     },
