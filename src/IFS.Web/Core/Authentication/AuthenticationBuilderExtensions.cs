@@ -16,7 +16,7 @@ internal static class AuthenticationBuilderExtensions {
     public static AuthenticationBuilder AddFromSettings(this AuthenticationBuilder authBuilder, IConfiguration configuration) {
         AuthenticationOptions authOptions = configuration.GetSection("Authentication").Get<AuthenticationOptions>();
 
-        if (authOptions.OpenIdConnect?.Enable == true) {
+        if (authOptions is { OpenIdConnect.Enable: true }) {
             authBuilder.AddOpenIdConnectFromSettings(
                     KnownAuthenticationScheme.OpenIdConnect.PassphraseScheme, 
                     KnownAuthenticationScheme.PassphraseScheme,

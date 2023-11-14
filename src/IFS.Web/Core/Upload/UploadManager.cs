@@ -107,7 +107,7 @@ public class UploadManager : IUploadManager {
 
             await this.StoreMetadataAsync(id, metadata, cancellationToken);
 
-            this._logger.LogInformation(LogEvents.NewUpload, "Completed: New upload of file {0} to id {1} [{2:s}]", metadata.OriginalFileName, id, DateTime.UtcNow);
+            this._logger.LogInformation(LogEvents.NewUpload, "Completed: New upload of file {FileName} to id {Identifier} [{Timestamp}]", metadata.OriginalFileName, id, DateTime.UtcNow);
         }
         catch (OperationCanceledException ex) {
             this._logger.LogWarning(LogEvents.UploadCancelled, ex, "Upload failed due to cancellation");
@@ -247,8 +247,10 @@ public class UploadManager : IUploadManager {
         string cleanName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
         string fileName = HeaderUtilities.RemoveQuotes(contentDisposition.FileName).Value;
 
+        if (fileName is null) throw new ArgumentException("Expected a filename in the payload");
+        
         if (cleanName == nameof(UploadModel.File)) {
-            this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {0} to id {1} [{2:s}]", fileName, uploadContext.Identifier, DateTime.UtcNow);
+            this._logger.LogInformation(LogEvents.NewUpload, "New upload of file {FileName} to id {Identifier} [{Timestamp:s}]", fileName, uploadContext.Identifier, DateTime.UtcNow);
 
             uploadContext.MetadataFactory.SetOriginalFileName(fileName);
 
@@ -256,7 +258,7 @@ public class UploadManager : IUploadManager {
 
             uploadContext.HasUploadedFile = true;
         } else {
-            this._logger.LogWarning(LogEvents.UploadIncomplete, "{0}: Unknown file '{1}' with file name '{2}'. Skipping.", uploadContext.Identifier, fileName, cleanName);
+            this._logger.LogWarning(LogEvents.UploadIncomplete, "{Identifier}: Unknown file '{FileName}' with file name '{CleanName}' - Skipping", uploadContext.Identifier, fileName, cleanName);
         }
     }
 
@@ -301,7 +303,7 @@ public class UploadManager : IUploadManager {
             StoredMetadata? originalStoredMetadata = await this._metadataReader.GetMetadataAsync(metadataFile);
 
             if (originalStoredMetadata == null) {
-                this._logger.LogWarning(LogEvents.UploadFailed, "{0}: Metadata file expected for reservation at {1}", id, metadataFile.PhysicalPath);
+                this._logger.LogWarning(LogEvents.UploadFailed, "{Identifier}: Metadata file expected for reservation at {PhysicalPath}", id, metadataFile.PhysicalPath);
 
                 throw new UploadFailedException("Missing metadata for reserved upload");
             }
@@ -329,12 +331,12 @@ public class UploadManager : IUploadManager {
     }
 
     private void TryCleanup(FileIdentifier id) {
-        using (this._logger.BeginScope("Clean-up: {0}", id)) {
+        using (this._logger.BeginScope("Clean-up: {Identifier}", id)) {
             try {
                 this._fileWriter.Delete(this._fileStore.GetDataFile(id));
                 this._fileWriter.Delete(this._fileStore.GetMetadataFile(id));
             } catch (Exception ex) {
-                this._logger.LogError(LogEvents.CleanupFailed, ex, "Unable to clean up file '{0}'", id);
+                this._logger.LogError(LogEvents.CleanupFailed, ex, "Unable to clean up file '{Identifier}'", id);
             }
         }
     }

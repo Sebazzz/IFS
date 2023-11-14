@@ -15,7 +15,7 @@ internal static class AuthorizationPolicyExtensions {
                     .AddRequirements(new RestrictedUploadRequirement())
                     .RequireAuthenticatedUser();
 
-                if (authOptions.OpenIdConnect?.Enable == true) {
+                if (authOptions is { OpenIdConnect.Enable: true }) {
                     // No extra requirements
                 } else {
                     b.RequireUserName(KnownPolicies.Upload);
@@ -33,7 +33,9 @@ internal static class AuthorizationPolicyExtensions {
                 b.AddAuthenticationSchemes(KnownAuthenticationScheme.AdministrationScheme)
                     .RequireAuthenticatedUser();
 
-                if (authOptions.OpenIdConnect?.Enable == true) {
+                if (authOptions is null) return;
+                
+                if (authOptions is { OpenIdConnect.Enable: true }) {
                     b.RequireRole(KnownRoles.Administrator);
                 } else {
                     b.RequireUserName(authOptions.Static.Administration.UserName);
