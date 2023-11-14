@@ -2,13 +2,13 @@
   <Import Project="../Common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>IFS.Web</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>IFS.Web</PackageId>
-    <RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 
     <LangVersion>latest</LangVersion>
     <Authors>Sebastiaan Dammann</Authors>
@@ -41,7 +41,7 @@
     <PackageReference Include="Humanizer.Core" Version="2.13.14" />
     <PackageReference Include="Markdig" Version="0.27.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.0" />
   </ItemGroup>
 </Project>
