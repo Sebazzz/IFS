@@ -1,10 +1,8 @@
-﻿import * as $ from 'jquery';
-
-(function (global) {
-    let $tracker = $('#uploadTracker'),
-        $progress = $tracker.find('.progress .progress-bar'),
-        $textBlock = $tracker.find('#uploadProgress'),
-        $performance = $tracker.find('#uploadPerformance'),
+﻿(function (global) {
+    let $tracker = document.getElementById('uploadTracker'),
+        $progress = $tracker.querySelector('.progress .progress-bar'),
+        $textBlock = $tracker.querySelector('#uploadProgress'),
+        $performance = $tracker.querySelector('#uploadPerformance'),
         firstTime = true;
 
     function updateProgress(incoming) {
@@ -13,8 +11,8 @@
         }
 
         if (incoming.total < 0) {
-            $textBlock.text('Uploading ...');
-            $performance.text('(unable to determine speed)');
+            $textBlock.textContent = 'Uploading ...';
+            $performance.textContent = '(unable to determine speed)';
             return;
         }
 
@@ -22,18 +20,15 @@
             currentKilobytes = Math.round(incoming.current / 1024),
             totalKilobytes = Math.round(incoming.total / 1024);
 
-        $progress
-            .css('width', percent + '%')
-            .find('.sr-only').text(percent + '%');
+        $progress.style.width = percent + '%';
+        $progress.querySelector('.sr-only').textContent = percent + '%';
 
-        $textBlock
-            .text('Uploading ' + currentKilobytes + '/' + totalKilobytes + ' KB (' + percent + '%)');
-
-        $performance.text(incoming.performance);
+        $textBlock.textContent = 'Uploading ' + currentKilobytes + '/' + totalKilobytes + ' KB (' + percent + '%)';
+        $performance.textContent = incoming.performance;
     }
 
     function isTrackerRemoved() {
-        return $tracker.closest('body').length === 0;
+        return !$tracker.closest('body');
     }
 
     function triggerAjax() {
@@ -41,27 +36,25 @@
             return;
         }
 
-        $.getJSON(global.uploadParameters.uploadApi, {})
-            .done(function (data) {
-                if (firstTime) {
-                    $progress.stop();
-
-                    firstTime = false;
+        fetch(global.uploadParameters.uploadApi)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-
-                updateProgress(data);
-
-                global.setTimeout(triggerAjax, 250);
+                return response.json();
             })
-            .fail(function () {
+            .then(data => {
+                updateProgress(data);
+                global.setTimeout(triggerAjax, 250);
+                firstTime = false;
+            })
+            .catch(_ => {
                 if (firstTime) {
-                    $textBlock.text('Waiting for progress information...');
-
-                    $progress.animate({width: '0%'}, 100);
+                    $textBlock.textContent = 'Waiting for progress information...';
+                    $progress.style.width = '0%';
                 } else {
-                    $textBlock.text('Error updating progress...');
+                    $textBlock.textContent = 'Error updating progress...';
                 }
-
                 global.setTimeout(triggerAjax, 1000);
             });
     }

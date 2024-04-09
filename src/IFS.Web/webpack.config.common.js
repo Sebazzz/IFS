@@ -5,9 +5,6 @@ const targetDir = path.resolve(__dirname, 'wwwroot/build');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const globals = new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-    'window.jQuery': 'jquery',
     Popper: ['popper.js', 'default']
 });
 
@@ -28,7 +25,6 @@ module.exports = {
 
         // pages
         'shared/error': './js/pages/shared/error.js',
-        'upload/tracker': './js/pages/upload/tracker.js',
         'upload/index': './js/pages/upload/index.js'
     },
     plugins: [

@@ -1,5 +1,4 @@
-﻿@using System.Text.Encodings.Web
-@model UploadFileInProgressModel
+﻿@model UploadFileInProgressModel
 
 <div id="uploadTracker">
     <h2>
@@ -22,13 +21,3 @@
     
     <span class="pull-right" id="uploadPerformance"></span>
 </div>
-
-@{
-    string uploadApi = this.Url.RouteUrl("UploadTrackerApi", new { fileIdentifier = Model.FileIdentifier.ToString() })!;
-}
-
-<script>
-    window.uploadParameters = window.uploadParameters || {};
-    window.uploadParameters.uploadApi = '@JavaScriptEncoder.Default.Encode(uploadApi)';
-</script>
-<script src="~/build/upload/tracker.js" asp-append-version="true"></script>

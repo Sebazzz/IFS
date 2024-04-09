@@ -1,48 +1,65 @@
-﻿import * as $ from 'jquery';
-
-(function (global) {
-    var uploadParameters = global.uploadParameters,
-        $uploadRoot = $('#upload-root'),
+﻿(function (global) {
+    let uploadParameters = global.uploadParameters,
+        uploadRoot = document.getElementById('upload-root'),
         errorIntervalTimerHandle = 0,
         trackerUrl = uploadParameters.trackerUrl;
 
-    $uploadRoot.find('form').submit(function () {
+    uploadRoot.querySelector('form').addEventListener('submit', function () {
         if (!this.checkValidity()) {
             return;
         }
 
-        $uploadRoot.load(trackerUrl);
-
         // If the iframe loads, and we weren't called back within a certain time,
         // we can assume there is some kind of server error.
-        $('#uploadFrame').on('load', function () {
+        const uploadFrame = document.getElementById('uploadFrame');
+        uploadFrame.addEventListener('load', function () {
             console.info('Upload frame has loaded...');
-
             errorIntervalTimerHandle = window.setTimeout(global.uploadCoordinator.assumeServerUploadError, 2000);
         });
+        
+        fetch(trackerUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Bad network response');
+                }
+
+                return response.text();
+            })
+            .then(async html => {
+                uploadRoot.innerHTML = html;
+                await import('./tracker.js');
+            })
+            .catch(error => alert(error));
     });
 
-    $(document).on('click', '.reload-button', function (ev) {
-        ev.preventDefault();
-
-        document.location.reload(true);
-    });
-
-    $('.upload-control input[type=file]').change(function () {
-        $(this).parent().next('[data-valmsg-for]')
-            .removeClass('text-danger')
-            .text('')
-            .addClass('text-success')
-            .addClass('fas')
-            .addClass('fa-check');
-
-        var fileInput = this;
-        var files = fileInput.files;
-        var firstFile = (files || [])[0];
-
-        if (firstFile && firstFile.size) {
-            $('input[name="' + uploadParameters.names.suggestedFileSize + '"]').val(firstFile.size);
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('reload-button')) {
+            event.preventDefault();
+            document.location.reload(true);
         }
+    });
+
+    document.querySelectorAll('.upload-control input[type=file]').forEach(function (input) {
+        input.addEventListener('change', function () {
+            let parent = input.parentElement;
+            let nextElementWithDataValmsg = parent.nextElementSibling;
+
+            if (nextElementWithDataValmsg) {
+                nextElementWithDataValmsg.classList.remove('text-danger');
+                nextElementWithDataValmsg.textContent = '';
+                nextElementWithDataValmsg.classList.add('text-success', 'fa-solid', 'fa-check');
+            }
+
+            let files = this.files;
+            let firstFile = files ? files[0] : undefined;
+
+            if (firstFile && firstFile.size) {
+                let suggestedFileSizeInput = document.querySelector('input[name="' + uploadParameters.names.suggestedFileSize + '"]');
+                if (suggestedFileSizeInput) {
+                    suggestedFileSizeInput.value = firstFile.size;
+                }
+            }
+        });
     });
 
     (function () {
@@ -81,12 +98,12 @@
         },
 
         assumeServerUploadError: function () {
-            $uploadRoot.html($('#upload-error').html());
+            uploadRoot.innerHTML = document.getElementById('upload-error').innerHTML;
         },
         complete: function (targetUrl) {
             clearTimeout(errorIntervalTimerHandle);
 
-            $uploadRoot.html($('#upload-done').html());
+            uploadRoot.innerHTML = document.getElementById('upload-done').innerHTML;
 
             document.location.href = targetUrl;
         }
