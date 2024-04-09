@@ -5,7 +5,7 @@
 
 <script>
     (function (doc) {
-        var targetUrl = '@Url.Action("Complete", new { id = Model })';
+        const targetUrl = '@Url.Action("Complete", new { id = Model })';
 
         doc.uploadCoordinator.complete(targetUrl);
     })(window.parent);

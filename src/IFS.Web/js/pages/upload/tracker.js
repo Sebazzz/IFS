@@ -1,7 +1,7 @@
 ﻿import * as $ from 'jquery';
 
 (function (global) {
-    var $tracker = $('#uploadTracker'),
+    let $tracker = $('#uploadTracker'),
         $progress = $tracker.find('.progress .progress-bar'),
         $textBlock = $tracker.find('#uploadProgress'),
         $performance = $tracker.find('#uploadPerformance'),
@@ -18,16 +18,16 @@
             return;
         }
 
-        var percent = incoming.percent,
-            currentkb = Math.round(incoming.current / 1024),
-            totalkb = Math.round(incoming.total / 1024);
+        const percent = incoming.percent,
+            currentKilobytes = Math.round(incoming.current / 1024),
+            totalKilobytes = Math.round(incoming.total / 1024);
 
         $progress
             .css('width', percent + '%')
             .find('.sr-only').text(percent + '%');
 
         $textBlock
-            .text('Uploading ' + currentkb + '/' + totalkb + ' KB (' + percent + '%)');
+            .text('Uploading ' + currentKilobytes + '/' + totalKilobytes + ' KB (' + percent + '%)');
 
         $performance.text(incoming.performance);
     }
@@ -41,7 +41,7 @@
             return;
         }
 
-        $.getJSON(global.scriptparams.uploadApi, {})
+        $.getJSON(global.uploadParameters.uploadApi, {})
             .done(function (data) {
                 if (firstTime) {
                     $progress.stop();

@@ -1,6 +1,5 @@
 ﻿@using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Mvc.ModelBinding
-
 @{
     Layout = "_Frame";
 
@@ -17,7 +16,7 @@
 
 <script>
     (function (doc) {
-        var coordinator = doc.uploadCoordinator,
+        const coordinator = doc.uploadCoordinator,
             validationError = '@JavaScriptEncoder.Default.Encode(validationError)';
 
         coordinator.validationError(validationError);
