@@ -14,10 +14,9 @@
 <form method="post">
     <input asp-for="FileIdentifier" type="hidden" />
 
-    <div class="mb-3">
-        <label asp-for="Expiration"></label>
-
+    <div class="form-floating mb-3">
         <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-select"></select>
+        <label asp-for="Expiration"></label>
     </div>
     <hr />
 

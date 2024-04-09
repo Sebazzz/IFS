@@ -11,10 +11,9 @@
         </div>
     </div>
 
-    <div id="pPasswordProtect" class="mb-3">
+    <div id="pPasswordProtect" class="form-floating mb-3">
+        <input asp-for="Password" placeholder-for="Password" class="form-control"/>
         <label asp-for="Password">Download password</label>
-
-        <input asp-for="Password" class="form-control" />
     </div>
 </div>
 
@@ -23,10 +22,9 @@
 }
 
 <div class="ordered-form__part">
-    <div class="mb-3">
-        <label asp-for="Expiration"></label>
-
+    <div class="form-floating mb-3">
         <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-select"></select>
+        <label asp-for="Expiration"></label>
     </div>
     <hr />
 </div>

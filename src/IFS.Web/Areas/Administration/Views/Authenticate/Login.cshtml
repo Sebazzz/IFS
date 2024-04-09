@@ -17,12 +17,14 @@
 <form asp-action="Login" asp-antiforgery="true">
     <input type="hidden" asp-for="ReturnUrl"/>
 
-    <div class="mb-3">
+    <div class="form-floating mb-3">
         <input asp-for="UserName" placeholder-for="UserName" class="form-control" />
+        <label asp-for="UserName"></label>
     </div>
 
-    <div class="mb-3">
-        <input asp-for="Password" placeholder-for="Password" class="form-control" />
+    <div class="form-floating mb-3">
+        <input asp-for="Password" placeholder-for="UserName" class="form-control"/>
+        <label asp-for="Password"></label>
     </div>
 
     <div class="mb-3">

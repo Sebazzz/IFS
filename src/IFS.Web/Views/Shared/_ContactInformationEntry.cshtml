@@ -2,15 +2,13 @@
 
 <h4>Sender</h4>
 
-<div class="mb-3">
+<div class="form-floating mb-3">
+    <input asp-for="Sender!.Name" placeholder-for="Sender!.EmailAddress" class="form-control" is-readonly="@Model!.IsSenderInformationPrefilled"/>
     <label asp-for="Sender!.Name">Your name</label>
-    
-    <input asp-for="Sender!.Name" class="form-control" is-readonly="@Model!.IsSenderInformationPrefilled" />
 </div>
 
-<div class="mb-3">
+<div class="form-floating mb-3">
+    <input asp-for="Sender!.EmailAddress" placeholder-for="Sender!.EmailAddress" class="form-control" is-readonly="@Model.IsSenderInformationPrefilled"/>
     <label asp-for="Sender!.EmailAddress">Your e-mail address</label>
-
-    <input asp-for="Sender!.EmailAddress" class="form-control" is-readonly="@Model.IsSenderInformationPrefilled" />
 </div>
 

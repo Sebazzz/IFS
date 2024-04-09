@@ -17,8 +17,9 @@
 <form asp-action="Login" asp-antiforgery="true">
     <input type="hidden" asp-for="ReturnUrl"/>
 
-    <div class="mb-3">
+    <div class="form-floating mb-3">
         <input asp-for="Passphrase" placeholder-for="Passphrase" class="form-control" />
+        <label asp-for="Passphrase"></label>
     </div>
 
     <div class="mb-3">
