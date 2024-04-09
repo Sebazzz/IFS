@@ -24,6 +24,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: {
         'site': ['./js/site.js'],
+        'theme': ['./js/theme.js'],
 
         // pages
         'shared/error': './js/pages/shared/error.js',

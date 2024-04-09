@@ -1,10 +1,11 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Internet File Store</title>
 
+    <script src="~/build/theme.js" asp-append-version="true"></script>
     <link href="~/build/lib.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/build/site.css" rel="stylesheet" asp-append-version="true" />
 </head>
@@ -16,6 +17,6 @@
     <script src="~/build/lib.js" asp-append-version="true"></script>
     <script src="~/build/site.js" asp-append-version="true"></script>
 
-    @RenderSection("scripts", required: false)
+@await RenderSectionAsync("scripts", false)
 </body>
 </html>

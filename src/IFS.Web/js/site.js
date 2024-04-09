@@ -11,7 +11,7 @@ import '../css/site.css';
                     return;
                 }
 
-                var value = storage.getItem(key),
+                let value = storage.getItem(key),
                     element = document.getElementById(id);
 
                 if (!element) {
