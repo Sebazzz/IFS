@@ -1,8 +1,9 @@
 ﻿@using System.Text.Encodings.Web
-@using System.Threading.Tasks
 @using Humanizer
+@using IFS.Web.Core.Upload
+@using Microsoft.Extensions.Options
 @model UploadModel
-@inject Microsoft.Extensions.Options.IOptions<IFS.Web.Core.Upload.FileStoreOptions> FileStoreOptions
+@inject IOptions<FileStoreOptions> FileStoreOptions
 
 @{
     ViewBag.Title = "Upload selector";
@@ -57,7 +58,7 @@
         <div class="form-group">
             <p>
                 <button class="btn btn-primary">
-                    <span class="fas fa-upload"></span> Upload
+                    <span class="fa-solid fa-upload"></span> Upload
                 </button>
             </p>
         </div>

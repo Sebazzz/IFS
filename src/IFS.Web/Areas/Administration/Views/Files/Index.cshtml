@@ -34,10 +34,10 @@
             <tr>
                 <td>
                     @if (!file.Metadata.IsReservation) {
-                        <span class="fas fa-file tip" title="This is an uploaded file via password authentication"></span>
+                        <span class="fa-solid fa-file tip" title="This is an uploaded file via password authentication"></span>
                     } else {
                         <span class="con-file-reservation tip" title="This is an uploaded file via an invitation">
-                            <span class="fas fa-file"></span>
+                            <span class="fa-solid fa-file"></span>
                             <span class="fa fa-clock"></span>
                         </span>
                     }
@@ -76,14 +76,16 @@
                 <td>
                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
                         <button class="btn btn-sm btn-danger">
-                            <span class="fas fa-trash"></span>
+                            <span class="fa-solid fa-trash"></span>
                         </button>
                     </form>
                 </td>
             </tr>
          } else {
             <tr>
-                <td><span class="fas fa-clock tip" title="This is an unused upload invitation link"></span></td>
+                <td>
+                    <span class="fa-solid fa-clock tip" title="This is an unused upload invitation link"></span>
+                </td>
                 <td><code>@file.Id</code></td>
                 <td>
                     (no file uploaded yet)
@@ -118,7 +120,7 @@
                 <td>
                     <form asp-action="Delete" asp-route-id="@file.Id" asp-antiforgery="true">
                         <button class="btn btn-sm btn-danger">
-                            <span class="fas fa-trash"></span>
+                            <span class="fa-solid fa-trash"></span>
                         </button>
                     </form>
                 </td>
@@ -138,7 +140,7 @@
 
 <div>
     <a class="btn btn-default" asp-controller="UploadLink" asp-action="Index" asp-area="Administration">
-        <span class="fas fa-link"></span>
+        <span class="fa-solid fa-link"></span>
         Create upload link
     </a>
 

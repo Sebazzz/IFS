@@ -1,8 +1,7 @@
 ﻿@charset "UTF-8";
 @import "~bootstrap/dist/css/bootstrap.css";
-@import "~@fortawesome/fontawesome-free-webfonts/css/fontawesome.css";
-@import "~@fortawesome/fontawesome-free-webfonts/css/fa-regular.css";
-@import "~@fortawesome/fontawesome-free-webfonts/css/fa-solid.css";
+@import "~@fortawesome/fontawesome-free/css/fontawesome.css";
+@import "~@fortawesome/fontawesome-free/css/solid.css";
 
 body {
     padding-top: 50px;
@@ -70,7 +69,7 @@ textarea {
     color: white;
 }
 
-.fas.tip, .icon-file-reservation {
+.fa-solid.tip, .icon-file-reservation {
     cursor: default;
     user-select: none;
 }
