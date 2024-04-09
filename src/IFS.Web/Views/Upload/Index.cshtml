@@ -18,7 +18,7 @@
         </p>
     } else {
         <p>
-            Please upload the file you want to share here. After the upload your will receive a hyperlink your can share.
+            Please upload the file you want to share here. After the upload your will receive a hyperlink you can share.
         </p>
 
         if (Model.Sender != null) {
@@ -26,7 +26,7 @@
              bool nameOnly = !String.IsNullOrEmpty(Model.Sender.EmailAddress);
 
              <p>
-                 This file upload has been request by
+                 This file upload has been requested by
                  @if (nameOnly) {
                      @name
                  } else {
