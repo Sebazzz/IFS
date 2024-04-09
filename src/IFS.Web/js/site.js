@@ -1,4 +1,4 @@
-﻿import 'bootstrap';
+﻿import * as bootstrap from 'bootstrap';
 import 'jquery-validation';
 import 'jquery-validation-unobtrusive';
 import '../css/site.css';
@@ -34,6 +34,11 @@ import '../css/site.css';
     };
 
     app.setTooltips = function (selector) {
-        $(selector).tooltip();
+        const elements = document.querySelectorAll(selector);
+
+        for (const element of elements) {
+            const tooltip = new bootstrap.Tooltip(element, {});
+            console.debug('Initialized tooltip %s', tooltip.tip);
+        }
     };
 })(window.app = (window.app || {}), localStorage);
