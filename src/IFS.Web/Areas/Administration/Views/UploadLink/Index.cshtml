@@ -14,10 +14,10 @@
 <form method="post">
     <input asp-for="FileIdentifier" type="hidden" />
 
-    <div class="form-group">
+    <div class="mb-3">
         <label asp-for="Expiration"></label>
 
-        <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-control"></select>
+        <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-select"></select>
     </div>
     <hr />
 

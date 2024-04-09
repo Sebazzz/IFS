@@ -4,14 +4,14 @@
     <hr />
 
     <h4>Protect this download</h4>
-    <div class="form-group">
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="cbPasswordProtect" value="True" asp-for="EnablePasswordProtection">
-            <label class="custom-control-label" for="cbPasswordProtect">Password-protect this download</label>
+    <div class="mb-3">
+        <div class="form-check form-switch">
+            <input type="checkbox" id="cbPasswordProtect" class="form-check-input" value="True" asp-for="EnablePasswordProtection">
+            <label class="form-check-label" for="cbPasswordProtect">Password-protect this download</label>
         </div>
     </div>
 
-    <div id="pPasswordProtect" class="form-group">
+    <div id="pPasswordProtect" class="mb-3">
         <label asp-for="Password">Download password</label>
 
         <input asp-for="Password" class="form-control" />
@@ -23,10 +23,10 @@
 }
 
 <div class="ordered-form__part">
-    <div class="form-group">
+    <div class="mb-3">
         <label asp-for="Expiration"></label>
 
-        <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-control"></select>
+        <select asp-for="Expiration" asp-items="Model!.AvailableExpiration" class="form-select"></select>
     </div>
     <hr />
 </div>
