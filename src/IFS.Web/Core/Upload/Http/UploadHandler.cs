@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-
 using Humanizer;
+using IFS.Web.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
-
-using IFS.Web.Models;
 
 namespace IFS.Web.Core.Upload.Http;
 
@@ -51,6 +50,9 @@ public sealed class UploadHandler {
 
         MultipartReader reader = new MultipartReader(boundary, context.Request.Body);
         reader.BodyLengthLimit = (long?) this._fileStoreOptions.Value?.MaximumFileSize.Megabytes().Bytes;
+
+        var requestBodySizeFeature = context.Features.GetRequiredFeature<IHttpMaxRequestBodySizeFeature>();
+        requestBodySizeFeature.MaxRequestBodySize = reader.BodyLengthLimit;
 
         // Delegate actual request parsing
         // ... after the request "completes" we re-execute to send the final response to the browser
