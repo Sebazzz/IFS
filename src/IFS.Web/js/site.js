@@ -1,6 +1,4 @@
 ﻿import * as bootstrap from 'bootstrap';
-import 'jquery-validation';
-import 'jquery-validation-unobtrusive';
 import '../css/site.css';
 
 (function (app, storage) {
