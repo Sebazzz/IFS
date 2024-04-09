@@ -6,6 +6,7 @@
 // ******************************************************************************
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
@@ -254,7 +255,8 @@ public class UploadManager : IUploadManager {
 
             uploadContext.MetadataFactory.SetOriginalFileName(fileName);
 
-            await this.StoreDataAsync(uploadContext.Identifier, section.Body, uploadContext.PasswordSetting, cancellationToken).ConfigureAwait(false);
+            await this.StoreDataAsync(uploadContext.Identifier, section.Body, uploadContext.PasswordSetting,
+                uploadContext.MetadataFactory, cancellationToken).ConfigureAwait(false);
 
             uploadContext.HasUploadedFile = true;
         } else {
@@ -263,9 +265,12 @@ public class UploadManager : IUploadManager {
     }
 
 
-    private async Task StoreDataAsync(FileIdentifier id, Stream dataStream, UploadPassword passwordSetting, CancellationToken cancellationToken) {
+    private async Task StoreDataAsync(FileIdentifier id, Stream dataStream, UploadPassword passwordSetting,
+        StoredMetadataFactory storedMetadataFactory, CancellationToken cancellationToken)
+    {
         UploadProgress progress = this.GetProgressObject(id);
-
+        Debug.Assert(progress.Current == 0, "progress.Current == 0");
+        
         // Copy with progress
         await using (var outputStream = this._fileWriter.OpenWriteStream(this._fileStore.GetDataFile(id)))
         {
@@ -283,19 +288,29 @@ public class UploadManager : IUploadManager {
             }
         }
 
+        // Save the file size to the metadata, because encrypted streams are not the original size
+        storedMetadataFactory.SetOriginalFileSize(progress.Current);
+
         return;
 
         async Task CopyStreamWithProgress(Stream outputStream)
         {
             await using var inputStream = dataStream;
-            int read;
-            var buffer = new byte[4096];
-            while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
-                       .ConfigureAwait(false)) != 0)
+            var buffer = ArrayPool<byte>.Shared.Rent(4096);
+            try
             {
-                progress.Current += read;
+                int read;
+                while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
+                           .ConfigureAwait(false)) != 0)
+                {
+                    progress.Current += read;
 
-                await outputStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
+                    await outputStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
     }
@@ -379,6 +394,11 @@ public class UploadManager : IUploadManager {
 
         public void SetOriginalFileName(string fileName) {
             this._metadata.OriginalFileName = Path.GetFileName(fileName);
+        }
+
+        public void SetOriginalFileSize(long sizeInBytes)
+        {
+            this._metadata.OriginalFileSizeBytes = sizeInBytes;
         }
 
         public void SetSenderName(string value) {

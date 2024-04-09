@@ -4,6 +4,7 @@
 //  File:           : CryptoStreamWrapper.cs
 //  Project         : IFS.Web
 // ******************************************************************************
+
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -20,10 +21,13 @@ namespace IFS.Web.Core.Download;
 internal sealed class CryptoStreamWrapper : Stream {
     private readonly Aes _crypto;
     private readonly CryptoStream _cryptoStream;
+    private readonly long _originalSize;
 
-    private CryptoStreamWrapper(Aes crypto, CryptoStream cryptoStream) {
+    private CryptoStreamWrapper(Aes crypto, CryptoStream cryptoStream, long originalSize)
+    {
         this._crypto = crypto;
         this._cryptoStream = cryptoStream;
+        this._originalSize = originalSize;
     }
 
     public static Stream Create(UploadedFile file, string password) {
@@ -40,7 +44,7 @@ internal sealed class CryptoStreamWrapper : Stream {
                 false
             );
 
-            return new CryptoStreamWrapper(crypto, cryptoStream);
+            return new CryptoStreamWrapper(crypto, cryptoStream, file.OriginalSize);
         }
         catch (Exception) {
             fileStream.Dispose();
@@ -68,7 +72,9 @@ internal sealed class CryptoStreamWrapper : Stream {
 
     public override bool CanRead => this._cryptoStream.CanRead;
 
-    public override bool CanSeek => this._cryptoStream.CanSeek;
+    public override bool CanSeek =>
+        this._originalSize !=
+        default; // Note: In practice the result of this is only used by ASP.NET to determine if Length won't throw
 
     public override bool CanTimeout => this._cryptoStream.CanTimeout;
 
@@ -102,7 +108,7 @@ internal sealed class CryptoStreamWrapper : Stream {
         return this._cryptoStream.FlushAsync(cancellationToken);
     }
 
-    public override long Length => this._cryptoStream.Length;
+    public override long Length => this._originalSize != default ? this._originalSize : this._cryptoStream.Length;
 
     public override long Position
     {

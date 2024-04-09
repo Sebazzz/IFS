@@ -96,7 +96,7 @@
             trackerUrl: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTracker", new { fileIdentifier = Model.FileIdentifier })!)',
             uploadApi: '@JavaScriptEncoder.Default.Encode(Url.RouteUrl("UploadTrackerApi", new { fileIdentifier = Model.FileIdentifier })!)',
             names: {
-                suggestedFileSize: '@Html.NameFor(x => x.SuggestedFileSize)'
+                suggestedFileDiskSize: '@Html.NameFor(x => x.SuggestedFileSize)'
             },
             ids: {
                 nameField: '@Html.IdFor(x => x.Sender!.Name)',

@@ -5,16 +5,13 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-
+using IFS.Web.Models;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-
-using IFS.Web.Models;
-using System.Linq;
 
 namespace IFS.Web.Core.Upload;
 
@@ -144,5 +141,9 @@ public class UploadedFile {
 
     public Stream GetStream() => this._fileInfo.CreateReadStream();
 
-    public long Size => this._fileInfo.Length;
+    public long OriginalSize => this.Metadata.OriginalFileSizeBytes;
+
+    public long DiskSize => this._fileInfo.Length;
+
+    public bool HasRecordedOriginalSize => this.Metadata.OriginalFileSizeBytes != default;
 }

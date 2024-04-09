@@ -8,7 +8,7 @@
 
 @{
     string downloadLink = this.Url.RouteUrl("DownloadFileRaw", new { id = Model.Id }, this.Context.Request.Scheme)!;
-    var size = Model.Size.Bytes();
+    var size = (Model is { HasRecordedOriginalSize: true } ? Model.OriginalSize : Model.DiskSize).Bytes();
 
     string directDownloadUrl = Model.IsPasswordProtected ? this.Context.Request.GetDisplayUrl() : downloadLink;
 }

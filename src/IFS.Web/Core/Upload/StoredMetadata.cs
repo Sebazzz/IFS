@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using IFS.Web.Core.Crypto;
 using Newtonsoft.Json;
 
@@ -24,6 +24,7 @@ public class StoredMetadata {
     public ContactInformation? Sender { get; set; }
 
     public DownloadSecurity? DownloadSecurity { get; set; }
+    public long OriginalFileSizeBytes { get; set; }
 
     public string Serialize() {
         return JsonConvert.SerializeObject(this, Formatting.Indented, SerializerSettings);
@@ -33,7 +34,10 @@ public class StoredMetadata {
         return JsonConvert.DeserializeObject<StoredMetadata>(str, SerializerSettings);
     }
 
-    private static readonly JsonSerializerSettings SerializerSettings = new();
+    private static readonly JsonSerializerSettings SerializerSettings = new()
+    {
+        MissingMemberHandling = MissingMemberHandling.Ignore
+    };
 }
 
 public class DownloadSecurity {
