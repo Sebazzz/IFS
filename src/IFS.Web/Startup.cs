@@ -168,6 +168,7 @@ public sealed class Startup
 
         // Configure hangfire jobs (not sure where to do this else)
         RecurringJob.AddOrUpdate<ExpiredFileRemovalJob>(
+            nameof(ExpiredFileRemovalJob),
             x => x.Execute(JobCancellationToken.Null),
             "*/30 * * * *");
     }
