@@ -14,15 +14,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using IFS.Web.Core.Crypto;
 using Humanizer;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using IFS.Web.Core.Crypto;
+using IFS.Web.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-
-using IFS.Web.Models;
 
 namespace IFS.Web.Core.Upload;
 
@@ -214,10 +212,12 @@ public class UploadManager : IUploadManager {
                 break;
         }
 
-        async Task<string> ReadString() {
-            using (StreamReader sr = new StreamReader(section.Body)) {
-                return await sr.ReadToEndAsync();
-            }
+        return;
+
+        async Task<string> ReadString()
+        {
+            using var sr = new StreamReader(section.Body);
+            return await sr.ReadToEndAsync();
         }
 
         void EnsureFileNotUploaded() {
@@ -267,31 +267,35 @@ public class UploadManager : IUploadManager {
         UploadProgress progress = this.GetProgressObject(id);
 
         // Copy with progress
-        using (Stream outputStream = this._fileWriter.OpenWriteStream(this._fileStore.GetDataFile(id))) {
-            if (passwordSetting.Enable == true && !String.IsNullOrEmpty(passwordSetting.Password)) {
-                using (Aes crypto = CryptoFactory.CreateCrypto(passwordSetting.Password)) {
-                    ICryptoTransform encryptor = crypto.CreateEncryptor();
+        await using (var outputStream = this._fileWriter.OpenWriteStream(this._fileStore.GetDataFile(id)))
+        {
+            if (passwordSetting.Enable == true && !string.IsNullOrEmpty(passwordSetting.Password))
+            {
+                using var crypto = CryptoFactory.CreateCrypto(passwordSetting.Password);
+                var encryptor = crypto.CreateEncryptor();
 
-                    CryptoMetadata.WriteMetadata(outputStream, crypto);
+                CryptoMetadata.WriteMetadata(outputStream, crypto);
 
-                    using (CryptoStream cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write, true)) {
-                        await CopyStreamWithProgress(cryptoStream);
-                    }
-                }
+                await using var cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write, true);
+                await CopyStreamWithProgress(cryptoStream);
             } else {
                 await CopyStreamWithProgress(outputStream);
             }
         }
 
-        async Task CopyStreamWithProgress(Stream outputStream) {
-            using (Stream inputStream = dataStream) {
-                int read;
-                byte[] buffer = new byte[4096];
-                while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0) {
-                    progress.Current += read;
+        return;
 
-                    await outputStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
-                }
+        async Task CopyStreamWithProgress(Stream outputStream)
+        {
+            await using var inputStream = dataStream;
+            int read;
+            var buffer = new byte[4096];
+            while ((read = await inputStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
+                       .ConfigureAwait(false)) != 0)
+            {
+                progress.Current += read;
+
+                await outputStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
             }
         }
     }
@@ -321,13 +325,11 @@ public class UploadManager : IUploadManager {
         }
 
         // Write away
-        using (Stream fileStream = this._fileWriter.OpenWriteStream(metadataFile)) {
-            using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
-                await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
+        await using var fileStream = this._fileWriter.OpenWriteStream(metadataFile);
+        await using var sw = new StreamWriter(fileStream, Encoding.UTF8);
+        await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
 
-                await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-            }
-        }
+        await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 
     private void TryCleanup(FileIdentifier id) {

@@ -10,16 +10,14 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 using IFS.Web.Core;
 using IFS.Web.Core.ModelFactory;
 using IFS.Web.Core.Upload;
 using IFS.Web.Framework.Filters;
+using IFS.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using IFS.Web.Models;
 
 namespace IFS.Web.Areas.Administration.Controllers;
 
@@ -70,12 +68,11 @@ public class UploadLinkController : Controller {
         }
 
         // Write away
-        using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(model.FileIdentifier))) {
-            using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
-                await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
+        await using var fileStream =
+            this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(model.FileIdentifier));
+        await using var sw = new StreamWriter(fileStream, Encoding.UTF8);
+        await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
 
-                await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-            }
-        }
+        await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 }

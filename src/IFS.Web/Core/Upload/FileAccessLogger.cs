@@ -33,12 +33,10 @@ public class FileAccessLogger : IFileAccessLogger {
             IpAddress = ipAddress
         });
 
-        using (Stream fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(uploadedFile.Id))) {
-            using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
-                await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
+        await using var fileStream = this._fileWriter.OpenWriteStream(this._fileStore.GetMetadataFile(uploadedFile.Id));
+        await using var sw = new StreamWriter(fileStream, Encoding.UTF8);
+        await sw.WriteAsync(metadata.Serialize()).ConfigureAwait(false);
 
-                await fileStream.FlushAsync().ConfigureAwait(false);
-            }
-        }
+        await fileStream.FlushAsync().ConfigureAwait(false);
     }
 }
