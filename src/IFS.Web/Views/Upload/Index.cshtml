@@ -36,8 +36,9 @@
          }
     }
 
-    <div class="alert alert-info">
-        <strong>Maximum file size: </strong> @FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <span class="fa-solid fa-info-circle bi flex-shrink-0 me-2" role="img"></span>
+        <div>The maximum allowed file size is <strong>@FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")</strong></div>
     </div>
 
     <form asp-route="AsyncUploadHandler"
