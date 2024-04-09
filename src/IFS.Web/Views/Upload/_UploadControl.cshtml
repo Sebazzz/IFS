@@ -2,10 +2,10 @@
 
 <div class="ordered-form__part">
     <div class="mb-3">
-        <label asp-for="File"></label><br/>
+        <label asp-for="File" class="hidden" area-hidden="false"></label><br/>
 
-        <span class="upload-control form-control btn btn-primary">
-            <span>Select file</span>
+        <span class="upload-control form-control btn btn-primary btn-lg">
+            <span>Select a file</span>
 
             <input type="file" asp-for="File" required />
         </span>
