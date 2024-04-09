@@ -55,8 +55,8 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(png|svg|jpg|gif|ttf|eot|woff|woff2)$/,
-                use: 'url-loader?limit=8192'
+                test: /\.(png|svg|jpe?g|gif|ttf|eot|woff|woff2)$/,
+                type: 'asset'
             },
             {
                 test: /\.css$/,
