@@ -12,7 +12,7 @@ namespace IFS.Web.Core.Crypto;
 
 public interface ITransitPasswordProtector {
     string Protect(string password);
-    string Unprotect(string protectedPassword);
+    string? Unprotect(string protectedPassword);
 }
 
 public sealed class TransitPasswordProtector : ITransitPasswordProtector {
@@ -31,7 +31,8 @@ public sealed class TransitPasswordProtector : ITransitPasswordProtector {
         return this._dataProtector.Protect(password, expiration);
     }
 
-    public string Unprotect(string protectedPassword) {
+    public string? Unprotect(string protectedPassword)
+    {
         return this._dataProtector.Unprotect(protectedPassword, out _);
     }
 }

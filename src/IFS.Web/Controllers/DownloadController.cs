@@ -5,20 +5,18 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-using IFS.Web.Framework.Filters;
-using IFS.Web.Framework.Middleware.Fail2Ban;
 using System.Threading.Tasks;
-
 using IFS.Web.Core;
 using IFS.Web.Core.Crypto;
 using IFS.Web.Core.Download;
 using IFS.Web.Core.Upload;
 using IFS.Web.Core.Upload.Http;
+using IFS.Web.Framework.Filters;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+using IFS.Web.Models;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-using IFS.Web.Models;
 
 namespace IFS.Web.Controllers;
 
@@ -118,24 +116,28 @@ public sealed class DownloadController : Controller {
 
     [Route("download/file/{id}/raw", Name = "DownloadFileRaw")]
     [FileLock]
-    public async Task<IActionResult> DownloadFileRaw(FileIdentifier id, string password, [Bind(Prefix="_")]string? protectedPassword) {
+    public async Task<IActionResult> DownloadFileRaw(FileIdentifier id, string? password = null,
+        [Bind(Prefix = "_")] string? protectedPassword = null)
+    {
         if (!this.ModelState.IsValid) {
+            this._logger.LogWarning("Model validation failed: {@ModelState}", this.ModelState);
             return this.BadRequest();
         }
 
         // Get file
         UploadedFile? uploadedFile = await this._uploadedFileRepository.GetFile(id);
         if (uploadedFile == null) {
-            this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{0}'", id);
+            this._logger.LogWarning(LogEvents.UploadNotFound, "Unable to find uploaded file for download '{Id}'", id);
             return this.NotFound("404: File has not been found or download link has expired");
         }
 
         // Decrypt password if given
-        if (password == null && protectedPassword != null) {
+        if (password is null && protectedPassword != null)
+        {
             password = this._passwordProtector.Unprotect(protectedPassword);
 
             // Handle no password (protectedPassword might be expired)
-            if (password == null)
+            if (password is null)
             {
                 DownloadPasswordModel passwordInfo = new DownloadPasswordModel();
                 this.ModelState.AddModelError(nameof(passwordInfo.Password), "Password authentication expired");
