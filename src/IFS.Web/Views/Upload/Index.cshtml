@@ -41,6 +41,10 @@
         <div>The maximum allowed file size is <strong>@FileStoreOptions.Value.MaximumFileSize.Megabytes().ToString("MB")</strong></div>
     </div>
 
+    @{
+        await Html.RenderPartialAsync("_ValidationSummary");
+    }
+
     <form asp-route="AsyncUploadHandler"
           asp-route-fileidentifier="@Model.FileIdentifier"
           asp-antiforgery="false"

@@ -1,0 +1,7 @@
+﻿@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <span class="fa-solid fa-triangle-exclamation bi flex-shrink-0 me-2" role="img"></span>
+        <div asp-validation-summary="All"></div>
+    </div>
+}

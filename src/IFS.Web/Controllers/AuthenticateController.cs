@@ -5,23 +5,21 @@
 //  Project         : IFS.Web
 // ******************************************************************************
 
-using IFS.Web.Framework.Filters;
-using IFS.Web.Framework.Middleware.Fail2Ban;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
 using IFS.Web.Core;
 using IFS.Web.Core.Authentication;
-
+using IFS.Web.Framework.Filters;
+using IFS.Web.Framework.Middleware.Fail2Ban;
+using IFS.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-
-using IFS.Web.Models;
+using AuthenticationOptions = IFS.Web.Core.Authentication.AuthenticationOptions;
 
 namespace IFS.Web.Controllers;
 
@@ -30,9 +28,9 @@ namespace IFS.Web.Controllers;
 [AllowAnonymous]
 public sealed class AuthenticateController : Controller {
     private readonly IAuthenticationProvider _authenticationProvider;
-    private readonly IOptions<Core.Authentication.AuthenticationOptions> _authenticateOptions;
+    private readonly IOptions<AuthenticationOptions> _authenticateOptions;
 
-    public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<Core.Authentication.AuthenticationOptions> authenticateOptions) {
+    public AuthenticateController(IAuthenticationProvider authenticationProvider, IOptions<AuthenticationOptions> authenticateOptions) {
         this._authenticationProvider = authenticationProvider;
         this._authenticateOptions = authenticateOptions;
     }
@@ -44,7 +42,8 @@ public sealed class AuthenticateController : Controller {
     [Fail2BanModelState(nameof(LoginModel.Passphrase))]
     [StaticAuthenticationAction]
     [ActionName("Login")]
-    public IActionResult LoginStatic(string returnUrl) {
+    public IActionResult LoginStatic(string? returnUrl)
+    {
         if (this.User.Identity is { IsAuthenticated: true }) {
             return this.RedirectToAction("Index", "Upload");
         }
@@ -57,7 +56,8 @@ public sealed class AuthenticateController : Controller {
 
     [OpenIdAuthenticationAction]
     [ActionName("Login")]
-    public IActionResult LoginOpenId(string returnUrl) {
+    public IActionResult LoginOpenId(string? returnUrl)
+    {
         if (this.User.Identity is { IsAuthenticated: true }) {
             return this.RedirectToAction("Index", "Upload");
         }
