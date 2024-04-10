@@ -178,7 +178,7 @@ Task("Publish-Windows")
     .IsDependentOn("Publish-Windows-Core")
 	.Description("Publish for Windows 64-bit")
     .Does(() => {
-       ZipCompress(publishDir + Directory("win10-x64/"), publishDir + File($"ifs-{GetVersionString()}-win-x64.zip"));
+       ZipCompress(publishDir + Directory("win-x64/"), publishDir + File($"ifs-{GetVersionString()}-win-x64.zip"));
 	});
 
 Task("Publish-Linux-Core")
