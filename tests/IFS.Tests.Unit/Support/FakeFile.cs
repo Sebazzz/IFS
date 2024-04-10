@@ -10,7 +10,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
 
-namespace IFS.Tests.Support;
+namespace IFS.Tests.Unit.Support;
 
 public sealed class FakeFile : IFileInfo
 {

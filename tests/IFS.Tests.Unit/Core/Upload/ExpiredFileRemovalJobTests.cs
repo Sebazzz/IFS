@@ -9,34 +9,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Hangfire;
-
+using IFS.Tests.Unit.Support;
+using IFS.Web.Core.Upload;
+using IFS.Web.Models;
 using NSubstitute;
-
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
-using IFS.Tests.Support;
-
-using IFS.Web.Core.Upload;
-using IFS.Web.Models;
-
-namespace IFS.Tests.Core.Upload;
+namespace IFS.Tests.Unit.Core.Upload;
 
 [TestFixture]
-public sealed class ExpiredFileRemovalJobTests {
+public sealed class ExpiredFileRemovalJobTests
+{
     [Test]
     [Ignore("Possible bug in NSubstitute")]
-    public async Task ExpiredFileRemovalJob_RemovesObsoleteFiles() {
+    public async Task ExpiredFileRemovalJob_RemovesObsoleteFiles()
+    {
         // Given
-        List<UploadedFile> files = new List<UploadedFile>();
+        var files = new List<UploadedFile>();
 
         var job = GetTestObject(files);
 
-        files.Add(new UploadedFile(FileIdentifier.FromString("a"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(1)}));
-        files.Add(new UploadedFile(FileIdentifier.FromString("b"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(-1) }));
-        files.Add(new UploadedFile(FileIdentifier.FromString("c"), new FakeFile(), new StoredMetadata { Expiration = DateTime.UtcNow.AddMilliseconds(-1) }));
+        files.Add(new UploadedFile(FileIdentifier.FromString("a"), new FakeFile(),
+            new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(1) }));
+        files.Add(new UploadedFile(FileIdentifier.FromString("b"), new FakeFile(),
+            new StoredMetadata { Expiration = DateTime.UtcNow.AddDays(-1) }));
+        files.Add(new UploadedFile(FileIdentifier.FromString("c"), new FakeFile(),
+            new StoredMetadata { Expiration = DateTime.UtcNow.AddMilliseconds(-1) }));
 
         // When
         await job.Execute(new JobCancellationToken(false));
@@ -46,8 +46,9 @@ public sealed class ExpiredFileRemovalJobTests {
         Assert.That(files, Has.Count.EqualTo(1));
     }
 
-    private static ExpiredFileRemovalJob GetTestObject(List<UploadedFile> files) {
-        IUploadedFileRepository repository = Substitute.For<IUploadedFileRepository>();
+    private static ExpiredFileRemovalJob GetTestObject(List<UploadedFile> files)
+    {
+        var repository = Substitute.For<IUploadedFileRepository>();
 
         repository.GetFiles().Returns(Task.FromResult<IList<UploadedFile>>(files.ToList()));
         repository.When(r => r.Delete(Arg.Any<FileIdentifier>()))
@@ -57,7 +58,8 @@ public sealed class ExpiredFileRemovalJobTests {
     }
 
 
-    private static IConstraint ContainsFileIdentifier(FileIdentifier id) {
+    private static IConstraint ContainsFileIdentifier(FileIdentifier id)
+    {
         return new SomeItemsConstraint(Has.Property("Id").EqualTo(id));
     }
 }

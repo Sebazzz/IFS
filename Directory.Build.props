@@ -1,9 +1,11 @@
 <Project>
     <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
 
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
+        <WarningsAsErrors/>
 
         <!-- Suppres warning about "Converting null literal or possible null value to non-nullable type".  -->
         <NoWarn>$(NoWarn);CS8600</NoWarn>

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFS.Tests", "src\IFS.Tests\IFS.Tests.csproj", "{68AC4ED0-8D68-4394-B04B-AC4A873CC809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFS.Tests.Unit", "tests\IFS.Tests.Unit\IFS.Tests.Unit.csproj", "{68AC4ED0-8D68-4394-B04B-AC4A873CC809}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFS.Web", "src\IFS.Web\IFS.Web.csproj", "{E0860D0C-660D-46CF-85A8-6E4131A84E7D}"
 EndProject
@@ -21,11 +21,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{70B879
 		build.config = build.config
 		build.ps1 = build.ps1
 		build.sh = build.sh
+		Directory.Build.props = Directory.Build.props
 		dotnet-tools.json = dotnet-tools.json
 		global.json = global.json
 		README.md = README.md
-		src\Common.props = src\Common.props
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5778040C-80C9-40B6-821B-CB6CAEBB4120}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{315571D9-5BB7-4BBA-B669-2751303B60D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68AC4ED0-8D68-4394-B04B-AC4A873CC809} = {315571D9-5BB7-4BBA-B669-2751303B60D3}
+		{E0860D0C-660D-46CF-85A8-6E4131A84E7D} = {5778040C-80C9-40B6-821B-CB6CAEBB4120}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D7CD273-DD1B-435E-8EE4-ED22A5A3DAE1}

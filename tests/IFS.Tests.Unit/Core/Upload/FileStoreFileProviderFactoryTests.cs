@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace IFS.Tests.Core.Upload;
+namespace IFS.Tests.Unit.Core.Upload;
 
 [TestFixture]
 public sealed class FileStoreFileProviderFactoryTests

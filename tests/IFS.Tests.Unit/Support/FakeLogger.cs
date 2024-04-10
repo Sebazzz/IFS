@@ -9,7 +9,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace IFS.Tests.Support;
+namespace IFS.Tests.Unit.Support;
 
 public static class FakeLogger
 {
