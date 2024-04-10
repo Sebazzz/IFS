@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <IsPackable>false</IsPackable>
         <Nullable>disable</Nullable>
@@ -9,18 +9,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
-        <PackageReference Include="NUnit" Version="4.1.0"/>
-        <PackageReference Include="NSubstitute" Version="5.1.0"/>
-        <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NSubstitute"/>
+        <PackageReference Include="NSubstitute.Analyzers.CSharp">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Net.NameResolution" Version="4.3.0"/>
-        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
-        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0"/>
+        <PackageReference Include="System.Net.NameResolution"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="System.ComponentModel.TypeConverter"/>
 
-        <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
+
     </ItemGroup>
 
 </Project>

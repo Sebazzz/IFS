@@ -32,17 +32,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Hangfire.Core" Version="1.8.12"/>
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12"/>
-        <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0"/>
-        <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
-        <PackageReference Include="Markdig" Version="0.36.2"/>
+        <PackageReference Include="Hangfire.Core"/>
+        <PackageReference Include="Hangfire.AspNetCore"/>
+        <PackageReference Include="Hangfire.MemoryStorage.Core"/>
+        <PackageReference Include="Humanizer.Core"/>
+        <PackageReference Include="Markdig"/>
 
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.3"/>
-        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions"/>
 
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-        <PackageReference Include="Serilog.Sinks.Seq" Version="7.0.0"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Sinks.File"/>
+        <PackageReference Include="Serilog.Sinks.Seq"/>
     </ItemGroup>
 </Project>
