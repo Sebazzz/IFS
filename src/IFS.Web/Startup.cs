@@ -105,28 +105,6 @@ public sealed class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-
-            app.UseWhen(
-                ctx => ctx.Request.Path.StartsWithSegments("/build"),
-                spaApp =>
-                {
-                    spaApp.UseSpa(spa =>
-                    {
-                        const int port = 8080;
-
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = "node.exe",
-                            Arguments = $"dev-server.js --port={port}",
-                            WorkingDirectory = env.ContentRootPath,
-                            UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Minimized
-                        });
-
-                        spa.UseProxyToSpaDevelopmentServer($"http://localhost:{port}/");
-                    });
-                }
-            );
         }
         else
         {
