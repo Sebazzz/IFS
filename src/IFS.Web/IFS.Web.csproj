@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <AssemblyName>IFS.Web</AssemblyName>
@@ -7,7 +8,6 @@
         <PackageId>IFS.Web</PackageId>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 
-        <LangVersion>latest</LangVersion>
         <Authors>Sebastiaan Dammann</Authors>
         <Company>Damsteen.nl</Company>
         <Product>IFS</Product>
@@ -26,9 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="wwwroot\**\*;Areas\**\*.cshtml">
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-        </None>
+        <None Update="wwwroot\**\*;Areas\**\*.cshtml" CopyToPublishDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup>

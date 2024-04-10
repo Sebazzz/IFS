@@ -15,7 +15,7 @@ var verbosity = Argument<Verbosity>("verbosity", Verbosity.Minimal);
 //////////////////////////////////////////////////////////////////////
 
 var baseName = "IFS.Web";
-var buildDir = Directory("./build") + Directory(configuration);
+var buildDir = Directory("./build");
 var publishDir = Directory("./build/publish");
 var assemblyInfoFile = Directory($"./src/{baseName}/Properties") + File("AssemblyInfo.cs");
 var nodeEnv = configuration == "Release" ? "production" : "development";
@@ -122,7 +122,9 @@ Task("Build")
     .IsDependentOn("Restore-NuGet-Packages")
     .IsDependentOn("Restore-Node-Packages")
     .Does(() => {
-        DotNetBuild($"./IFS.sln");
+        DotNetBuild($"./IFS.sln", new() {
+            Configuration = configuration
+        });
 });
 
 Task("Run")
@@ -140,14 +142,13 @@ string GetVersionString() {
 Action<string,string> PublishSelfContained = (string platform, string folder) => {
 	Information("Publishing self-contained for platform {0}", platform);
 
-	var settings = new DotNetPublishSettings
-			 {
-				 Configuration = configuration,
-				 OutputDirectory = publishDir + Directory(folder ?? platform),
-				 Runtime = platform
-			 };
+	DotNetPublishSettings settings = new() {
+        Configuration = configuration,
+        OutputDirectory = publishDir + Directory(folder ?? platform),
+        Runtime = platform
+    };
 	
-        DotNetPublish($"./src/IFS.Web/IFS.Web.csproj", settings);
+    DotNetPublish($"./src/IFS.Web/IFS.Web.csproj", settings);
 };
 
 Task("Run-Webpack")
@@ -195,9 +196,19 @@ Task("Publish-Linux")
 Task("Publish")
     .IsDependentOn("Publish-Windows")
     .IsDependentOn("Publish-Linux");
+    
+Task("Test-Prep")
+    .IsDependentOn("Build")
+	.IsDependentOn("Run-Webpack")
+    .Does(() => {
+        string playWrightScript = MakeAbsolute(buildDir + Directory("bin") + Directory("IFS.Tests.Integration") + Directory(configuration) + File("playwright.ps1")).ToString();
+        Information($"Running playwright install script at {playWrightScript}");
+        StartProcess("pwsh", $"-NoProfile -NonInteractive -File {playWrightScript} install");
+    });
+
 	
 Task("Test")
-    .IsDependentOn("Build")
+    .IsDependentOn("Test-Prep")
     .Does(() => {
         DotNetTest("./IFS.sln", new() { NoBuild = true });
 });

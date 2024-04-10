@@ -3,6 +3,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
+        <ArtifactsPath>$(MSBuildThisFileDirectory)build</ArtifactsPath>
 
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors/>
