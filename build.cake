@@ -172,13 +172,13 @@ Task("Publish-Common")
 	
 Task("Publish-Windows-Core")
     .IsDependentOn("Publish-Common")
-    .Does(() => PublishSelfContained("win10-x64", null));
+    .Does(() => PublishSelfContained("win-x64", null));
 
 Task("Publish-Windows")
     .IsDependentOn("Publish-Windows-Core")
-	.Description("Publish for Windows 10 / Windows Server 2016+")
+	.Description("Publish for Windows 64-bit")
     .Does(() => {
-       ZipCompress(publishDir + Directory("win10-x64/"), publishDir + File($"ifs-{GetVersionString()}-win10-x64.zip"));
+       ZipCompress(publishDir + Directory("win10-x64/"), publishDir + File($"ifs-{GetVersionString()}-win-x64.zip"));
 	});
 
 Task("Publish-Linux-Core")
@@ -188,7 +188,7 @@ Task("Publish-Linux-Core")
 
 Task("Publish-Linux")
     .IsDependentOn("Publish-Linux-Core")
-	.Description("Publish for Linux x64 (Ubuntu, Debian)")
+	.Description("Publish for Linux x64 (universal)")
     .Does(() => {
        GZipCompress(publishDir + Directory("linux-x64/"), publishDir + File($"ifs-{GetVersionString()}-linux-x64.tar.gz"));
 	});
